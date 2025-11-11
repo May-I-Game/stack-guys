@@ -65538,6 +65538,7 @@ MonoBehaviour:
   thirdPlaceText: {fileID: 392406702}
   mainButton: {fileID: 1398200893}
   QualifiedText: {fileID: 1561068659}
+  Mobile: {fileID: 779689360}
   FPSCount: {fileID: 2001983295}
   PingCount: {fileID: 110435177}
   LobbyUI: {fileID: 593005564}
