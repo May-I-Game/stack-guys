@@ -33381,6 +33381,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e53a29fee8803c469758505e1388c8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onPressed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1478376328}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  onReleased:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1478376328}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!65 &758166079
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -33400,7 +33430,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.8050528, y: 0.2, z: 1.8050526}
+  m_Size: {x: 1, y: 0.2, z: 1}
   m_Center: {x: 0, y: 0.6, z: 0}
 --- !u!1 &758921865
 GameObject:
@@ -64777,6 +64807,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3539c126191de0140833409c996ef55f, type: 3}
+--- !u!1 &1478376328 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1615555672261225566, guid: 3539c126191de0140833409c996ef55f, type: 3}
+  m_PrefabInstance: {fileID: 1478376327}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1478376329 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6754852531663270748, guid: 3539c126191de0140833409c996ef55f, type: 3}
