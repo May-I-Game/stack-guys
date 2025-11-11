@@ -10177,7 +10177,7 @@ MonoBehaviour:
   m_Center: {x: 0, y: 2, z: 0}
   m_LayerMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 264
   m_UseGeometry: 0
   m_DefaultArea: 0
   m_GenerateLinks: 0
@@ -43596,6 +43596,10 @@ PrefabInstance:
     - target: {fileID: 906668368678867125, guid: 3c5b4b7c5985ba04a9329e2a8272a9f6, type: 3}
       propertyPath: m_IsTrigger
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2281472550556256862, guid: 3c5b4b7c5985ba04a9329e2a8272a9f6, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2352985189821707166, guid: 3c5b4b7c5985ba04a9329e2a8272a9f6, type: 3}
       propertyPath: m_Enabled
