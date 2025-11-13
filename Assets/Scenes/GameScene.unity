@@ -46308,6 +46308,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1303015576224256053, guid: fbf1598708ee71a4395ad264db22cce4, type: 3}
+      propertyPath: followZ
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1303015576224256053, guid: fbf1598708ee71a4395ad264db22cce4, type: 3}
       propertyPath: cullingDistance
       value: 20
       objectReference: {fileID: 0}
