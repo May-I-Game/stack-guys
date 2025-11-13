@@ -1481,10 +1481,10 @@ GameObject:
   - component: {fileID: 7839709260095116719}
   - component: {fileID: -7203480982915365540}
   - component: {fileID: 2417491111524222058}
-  - component: {fileID: -294164076719901094}
+  - component: {fileID: 5542489576015073576}
   - component: {fileID: 2593437910564063128}
   m_Layer: 6
-  m_Name: Bot_Player
+  m_Name: Console_Bot_Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1595,7 +1595,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2926255402
+  GlobalObjectIdHash: 2915388509
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1634,27 +1634,27 @@ MonoBehaviour:
   ScaleMaxInterpolationTime: 0.1
   AuthorityMode: 0
   TickSyncChildren: 0
-  UseUnreliableDeltas: 1
+  UseUnreliableDeltas: 0
   SyncPositionX: 1
   SyncPositionY: 1
   SyncPositionZ: 1
-  SyncRotAngleX: 0
+  SyncRotAngleX: 1
   SyncRotAngleY: 1
-  SyncRotAngleZ: 0
+  SyncRotAngleZ: 1
   SyncScaleX: 0
   SyncScaleY: 0
   SyncScaleZ: 0
-  PositionThreshold: 0.05
+  PositionThreshold: 0.01
   RotAngleThreshold: 0.1
   ScaleThreshold: 0.01
   UseQuaternionSynchronization: 0
   UseQuaternionCompression: 0
-  UseHalfFloatPrecision: 1
+  UseHalfFloatPrecision: 0
   InLocalSpace: 0
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &-294164076719901094
+--- !u!114 &5542489576015073576
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1663,7 +1663,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5785324236016558479}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6748d0d1088965a489d9c945e1706dc3, type: 3}
+  m_Script: {fileID: 11500000, guid: a6b67c5ab9c04af49b2e7d19e8a33c73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
@@ -1680,7 +1680,7 @@ MonoBehaviour:
   groundCheckDist: 0.1
   groundLayerMask:
     serializedVersion: 2
-    m_Bits: 1096
+    m_Bits: 8
   bounceForce: 5
   animator: {fileID: 0}
   inputSendInterval: 0.05
@@ -1692,10 +1692,6 @@ MonoBehaviour:
     m_InternalValue: 0
   respawnManager: {fileID: 0}
   inputEnabled: 1
-  rotateIntervalMin: 1
-  rotateIntervalMax: 1.5
-  jumpIntervalMin: 3
-  jumpIntervalMax: 5
 --- !u!114 &2593437910564063128
 MonoBehaviour:
   m_ObjectHideFlags: 0
