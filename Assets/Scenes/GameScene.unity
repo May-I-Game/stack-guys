@@ -13265,6 +13265,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   botPrefab: {fileID: 5309982938216476723, guid: b1c3c2cd08f943a4dbfeb3812b3980b1, type: 3}
+  preBotCount: 100
+  preSpawnManager: {fileID: 644671203}
 --- !u!114 &252778272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33901,6 +33903,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 644671202}
+  - component: {fileID: 644671203}
   m_Layer: 0
   m_Name: RespawnPoints
   m_TagString: Untagged
@@ -33917,7 +33920,7 @@ Transform:
   m_GameObject: {fileID: 644671201}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -37.03, y: 0, z: 91.23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -34023,6 +34026,20 @@ Transform:
   - {fileID: 669787231}
   m_Father: {fileID: 1289527569}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &644671203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 644671201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6e5ea090da45d14083f2ed926b81416, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoCollectChildPoints: 1
+  preSpawnPoints: []
 --- !u!1001 &646334764
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -52591,7 +52608,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &971201073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -88814,7 +88831,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1657112969
 Transform:
   m_ObjectHideFlags: 0
@@ -109497,7 +109514,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9157477402662238025, guid: 8d7ef755250a05c44b288a981acb1da7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -504.28995
+      value: -541.31995
       objectReference: {fileID: 0}
     - target: {fileID: 9157477402662238025, guid: 8d7ef755250a05c44b288a981acb1da7, type: 3}
       propertyPath: m_LocalPosition.y
@@ -109505,7 +109522,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9157477402662238025, guid: 8d7ef755250a05c44b288a981acb1da7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -98.85697
+      value: -7.6269684
       objectReference: {fileID: 0}
     - target: {fileID: 9157477402662238025, guid: 8d7ef755250a05c44b288a981acb1da7, type: 3}
       propertyPath: m_LocalRotation.w
