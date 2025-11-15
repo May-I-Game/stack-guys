@@ -13340,6 +13340,7 @@ MonoBehaviour:
   botPrefab: {fileID: 5309982938216476723, guid: b1c3c2cd08f943a4dbfeb3812b3980b1, type: 3}
   preBotCount: 100
   preSpawnManager: {fileID: 644671203}
+  debugSpawnPoints: []
 --- !u!114 &252778272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52712,7 +52713,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &971201073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -88936,7 +88937,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1657112969
 Transform:
   m_ObjectHideFlags: 0
