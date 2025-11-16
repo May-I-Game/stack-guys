@@ -424,7 +424,7 @@ public class PlayerController : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void ResetDiveGroundedStateServerRpc()
     {
-        Debug.Log("다이브리셋 호출됨!!");
+        // Debug.Log("다이브리셋 호출됨!!");
         isDiveGrounded = false;
     }
 

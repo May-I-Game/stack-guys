@@ -5602,7 +5602,7 @@ MonoBehaviour:
   characterSelectPopup: {fileID: 1064280942}
   matchmakingServerUrl: http://127.0.0.1:8000
   productionMatchmakingUrl: http://3.34.45.60:8000
-  useMatchmaking: 0
+  useMatchmaking: 1
   loadingPanel: {fileID: 632846589}
   optionsButton: {fileID: 1563087656}
   closeOptionsButton: {fileID: 550395955}

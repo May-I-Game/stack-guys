@@ -6,8 +6,8 @@ using UnityEngine.AI;
 public class BotController : PlayerController
 {
     [Header("Bot Settings")]
-    [SerializeField] private float updatePathInterval = 2;              // 경로 업데이트 주기
-    [SerializeField] private float waypointSearchInterval = 2f;         // 웨이포인트 재탐색 주기
+    [SerializeField] private float updatePathInterval = 0.5f;              // 경로 업데이트 주기
+    // [SerializeField] private float waypointSearchInterval = 2f;         // 웨이포인트 재탐색 주기
     [SerializeField] private float forwardThreshold = 1f;               // 전진 판정 거리
     [SerializeField] private float updateAIInterval = 0.2f;             // AI 로직 업데이트
 
@@ -108,7 +108,6 @@ public class BotController : PlayerController
             navAgent.updatePosition = false;                    // Rigidbody와 충돌하지 않도록 설정
             navAgent.updateRotation = false;
         }
-
         FindGoal();                                             // Goal 태그 오브젝트 찾기
         RefreshWaypoints();                                     // 초기 웨이포인트 탐색
 
@@ -138,13 +137,24 @@ public class BotController : PlayerController
             }
         }
 
+        // // 웨이포인트 주기적으로 재탐색
+        // if (Time.time > nextWaypointSearchTime)
+        // {
+        //     ServerPerformanceProfiler.Start("BotController.RefreshWayPoints");
+        //     RefreshWaypoints();
+        //     ServerPerformanceProfiler.End("BotController.RefreshWayPoints");
+        //     nextWaypointSearchTime = Time.time + waypointSearchInterval;
+        // }
+
         // 이동이 활성화 되어 있고 navAgent가 활성화가 되어 있을때 AI 작동
         if (inputEnabled.Value && navAgent != null && navAgent.enabled)
         {
             // 목표 지점이 없으면 일정 주기로 찾기
             if (goalTransform == null && Time.time > nextPathUpdateTime)
             {
+                ServerPerformanceProfiler.Start("BotController.FindGoal");
                 FindGoal();
+                ServerPerformanceProfiler.End("BotController.FindGoal");
                 nextPathUpdateTime = Time.time + updatePathInterval;  // 스팸 호출 방지
             }
 
@@ -170,6 +180,7 @@ public class BotController : PlayerController
             }
         }
 
+        ServerPerformanceProfiler.Start("BotController.Others");
         // 땅 체크
         GroundCheck();
 
@@ -193,6 +204,7 @@ public class BotController : PlayerController
         {
             PlayerHeld();
         }
+        ServerPerformanceProfiler.End("BotController.Others");
 
         ServerPerformanceProfiler.End("BotController.FixedUpdate");
     }
