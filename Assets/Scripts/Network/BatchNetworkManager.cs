@@ -159,7 +159,7 @@ public class BatchNetworkManager : NetworkBehaviour
                 ));
 
                 // 버퍼가 꽉 차면 즉시 전송하고 비움 (MTU 안전장치)
-                if (_snapshotBuffer.Count > MAX_SNAPSHOTS_PER_PACKET)
+                if (_snapshotBuffer.Count >= MAX_SNAPSHOTS_PER_PACKET)
                 {
                     SendSnapshots(clientId, _snapshotBuffer);
                     _snapshotBuffer.Clear();
