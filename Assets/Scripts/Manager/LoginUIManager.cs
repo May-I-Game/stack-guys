@@ -196,11 +196,7 @@ public class LoginUIManager : MonoBehaviour
         if (useMatchmaking)
         {
             // 매치메이킹 서버를 통해서 "어느 게임 서버로 갈지"를 먼저 정함
-#if UNITY_EDITOR
-            StartCoroutine(FindGameAndConnect(matchmakingServerUrl));
-#else
             StartCoroutine(FindGameAndConnect(productionMatchmakingUrl));
-#endif
         }
         else
         {
