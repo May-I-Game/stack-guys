@@ -432,9 +432,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8486103701420215041}
-  - component: {fileID: 4077622070156694686}
   - component: {fileID: 8934479590105298468}
-  - component: {fileID: 2437450079300988974}
+  - component: {fileID: 4077622070156694686}
   m_Layer: 3
   m_Name: rotate clock
   m_TagString: Ground
@@ -473,23 +472,6 @@ Transform:
   - {fileID: 7036899425581979815}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4077622070156694686
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8094176792558754389}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b83e39dc290bc34684944762c01d3bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  axis: 0
-  degreesPerSecond: 10
-  spaceMode: 0
-  clockWise: 1
-  randomizeStartAngle: 0
 --- !u!114 &8934479590105298468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -515,7 +497,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &2437450079300988974
+--- !u!114 &4077622070156694686
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -524,43 +506,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 8094176792558754389}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Script: {fileID: 11500000, guid: 3b83e39dc290bc34684944762c01d3bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  NetworkTransformExpanded: 0
-  AutoOwnerAuthorityTickOffset: 1
-  PositionInterpolationType: 0
-  RotationInterpolationType: 0
-  ScaleInterpolationType: 0
-  PositionLerpSmoothing: 1
-  PositionMaxInterpolationTime: 0.1
-  RotationLerpSmoothing: 1
-  RotationMaxInterpolationTime: 0.1
-  ScaleLerpSmoothing: 1
-  ScaleMaxInterpolationTime: 0.1
-  AuthorityMode: 0
-  TickSyncChildren: 0
-  UseUnreliableDeltas: 0
-  SyncPositionX: 1
-  SyncPositionY: 1
-  SyncPositionZ: 1
-  SyncRotAngleX: 1
-  SyncRotAngleY: 1
-  SyncRotAngleZ: 1
-  SyncScaleX: 0
-  SyncScaleY: 0
-  SyncScaleZ: 0
-  PositionThreshold: 0.01
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
-  UseQuaternionSynchronization: 0
-  UseQuaternionCompression: 0
-  UseHalfFloatPrecision: 0
-  InLocalSpace: 0
-  SwitchTransformSpaceWhenParented: 0
-  Interpolate: 1
-  SlerpPosition: 0
+  axis: 0
+  degreesPerSecond: 10
+  spaceMode: 0
+  clockWise: 1
+  randomizeStartAngle: 0
 --- !u!1 &8189468164734054717
 GameObject:
   m_ObjectHideFlags: 0
