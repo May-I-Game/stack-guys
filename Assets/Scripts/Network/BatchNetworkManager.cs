@@ -5,7 +5,7 @@ using UnityEngine;
 
 public struct PlayerSnapshot : INetworkSerializeByMemcpy
 {
-    public ushort NetworkObjectId; // 누가 주인인가? (2 Byte)
+    public ushort NetworkObjectId; // // 어느 오브젝트인가? (2 Byte)
     public short X, Y, Z;         // 위치 (6 Byte)
     public ushort YRotation;       // Y회전 (2 Byte) 
 
@@ -48,10 +48,19 @@ public class BatchNetworkManager : NetworkBehaviour
     private float syncDistance = 30f;
     private float _sqrSyncDistance;
 
+    [SerializeField]
+    private float posDeltaThreshold = 0.05f; // 5cm
+    [SerializeField]
+    private float rotDeltaThreshold = 1f; // 1도
+
     // 빠른 검색을 위해 로컬 플레이어들을 캐싱해둠
     private Dictionary<ulong, PlayerController> _spawnedPlayers = new Dictionary<ulong, PlayerController>();
-    // [최적화] 재사용할 리스트 (GC 방지) - 미리 넉넉하게 할당
+    // 재사용할 리스트 (GC 방지) - 미리 넉넉하게 할당
     private List<PlayerSnapshot> _snapshotBuffer = new List<PlayerSnapshot>(200);
+    // 이번 틱에서 더티한 플레이어들 (동기화 대상)
+    private HashSet<ulong> _dirtyPlayers = new HashSet<ulong>();
+
+    private const int MAX_SNAPSHOTS_PER_PACKET = 100;
 
     public static BatchNetworkManager Instance;
 
@@ -104,7 +113,24 @@ public class BatchNetworkManager : NetworkBehaviour
         // 리스너 없으면 보낼 필요 없음
         if (NetworkManager.Singleton.ConnectedClientsIds.Count == 0) return;
 
+        UpdateDirtyPlayers();
         SendBatchUpdate();
+    }
+
+    private void UpdateDirtyPlayers()
+    {
+        _dirtyPlayers.Clear();
+
+        foreach (var kvp in _spawnedPlayers)
+        {
+            ulong netId = kvp.Key;
+            PlayerController player = kvp.Value;
+
+            if (IsDirty(netId, player))
+            {
+                _dirtyPlayers.Add(netId);
+            }
+        }
     }
 
     private void SendBatchUpdate()
@@ -117,24 +143,27 @@ public class BatchNetworkManager : NetworkBehaviour
 
             // 스냅샷 버퍼 초기화
             _snapshotBuffer.Clear();
-            foreach (var kvp in _spawnedPlayers)
+            foreach (var netId in _dirtyPlayers)
             {
-                PlayerController other = kvp.Value;
+                if (!_spawnedPlayers.TryGetValue(netId, out PlayerController other)) continue;
 
-                // 관심영역 체크 (거리 기반)
+                // 관심영역(AOI) 체크 (거리 기반)
                 float sqrDistance = (observer.transform.position - other.transform.position).sqrMagnitude;
                 if (sqrDistance > _sqrSyncDistance) continue;
 
-                // TODO: Dirty Check (움직임 있는 것만)
-
-                // TODO: 델타 컴프레션?
-
                 // other을 스냅샷에 추가해서 동기화
                 _snapshotBuffer.Add(new PlayerSnapshot(
-                    kvp.Key,
+                    netId,
                     other.transform.position,
                     other.transform.rotation.eulerAngles.y
                 ));
+
+                // 버퍼가 꽉 차면 즉시 전송하고 비움 (MTU 안전장치)
+                if (_snapshotBuffer.Count > MAX_SNAPSHOTS_PER_PACKET)
+                {
+                    SendSnapshots(clientId, _snapshotBuffer);
+                    _snapshotBuffer.Clear();
+                }
             }
 
             if (_snapshotBuffer.Count == 0) continue;
@@ -156,38 +185,49 @@ public class BatchNetworkManager : NetworkBehaviour
             NetworkDelivery.UnreliableSequenced
         );
 
-        Debug.Log($"[BatchNetworkManager] 전송: {snapshots.Count}명, 크기: {snapshots.Count * 10}바이트");
+        Debug.Log(
+            $"[BatchNetworkManager] 전송: {snapshots.Count}명, " +
+            $"대역폭: {(snapshots.Count * 10 * NetworkManager.NetworkTickSystem.TickRate * 8 / 1000f):F1}Kbps"
+        );
+    }
 
-        #region Chunked Sending (Not Used)
-        //const int CHUNK_SIZE = 20;
+    private bool IsDirty(ulong netId, PlayerController player)
+    {
+        Vector3 currentPos = player.transform.position;
+        float currentRotY = player.transform.rotation.eulerAngles.y;
 
-        //for (int i = 0; i < snapshots.Count; i += CHUNK_SIZE)
-        //{
-        //    int count = Mathf.Min(CHUNK_SIZE, snapshots.Count - i);
-        //    var chunk = snapshots.GetRange(i, count).ToArray();
+        // 마지막 동기화 상태 가져오기
+        if (!player.GetLastSyncedState(out Vector3 lastPos, out float lastRotY))
+        {
+            // 초기화되지 않았으면 true (첫 전송)
+            player.SetLastSyncedState(currentPos, currentRotY);
+            return true;
+        }
 
-        //    int bufferSize = count * 20 + 256;
-        //    using var writer = new FastBufferWriter(bufferSize, Allocator.Temp);
+        // 위치 변화량 계산
+        float posDelta = Vector3.Distance(currentPos, lastPos);
+        // 회전 변화량 계산
+        float rotDelta = Mathf.Abs(Mathf.DeltaAngle(lastRotY, currentRotY));
 
-        //    writer.WriteValueSafe(chunk);
+        // 임계값을 넘으면 더티 (변화 있음)
+        bool isDirty = posDelta >= posDeltaThreshold || rotDelta >= rotDeltaThreshold;
 
-        //    NetworkManager.Singleton.CustomMessagingManager.SendNamedMessage(
-        //        "BatchMove",
-        //        clientId, // 특정 클라이언트에게만 전송
-        //        writer,
-        //        NetworkDelivery.UnreliableSequenced
-        //    );
-        //}
-        #endregion
+        if (isDirty)
+        {
+            // 동기화된 상태 업데이트
+            player.SetLastSyncedState(currentPos, currentRotY);
+        }
+
+        return isDirty;
     }
 
     // ================= Client Side =================
     private void ReceiveBatchUpdate(ulong senderId, FastBufferReader reader)
     {
-        // 1. 배열 전체를 한 번에 읽음
+        // 배열 전체를 한 번에 읽음
         reader.ReadValueSafe(out PlayerSnapshot[] snapshots);
 
-        // 2. 각 플레이어에게 데이터 뿌려주기
+        // 각 플레이어에게 데이터 뿌려주기
         foreach (var snap in snapshots)
         {
             snap.GetState(out ulong netId, out Vector3 pos, out float rotY);

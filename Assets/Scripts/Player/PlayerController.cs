@@ -1,7 +1,6 @@
 using NUnit.Framework.Internal;
 using Unity.Collections;
 using Unity.Netcode;
-using Unity.Netcode.Components;
 using UnityEngine;
 
 public class PlayerController : NetworkBehaviour
@@ -94,9 +93,15 @@ public class PlayerController : NetworkBehaviour
     private int heldObjectOriginLayer;
     private int escapeJumpCount = 0; // 탈출 시도 횟수
 
+    // 위치 동기화용 변수
     protected Vector3 _targetPos;
     protected float _targetRotY;
     private Vector3 _currentVelocity;
+
+    // 마지막 동기화 상태 변수 (Dirty Check)
+    private Vector3 _lastSyncedPos;
+    private float _lastSyncedRotY;
+    private bool _lastSyncStateInitialized = false;
 
     // 리스폰 구역 Index 값
     public NetworkVariable<int> RespawnId = new(
@@ -167,11 +172,13 @@ public class PlayerController : NetworkBehaviour
             col.isTrigger = !on; // 서버: Collision, 클라이언트: Trigger
         }
     }
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         col = GetComponent<CapsuleCollider>();
     }
+
     protected virtual void Start()
     {
         inputHandler = GetComponent<PlayerInputHandler>();
@@ -451,6 +458,20 @@ public class PlayerController : NetworkBehaviour
         {
             netIsMove.Value = false;
         }
+    }
+
+    public bool GetLastSyncedState(out Vector3 lastPos, out float lastRotY)
+    {
+        lastPos = _lastSyncedPos;
+        lastRotY = _lastSyncedRotY;
+        return _lastSyncStateInitialized;
+    }
+
+    public void SetLastSyncedState(Vector3 newPos, float newRotY)
+    {
+        _lastSyncedPos = newPos;
+        _lastSyncedRotY = newRotY;
+        _lastSyncStateInitialized = true;
     }
 
     protected void PlayerJump()
@@ -1232,6 +1253,7 @@ public class PlayerController : NetworkBehaviour
             // 잡힌 상태를 애니메이터에 전달
             animator.SetBool("IsGrabbed", netIsGrabbed.Value);
         }
+
         // 파티클 제어: 땅에서 걷고 있을 때만 재생
         if (walkParticle != null)
         {
