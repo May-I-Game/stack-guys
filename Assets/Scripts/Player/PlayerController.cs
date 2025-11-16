@@ -447,7 +447,7 @@ public class PlayerController : NetworkBehaviour
         if (moveDir.magnitude >= 0.1f)
         {
             ServerPerformanceProfiler.Start("PlayerController.Move");
-           
+
             // 이동 버프 적용
             float currentSpeed = walkSpeed * buffManager.SpeedMultiplier;
 
@@ -1280,14 +1280,18 @@ public class PlayerController : NetworkBehaviour
         {
             bool shouldPlayParticle = netIsMove.Value && netIsGrounded.Value && !netIsDeath.Value;
 
-            if (shouldPlayParticle && !walkParticle.isPlaying)
+            if (shouldPlayParticle)
             {
                 walkParticle.Play();
             }
-            else if (!shouldPlayParticle && walkParticle.isPlaying)
-            {
-                walkParticle.Stop();
-            }
+            // if (shouldPlayParticle && !walkParticle.isPlaying)
+            // {
+            //     walkParticle.Play();
+            // }
+            // else if (!shouldPlayParticle && walkParticle.isPlaying)
+            // {
+            //     walkParticle.Stop();
+            // }
         }
     }
     #endregion
