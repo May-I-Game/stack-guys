@@ -19568,6 +19568,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     shakesDelay: 0
+    useDistanceCheck: 1
+    maxDistance: 20
   animatedLights:
   - light: {fileID: 4593184485727747213}
     loop: 0
