@@ -65,7 +65,6 @@ public class WebSocketManager : MonoBehaviour
                     break;
 
                 case EventType.Message:
-                    Debug.Log($"[{evt.sessionId}] 메시지: {evt.message}");
                     HandleMessage(evt.sessionId, evt.message);
                     break;
             }
