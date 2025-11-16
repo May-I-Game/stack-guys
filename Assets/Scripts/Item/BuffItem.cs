@@ -21,10 +21,13 @@ public abstract class BuffItem : InteractiveItem
         // 잡은 플레이어가 없으면 오류
         if (Holder == null)
         {
+            Debug.LogWarning("[BuffItem] Holder가 null입니다!");
             // 그래도 아이템은 Despawn
             base.ActivateItem();
             return;
         }
+
+        //Debug.Log($"[BuffItem] {Holder.gameObject.name}에게 버프 적용 시작");
 
         // 자식 클래스에서 구현한 버프 적용
         ApplyBuffToPlayer(Holder);
