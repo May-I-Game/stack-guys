@@ -34,8 +34,14 @@ namespace CartoonFX
 			public AnimationCurve shakeCurve = AnimationCurve.Linear(0, 1, 1, 0);
 			[Space]
 			[Range(0, 0.1f)] public float shakesDelay = 0;
+			[Space]
+			[Tooltip("카메라와 이펙트 사이 거리 체크 활성화")]
+			public bool useDistanceCheck = false;
+			[Tooltip("카메라 쉐이크가 적용될 최대 거리")]
+			public float maxDistance = 20f;
 
 			[System.NonSerialized] public bool isShaking;
+			[System.NonSerialized] public Transform effectTransform;
 			Dictionary<Camera, Vector3> camerasPreRenderPosition = new Dictionary<Camera, Vector3>();
 			Vector3 shakeVector;
 			float delaysTimer;
@@ -158,6 +164,16 @@ namespace CartoonFX
 
 				if (isShaking && camerasPreRenderPosition.ContainsKey(cam))
 				{
+					// 거리 체크 - 활성화되어 있고 effectTransform이 설정되어 있으면
+					if (useDistanceCheck && effectTransform != null)
+					{
+						float distance = Vector3.Distance(cam.transform.position, effectTransform.position);
+						if (distance > maxDistance)
+						{
+							return; // 거리가 멀면 쉐이크 적용 안함
+						}
+					}
+
 					camerasPreRenderPosition[cam] = cam.transform.localPosition;
 
 					if (Time.timeScale <= 0) return;

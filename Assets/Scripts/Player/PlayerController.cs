@@ -83,6 +83,9 @@ public class PlayerController : NetworkBehaviour
     protected bool isHit = false; // 충돌 상태 (이동 불가)
     protected bool canDive = false; // 다이브 가능 상태 (점프 중)
 
+    // 걷기 파티클 재생 상태 추적
+    private bool isWalkParticlePlaying = false;
+
     // 잡기 관련 변수
     protected NetworkVariable<bool> netIsGrabbed = new NetworkVariable<bool>(false); // 잡혀있는지
     protected bool isHolding = false; // 잡고 있는지
@@ -424,7 +427,7 @@ public class PlayerController : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void ResetDiveGroundedStateServerRpc()
     {
-        Debug.Log("다이브리셋 호출됨!!");
+        // Debug.Log("다이브리셋 호출됨!!");
         isDiveGrounded = false;
     }
 
@@ -447,7 +450,7 @@ public class PlayerController : NetworkBehaviour
         if (moveDir.magnitude >= 0.1f)
         {
             ServerPerformanceProfiler.Start("PlayerController.Move");
-           
+
             // 이동 버프 적용
             float currentSpeed = walkSpeed * buffManager.SpeedMultiplier;
 
@@ -1278,15 +1281,18 @@ public class PlayerController : NetworkBehaviour
         // 파티클 제어: 땅에서 걷고 있을 때만 재생
         if (walkParticle != null)
         {
-            bool shouldPlayParticle = netIsMove.Value && netIsGrounded.Value && !netIsDeath.Value;
+            bool shouldPlayParticle = netIsMove.Value && netIsGrounded.Value && !netIsDeath.Value && !isDiveGrounded;
 
-            if (shouldPlayParticle && !walkParticle.isPlaying)
+            if (shouldPlayParticle && !isWalkParticlePlaying)
             {
-                walkParticle.Play();
+                walkParticle.Clear(); // 기존 파티클 제거
+                walkParticle.Play(true); // 재생 (자식 포함)
+                isWalkParticlePlaying = true;
             }
-            else if (!shouldPlayParticle && walkParticle.isPlaying)
+            else if (!shouldPlayParticle && isWalkParticlePlaying)
             {
-                walkParticle.Stop();
+                walkParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                isWalkParticlePlaying = false;
             }
         }
     }
