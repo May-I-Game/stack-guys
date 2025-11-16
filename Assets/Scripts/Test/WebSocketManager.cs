@@ -1,8 +1,8 @@
-using Amazon.S3.Model;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -37,15 +37,17 @@ public class WebSocketManager : MonoBehaviour
     {
         if (!NetworkManager.Singleton.IsServer) return;
 
-        // 1. 서버 생성 (포트 7780)
-        ws = new WebSocketServer(7780);
+        // 웹소켓 서버 생성 (서버 포트 + 1000)
+        var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        ushort port = (ushort)(transport.ConnectionData.Port + 1000);
+        ws = new WebSocketServer(port);
 
-        // 클라이언트가 "ws://localhost:7780/" 경로로 접속하면 GameBehavior가 작동하도록 설정
+        // 클라이언트가 서버로 접속하면 GameBehavior가 작동하도록 설정
         ws.AddWebSocketService<GameBehavior>("/");
 
-        // 3. 서버 시작
+        // 서버 시작
         ws.Start();
-        Debug.Log("웹소켓 서버가 포트 7780에서 시작되었습니다.");
+        Debug.Log($"웹소켓 서버가 포트 {port}에서 시작되었습니다.");
     }
 
     void Update()
@@ -65,7 +67,6 @@ public class WebSocketManager : MonoBehaviour
                     break;
 
                 case EventType.Message:
-                    Debug.Log($"[{evt.sessionId}] 메시지: {evt.message}");
                     HandleMessage(evt.sessionId, evt.message);
                     break;
             }

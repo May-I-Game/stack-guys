@@ -910,7 +910,7 @@ public class PlayerController : NetworkBehaviour
         SetTriggerClientRpc("Death");
 
         // 봇은 서버가 Owner이므로 직접 리스폰 타이머 시작
-        if (IsServer && this is BotController)
+        if (this is BotController || this is ConsoleBotController)
         {
             StartCoroutine(BotRespawnDelay());
         }
