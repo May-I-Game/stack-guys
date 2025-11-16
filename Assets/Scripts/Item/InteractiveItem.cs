@@ -68,6 +68,7 @@ public abstract class InteractiveItem : GrabbableObject
     {
         if (!IsSpawned) return;
         //Debug.Log($"[Item] {gameObject.name} 사용됨!");
+        // TODO: 플레이어 릴리즈 그랩
         GetComponent<NetworkObject>().Despawn();
     }
 }
