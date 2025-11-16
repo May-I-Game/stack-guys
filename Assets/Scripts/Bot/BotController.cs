@@ -138,13 +138,6 @@ public class BotController : PlayerController
             }
         }
 
-        // 웨이포인트 주기적으로 재탐색
-        if (Time.time > nextWaypointSearchTime)
-        {
-            RefreshWaypoints();
-            nextWaypointSearchTime = Time.time + waypointSearchInterval;
-        }
-
         // 이동이 활성화 되어 있고 navAgent가 활성화가 되어 있을때 AI 작동
         if (inputEnabled.Value && navAgent != null && navAgent.enabled)
         {
