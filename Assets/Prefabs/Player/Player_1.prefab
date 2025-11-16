@@ -2533,7 +2533,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3145141465443542576, guid: fcdecf1d692f11242a17b45f1671ee81, type: 3}
       propertyPath: looping
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3145141465443542576, guid: fcdecf1d692f11242a17b45f1671ee81, type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 3145141465461735248, guid: fcdecf1d692f11242a17b45f1671ee81, type: 3}
       propertyPath: m_Name
