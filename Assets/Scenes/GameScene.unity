@@ -468,6 +468,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Firework (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 202.61768
@@ -2281,6 +2289,14 @@ PrefabInstance:
     - target: {fileID: 1978689737715041617, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_Name
       value: Firework (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -13716,6 +13732,14 @@ PrefabInstance:
     - target: {fileID: 1978689737715041617, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_Name
       value: Firework (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -52185,6 +52209,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Firework
       objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 203.19754
@@ -59861,7 +59893,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1053808295}
   m_Layer: 3
-  m_Name: rotate(Unclock
+  m_Name: rotate(Unclock)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68840,6 +68872,14 @@ PrefabInstance:
     - target: {fileID: 1978689737715041617, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_Name
       value: Firework (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -90194,6 +90234,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Firework (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 203.70284
@@ -95133,6 +95181,14 @@ PrefabInstance:
     - target: {fileID: 1978689737715041617, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_Name
       value: Firework (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -113907,11 +113963,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 559896568334192415, guid: 3a78c6ea74fe5ea4f925a7f6d081abef, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1677415408779684378, guid: 3a78c6ea74fe5ea4f925a7f6d081abef, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4077622070156694686, guid: 3a78c6ea74fe5ea4f925a7f6d081abef, type: 3}
       propertyPath: clockWise
@@ -113919,11 +113975,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4955658259020991590, guid: 3a78c6ea74fe5ea4f925a7f6d081abef, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7009278745020302925, guid: 3a78c6ea74fe5ea4f925a7f6d081abef, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8094176792558754389, guid: 3a78c6ea74fe5ea4f925a7f6d081abef, type: 3}
       propertyPath: m_Name
@@ -116443,6 +116499,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Firework (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 203.26866
@@ -118105,6 +118169,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Firework (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 202.8631
@@ -118597,6 +118669,14 @@ PrefabInstance:
     - target: {fileID: 1978689737715041617, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_Name
       value: Firework (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x

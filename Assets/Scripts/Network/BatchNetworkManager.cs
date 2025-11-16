@@ -185,10 +185,10 @@ public class BatchNetworkManager : NetworkBehaviour
             NetworkDelivery.UnreliableSequenced
         );
 
-        Debug.Log(
-            $"[BatchNetworkManager] 전송: {snapshots.Count}명, " +
-            $"대역폭: {(snapshots.Count * 10 * NetworkManager.NetworkTickSystem.TickRate * 8 / 1000f):F1}Kbps"
-        );
+        // Debug.Log(
+        //     $"[BatchNetworkManager] 전송: {snapshots.Count}명, " +
+        //     $"대역폭: {(snapshots.Count * 10 * NetworkManager.NetworkTickSystem.TickRate * 8 / 1000f):F1}Kbps"
+        // );
     }
 
     private bool IsDirty(ulong netId, PlayerController player)
