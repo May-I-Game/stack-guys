@@ -491,6 +491,7 @@ namespace CartoonFX
 	#if !DISABLE_CAMERA_SHAKE
 			if (cameraShake != null && cameraShake.enabled)
 			{
+				cameraShake.effectTransform = this.transform;
 				cameraShake.fetchCameras();
 			}
 	#endif
