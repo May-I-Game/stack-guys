@@ -2,8 +2,6 @@ using System.Collections;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
-using Unity.Netcode.Components;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
@@ -20,8 +18,9 @@ public class GameManager : NetworkBehaviour
 {
     [Header("UI References")]
     [SerializeField] private TMP_Text gameStartcountdown; // 로비에서 게임 시작 전 카운트
-    [SerializeField] private TMP_Text NowPlayerCount; // 현재 접속자 수
     [SerializeField] private TMP_Text gameEndcountdown; // 1등이 결정난 이후 10초 카운트
+    [SerializeField] private TMP_Text inGameReadyText; // 3..2..1.. 시작 텍스트
+    [SerializeField] private TMP_Text NowPlayerCount; // 현재 접속자 수
     [SerializeField] private GameObject resultPanel; // 하얀 결과 화면
     [SerializeField] private TMP_Text firstPlaceText;
     [SerializeField] private TMP_Text secondPlaceText;
@@ -69,6 +68,7 @@ public class GameManager : NetworkBehaviour
     private NetworkVariable<int> currentPlayerCount = new NetworkVariable<int>(0);
     private NetworkVariable<bool> isStartCountdownActive = new NetworkVariable<bool>(false);
     private NetworkVariable<bool> isEndCountdownActive = new NetworkVariable<bool>(false);
+    private NetworkVariable<bool> isGameReadyCountdownActive = new NetworkVariable<bool>(false);
 
     public static GameManager instance;
 
@@ -118,6 +118,9 @@ public class GameManager : NetworkBehaviour
             isStartCountdownActive.OnValueChanged += UpdateStartCountdownVisibility;
             isEndCountdownActive.OnValueChanged += UpdateEndCountdownVisibility;
 
+            // 게임 도중 준비 카운트다운 감지
+            isGameReadyCountdownActive.OnValueChanged += OnGameReadyCountdownChanged;
+
             // 도착한 플레이어 수 변경 감지
             rankings.OnListChanged += OnRankingsChanged;
 
@@ -152,6 +155,8 @@ public class GameManager : NetworkBehaviour
             currentPlayerCount.OnValueChanged -= UpdatePlayerCountUI;
             isStartCountdownActive.OnValueChanged -= UpdateStartCountdownVisibility;
             isEndCountdownActive.OnValueChanged -= UpdateEndCountdownVisibility;
+
+            isGameReadyCountdownActive.OnValueChanged -= OnGameReadyCountdownChanged;
 
             // 도착한 플레이어 수 변경 감지
             rankings.OnListChanged -= OnRankingsChanged;
@@ -209,6 +214,7 @@ public class GameManager : NetworkBehaviour
         int playerCount = NetworkManager.Singleton.ConnectedClientsList.Count;
         currentPlayerCount.Value = playerCount;
     }
+
     private void UpdatePlayerCountUI(int priviousValue, int newValue)
     {
         if (NowPlayerCount != null)
@@ -266,7 +272,12 @@ public class GameManager : NetworkBehaviour
 
         var player = playerObj.GetComponent<PlayerController>();
         if (player != null)
+        {
             player.inputEnabled.Value = false;
+            player.ReleaseGrab();
+            player.ForceClearInputOnServer();
+        }
+            
 
         rankings.Add(playerName);              // NetworkList는 서버에서만 쓰기
 
@@ -355,6 +366,7 @@ public class GameManager : NetworkBehaviour
             if (controller != null)
             {
                 controller.inputEnabled.Value = false;
+                controller.ReleaseGrab();
                 controller.ForceClearInputOnServer();
             }
 
@@ -395,10 +407,19 @@ public class GameManager : NetworkBehaviour
 
         // 클라에 결과 화면 표시
         ShowResultsClientRpc();
-
     }
-    
 
+    private void OnGameReadyCountdownChanged(bool previous, bool current)
+    {
+        if (inGameReadyText != null)
+        {
+            inGameReadyText.gameObject.SetActive(current);
+            if (!current)
+            {
+                inGameReadyText.text = "";
+            }
+        }
+    }
 
     private IEnumerator ServerEnableBotsAfterCinematic()
     {
@@ -412,11 +433,28 @@ public class GameManager : NetworkBehaviour
         while (NetworkManager.Singleton.ServerTime.Time < target)
             yield return null;
 
-        // 시네마틱이 끝나고 봇 활성화
-        BotManager.Singleton?.EnableAllBots();
+        // 2. 인게임 카운트다운 시작 (3, 2, 1)
+        isGameReadyCountdownActive.Value = true;
+        remainingTime.Value = 3f; // 3초 설정
 
-        // 유저 입력 활성화
+        while (remainingTime.Value > 0)
+        {
+            remainingTime.Value -= Time.deltaTime;
+            yield return null;
+        }
+
+        // 시네마틱이 끝나고 움직임 활성화
+        BotManager.Singleton?.EnableAllBots();
         EnableAllPlayersInputOnServer();
+
+        // UI 처리를 위해 remainingTime을 확실한 음수값으로 설정 (클라이언트가 "START!"를 띄우게 됨)
+        remainingTime.Value = -1f;
+
+        // 플레이어들은 이미 달리고 있지만, "START!" 텍스트는 1초간 더 보여주기
+        yield return new WaitForSeconds(1.0f);
+
+        // 1초 뒤에 UI를 끄기
+        isGameReadyCountdownActive.Value = false;
     }
 
     [ClientRpc]
@@ -535,14 +573,30 @@ public class GameManager : NetworkBehaviour
 
     private void UpdateCountDownUI(float prviousValue, float newValue)
     {
-        // 카운트 다운
-        if (rankings.Count > 0 && gameEndcountdown != null)
+        // 로비 게임 시작 전 카운트다운
+        if (IsLobby && gameStartcountdown != null)
         {
-            gameEndcountdown.text = Mathf.Ceil(newValue).ToString();
+            gameStartcountdown.text = $"{Mathf.CeilToInt(newValue)}초 후 게임이 시작됩니다!!";
         }
-        else if (gameStartcountdown != null)
+
+        // 시네마틱 직후 게임 시작 카운트 다운 (3, 2, 1, Start!)
+        else if (isGameReadyCountdownActive.Value && inGameReadyText != null)
         {
-            gameStartcountdown.text = $"{Mathf.Ceil(newValue)}초 후 게임이 시작됩니다!!";
+            int count = Mathf.CeilToInt(newValue);
+            if (count > 0)
+            {
+                inGameReadyText.text = count.ToString();
+            }
+            else
+            {
+                inGameReadyText.text = "START!!";
+            }
+        }
+
+        // 게임 끝나고 10초 카운트다운
+        else if (rankings.Count > 0 && gameEndcountdown != null)
+        {
+            gameEndcountdown.text = Mathf.CeilToInt(newValue).ToString();
         }
     }
 
@@ -581,6 +635,7 @@ public class GameManager : NetworkBehaviour
         NetworkManager.Singleton.Shutdown();
         SceneManager.LoadScene(mainSceneName);
     }
+
     private void OnTimelineTriggered(bool previous, bool current)
     {
         if (current && !previous)
@@ -588,6 +643,7 @@ public class GameManager : NetworkBehaviour
             StartCoroutine(PlayTimelineAtSyncTime());
         }
     }
+
     private IEnumerator PlayTimelineAtSyncTime()
     {
         //로비 BGM 아웃
@@ -599,57 +655,31 @@ public class GameManager : NetworkBehaviour
             yield return null;
         }
 
-        if (Mobile != null)
-        {
-            Mobile.SetActive(false);
-        }
-        if (FPSCount != null)
-        {
-            FPSCount.SetActive(false);
-        }
-        if (PingCount != null)
-        {
-            PingCount.SetActive(false);
-        }
-        if (LobbyUI != null)
-        {
-            LobbyUI.SetActive(false);
-        }
-        if (gameUI != null)
-        {
-            gameUI.SetActive(false);
-        }
+        ToggleGameUI(false);
 
         //timeline재생
         timeline.Play();
-
         //트랙 bgm on
         trackBGM.Play();
 
         //Timeline종료 대기
         yield return new WaitForSeconds((float)timeline.duration);
 
-        // UI 활성화
-        if (Mobile != null)
+        ToggleGameUI(true);
+
+        if (!isGameReadyCountdownActive.Value)
         {
-            Mobile.SetActive(true);
+            if (inGameReadyText != null) inGameReadyText.gameObject.SetActive(false);
         }
-        if (FPSCount != null)
-        {
-            FPSCount.SetActive(true);
-        }
-        if (PingCount != null)
-        {
-            PingCount.SetActive(true);
-        }
-        if (LobbyUI != null)
-        {
-            LobbyUI.SetActive(false);
-        }
-        if (gameUI != null)
-        {
-            gameUI.SetActive(true);
-        }
+    }
+
+    private void ToggleGameUI(bool isActive)
+    {
+        if (Mobile != null) Mobile.SetActive(isActive);
+        if (FPSCount != null) FPSCount.SetActive(isActive);
+        if (PingCount != null) PingCount.SetActive(isActive);
+        if (LobbyUI != null) LobbyUI.SetActive(false); // 로비는 항상 끔
+        if (gameUI != null) gameUI.SetActive(isActive);
     }
 
     private void OnTimelineFinished(PlayableDirector director)
