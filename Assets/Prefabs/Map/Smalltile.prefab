@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 92587454706949583}
   - component: {fileID: 6715573679325437052}
   - component: {fileID: 420925330230509899}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Smalltile
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
