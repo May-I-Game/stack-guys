@@ -27,7 +27,6 @@ public class LoginUIManager : MonoBehaviour
     [SerializeField] private GameObject characterSelectPopup;
 
     [Header("Matchmaking Server")]
-    [SerializeField] private string matchmakingServerUrl = "http://127.0.0.1:8000";             // 로컬 매치메이킹 서버
     [SerializeField] private string productionMatchmakingUrl = "http://3.34.45.60:8000";        // 프로덕션 매치메이킹 서버
     [SerializeField] private bool useMatchmaking = false;                                       // 매치메이킹 사용 여부
 
