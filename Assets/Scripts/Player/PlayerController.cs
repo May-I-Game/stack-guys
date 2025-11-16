@@ -60,6 +60,7 @@ public class PlayerController : NetworkBehaviour
     protected Rigidbody rb;
     private CapsuleCollider col;
     private PlayerInputHandler inputHandler;
+    protected PlayerBuffManager buffManager;// 버프 관리자
 
     protected Vector2 moveDir = Vector2.zero;
     private Vector2 lastSentInput = Vector2.zero;  // 실제로 서버에 전송한 마지막 입력
@@ -183,6 +184,13 @@ public class PlayerController : NetworkBehaviour
     {
         inputHandler = GetComponent<PlayerInputHandler>();
         respawnManager = FindFirstObjectByType<RespawnManager>();
+
+        // 버프 매니저 초기화
+        buffManager = GetComponent<PlayerBuffManager>();
+        if (buffManager == null)
+        {
+            buffManager = gameObject.AddComponent<PlayerBuffManager>();
+        }
 
         // GC 최적화: WaitForSeconds 사전 생성
         botRespawnWait = new WaitForSeconds(2.267f);
@@ -439,12 +447,16 @@ public class PlayerController : NetworkBehaviour
         if (moveDir.magnitude >= 0.1f)
         {
             ServerPerformanceProfiler.Start("PlayerController.Move");
+           
+            // 이동 버프 적용
+            float currentSpeed = walkSpeed * buffManager.SpeedMultiplier;
+
             // 이동
             Vector3 movement = new Vector3(
                 moveDir.x,
                 0,
                 moveDir.y
-            ) * walkSpeed * Time.fixedDeltaTime;
+            ) * currentSpeed * Time.fixedDeltaTime;
             rb.MovePosition(rb.position + movement);
 
             // 회전
@@ -492,15 +504,18 @@ public class PlayerController : NetworkBehaviour
             // 땅에 있을 때: 점프
             if (netIsGrounded.Value)
             {
+                // 점프 버프 적용
+                float currentJumpForce = jumpForce * buffManager.JumpMultiplier;
+
                 // 봇일때 점프
                 if (this is BotController bot)
                 {
-                    rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                    rb.AddForce(Vector3.up * currentJumpForce, ForceMode.Impulse);
                     rb.AddForce(Vector3.forward * 3f, ForceMode.Impulse);
                 }
                 else
                 {
-                    rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                    rb.AddForce(Vector3.up * currentJumpForce, ForceMode.Impulse);
                 }
                 // 점프 파티클 재생
                 PlayJumpParticle();
@@ -588,6 +603,12 @@ public class PlayerController : NetworkBehaviour
             PlayerController otherPlayer = col.GetComponent<PlayerController>();
             if (otherPlayer != null && !otherPlayer.netIsGrabbed.Value && !otherPlayer.isHolding)
             {
+                // 무적 버프가 있으면 잡을 수 없음
+                if (otherPlayer.buffManager != null && otherPlayer.buffManager.IsInvincible)
+                {
+                    continue;
+                }
+
                 GrabPlayer(otherPlayer);
                 return;
             }
