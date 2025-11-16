@@ -59,8 +59,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Depth: -50
+    - _Depth: 0
     - _Displacement: 1
+    - _LOD_Distance: 500
+    - _Min_LOD_Scale: 0.1
     - _Normal_Strength: 1
     - _QueueControl: 0
     - _QueueOffset: 50
