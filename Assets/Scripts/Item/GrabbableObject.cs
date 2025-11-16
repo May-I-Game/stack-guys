@@ -22,7 +22,7 @@ public class GrabbableObject : NetworkBehaviour, IGrabbable
     }
 
     // 잡았을 때 호출 (PlayerController에서 호출)
-    public void OnGrabbed(PlayerController player)
+    public virtual void OnGrabbed(PlayerController player)
     {
         if (!NetworkManager.Singleton.IsServer) return;
 

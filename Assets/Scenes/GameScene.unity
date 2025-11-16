@@ -468,6 +468,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Firework (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 202.61768
@@ -2281,6 +2289,14 @@ PrefabInstance:
     - target: {fileID: 1978689737715041617, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_Name
       value: Firework (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -13716,6 +13732,14 @@ PrefabInstance:
     - target: {fileID: 1978689737715041617, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_Name
       value: Firework (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -51913,6 +51937,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Firework
       objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 203.19754
@@ -59589,7 +59621,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1053808295}
   m_Layer: 3
-  m_Name: rotate(Unclock
+  m_Name: rotate(Unclock)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68568,6 +68600,14 @@ PrefabInstance:
     - target: {fileID: 1978689737715041617, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_Name
       value: Firework (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -89922,6 +89962,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Firework (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 203.70284
@@ -92441,6 +92489,79 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5292756887493034312, guid: 8d5dda635ce97e8428e6047ecd92121b, type: 3}
   m_PrefabInstance: {fileID: 1640779445}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1643072503
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1863145528742717711, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1016432480
+      objectReference: {fileID: 0}
+    - target: {fileID: 1863145528742717711, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1863145528742717711, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 3243222476
+      objectReference: {fileID: 0}
+    - target: {fileID: 4867322494015334222, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -537.96246
+      objectReference: {fileID: 0}
+    - target: {fileID: 4867322494015334222, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5000005
+      objectReference: {fileID: 0}
+    - target: {fileID: 4867322494015334222, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 15.1791935
+      objectReference: {fileID: 0}
+    - target: {fileID: 4867322494015334222, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4867322494015334222, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4867322494015334222, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4867322494015334222, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4867322494015334222, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4867322494015334222, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4867322494015334222, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5244411708780133876, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
+      propertyPath: m_Name
+      value: Spring
+      objectReference: {fileID: 0}
+    - target: {fileID: 7640787805469475845, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
+      propertyPath: buffValue
+      value: 10
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
 --- !u!1001 &1645405680
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -94653,6 +94774,14 @@ PrefabInstance:
     - target: {fileID: 1978689737715041617, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_Name
       value: Firework (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -113424,11 +113553,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 559896568334192415, guid: 3a78c6ea74fe5ea4f925a7f6d081abef, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1677415408779684378, guid: 3a78c6ea74fe5ea4f925a7f6d081abef, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4077622070156694686, guid: 3a78c6ea74fe5ea4f925a7f6d081abef, type: 3}
       propertyPath: clockWise
@@ -113436,11 +113565,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4955658259020991590, guid: 3a78c6ea74fe5ea4f925a7f6d081abef, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7009278745020302925, guid: 3a78c6ea74fe5ea4f925a7f6d081abef, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8094176792558754389, guid: 3a78c6ea74fe5ea4f925a7f6d081abef, type: 3}
       propertyPath: m_Name
@@ -115960,6 +116089,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Firework (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 203.26866
@@ -117622,6 +117759,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Firework (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 202.8631
@@ -118114,6 +118259,14 @@ PrefabInstance:
     - target: {fileID: 1978689737715041617, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_Name
       value: Firework (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978689737715041618, guid: afa54037ffe627545886e2741abb365d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1978689737715041621, guid: afa54037ffe627545886e2741abb365d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -120553,3 +120706,4 @@ SceneRoots:
   - {fileID: 1657112969}
   - {fileID: 151759700}
   - {fileID: 2000712414}
+  - {fileID: 1643072503}
