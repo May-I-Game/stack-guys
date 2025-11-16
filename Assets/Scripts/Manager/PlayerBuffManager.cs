@@ -50,11 +50,7 @@ public class PlayerBuffManager : NetworkBehaviour, IBuffable
     // 버프 적용
     public void ApplyBuff(BuffData data)
     {
-        // 서버에서만 버프 적용
-        if (!IsServer)
-        {
-            return;
-        }
+        //Debug.Log($"[PlayerBuffManager] ApplyBuff 호출! 타입: {data.type}, 값: {data.value}, IsServer: {IsServer}, IsSpawned: {IsSpawned}");
 
         // 같은 타입 버프 있으면 갱신
         if (activeBuffs.ContainsKey(data.type))
@@ -68,20 +64,16 @@ public class PlayerBuffManager : NetworkBehaviour, IBuffable
         // 버프 효과 적용
         ApplyBuffEffect(data);
 
-        // 만료 타이머 시작
+        // 버프 타이머 시작
         Coroutine timer = StartCoroutine(BuffTimer(data));
         buffTimers[data.type] = timer;
+
+        //Debug.Log($"[PlayerBuffManager] 버프 적용 완료! 타입: {data.type}, 현재 JumpMultiplier: {JumpMultiplier}");
     }
 
     // 버프 제거
     public void RemoveBuff(BuffType type)
     {
-        // 서버에서만 버프 제거
-        if (!IsServer)
-        {
-            return;
-        }
-
         // 버프가 없으면 무시
         if (!activeBuffs.ContainsKey(type))
         {
@@ -102,6 +94,11 @@ public class PlayerBuffManager : NetworkBehaviour, IBuffable
 
             buffTimers.Remove(type);
         }
+
+        // 버프 데이터 제거
+        activeBuffs.Remove(type);
+
+        //Debug.Log($"[PlayerBuffManager] 버프 제거 완료: {type}");
     }
 
     // 특정 버프 활성화 확인
@@ -122,16 +119,19 @@ public class PlayerBuffManager : NetworkBehaviour, IBuffable
             // 속도 배율 설정
             case BuffType.Speed:
                 netSpeedMultiplier.Value = data.value;
+                //Debug.Log($"[PlayerBuffManager] 속도 배율 설정: {netSpeedMultiplier.Value}");
                 break;
 
             // 점프력 배율 설정
             case BuffType.Jump:
                 netJumpMultiplier.Value = data.value;
+                //Debug.Log($"[PlayerBuffManager] 점프력 배율 설정: {netJumpMultiplier.Value}");
                 break;
 
             // 무적 상태 해제
             case BuffType.Invincibility:
                 netIsInvincible.Value = true;
+                //Debug.Log($"[PlayerBuffManager] 무적 활성화");
                 break;
         }
     }
@@ -172,20 +172,17 @@ public class PlayerBuffManager : NetworkBehaviour, IBuffable
     {
         base.OnNetworkDespawn();
 
-        // 네트워크 해제 시 모든 타이머 중지
-        if (IsServer)
+        // 모든 타이머 중지
+        foreach (var timer in buffTimers.Values)
         {
-            foreach (var timer in buffTimers.Values)
+            if (timer != null)
             {
-                if (timer != null)
-                {
-                    StopCoroutine(timer);
-                }
+                StopCoroutine(timer);
             }
-
-            buffTimers.Clear();
-            activeBuffs.Clear();
         }
+
+        buffTimers.Clear();
+        activeBuffs.Clear();
     }
 
     //////////////////////////////////////////////////////////////////////

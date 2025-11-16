@@ -3,8 +3,8 @@ using UnityEngine;
 
 public enum ItemTriggerType
 {
-    UseOnGrab,   // 잡는 순간 바로 사용 (예: 포션, 코인)
-    UseOnImpact  // 던져서 어딘가에 닿으면 사용 (예: 물폭탄, 지뢰)
+    UseOnGrab,   // 잡는 순간 바로 사용
+    UseOnImpact  // 던져서 어딘가에 닿으면 사용
 }
 
 public abstract class InteractiveItem : GrabbableObject
@@ -15,9 +15,11 @@ public abstract class InteractiveItem : GrabbableObject
     private bool wasThrown = false;
     protected PlayerController thrower;
 
-    public new void OnGrabbed(PlayerController player)
+    public override void OnGrabbed(PlayerController player)
     {
         base.OnGrabbed(player);
+
+        //Debug.Log($"[InteractiveItem] OnGrabbed 호출! Player: {player.gameObject.name}, IsServer: {NetworkManager.Singleton.IsServer}, triggerType: {triggerType}");
 
         if (!NetworkManager.Singleton.IsServer) return;
         wasThrown = false;
@@ -27,6 +29,10 @@ public abstract class InteractiveItem : GrabbableObject
         if (triggerType == ItemTriggerType.UseOnGrab)
         {
             ActivateItem();
+        }
+        else
+        {
+            Debug.Log($"[InteractiveItem] UseOnGrab이 아님. triggerType: {triggerType}");
         }
     }
 
@@ -47,7 +53,7 @@ public abstract class InteractiveItem : GrabbableObject
 
         //Debug.Log($"[InteractiveItem] triggerType: {triggerType}, wasThrown: {wasThrown}");
 
-        // 던져진 상태이고 + 충돌형 아이템이라면
+        // 던져진 상태이고 + UseOnImpact 아이템이라면
         if (triggerType == ItemTriggerType.UseOnImpact && wasThrown)
         {
             // Debug.Log("[InteractiveItem] 조건 통과! ActivateItem 호출");
