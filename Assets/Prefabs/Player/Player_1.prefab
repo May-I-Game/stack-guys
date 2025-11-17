@@ -2707,7 +2707,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 7708729512989566163, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
@@ -2782,7 +2783,8 @@ PrefabInstance:
       value: itemGetParticle
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2009675295209177906, guid: 964f31a73329d2f42824c8c47d084c19, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 964f31a73329d2f42824c8c47d084c19, type: 3}
