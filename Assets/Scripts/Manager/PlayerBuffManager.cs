@@ -6,6 +6,8 @@ using System.Collections.Generic;
 // 버프 관리 전담 매니저
 public class PlayerBuffManager : NetworkBehaviour, IBuffable
 {
+    private PlayerController owner;   // 이 버프 매니저가 붙어 있는 플레이어
+
     //////////////////////////////////////////////////////////////////////
     // 네트워크 동기화 변수
     //////////////////////////////////////////////////////////////////////
@@ -45,6 +47,11 @@ public class PlayerBuffManager : NetworkBehaviour, IBuffable
     //////////////////////////////////////////////////////////////////////
     // IBuffable 인터페이스 구현
     //////////////////////////////////////////////////////////////////////
+
+    private void Awake()
+    {
+        owner = GetComponent<PlayerController>();
+    }
 
     // 버프 적용
     public void ApplyBuff(BuffData data)
@@ -127,18 +134,24 @@ public class PlayerBuffManager : NetworkBehaviour, IBuffable
             // 속도 배율 설정
             case BuffType.Speed:
                 netSpeedMultiplier.Value = data.value;
+                if (owner != null)
+                    owner.SetBuffLoopEffect(BuffType.Speed, true);
                 //Debug.Log($"[PlayerBuffManager] 속도 배율 설정: {netSpeedMultiplier.Value}");
                 break;
 
             // 점프력 배율 설정
             case BuffType.Jump:
                 netJumpMultiplier.Value = data.value;
+                if (owner != null)
+                    owner.SetBuffLoopEffect(BuffType.Jump, true);
                 //Debug.Log($"[PlayerBuffManager] 점프력 배율 설정: {netJumpMultiplier.Value}");
                 break;
 
             // 무적 상태 해제
             case BuffType.Invincibility:
                 netIsInvincible.Value = true;
+                if (owner != null)
+                    owner.SetBuffLoopEffect(BuffType.Invincibility, true);
                 //Debug.Log($"[PlayerBuffManager] 무적 활성화");
                 break;
         }
@@ -155,16 +168,22 @@ public class PlayerBuffManager : NetworkBehaviour, IBuffable
             // 속도 복구
             case BuffType.Speed:
                 netSpeedMultiplier.Value = 1f;
+                if (owner != null)
+                    owner.SetBuffLoopEffect(BuffType.Speed, false);
                 break;
 
             // 점프력 복구
             case BuffType.Jump:
                 netJumpMultiplier.Value = 1f;
+                if (owner != null)
+                    owner.SetBuffLoopEffect(BuffType.Jump, false);
                 break;
 
             // 무적 상태 해제
             case BuffType.Invincibility:
                 netIsInvincible.Value = false;
+                if (owner != null)
+                    owner.SetBuffLoopEffect(BuffType.Invincibility, false);
                 break;
         }
     }
