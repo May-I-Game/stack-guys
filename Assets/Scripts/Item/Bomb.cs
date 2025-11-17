@@ -8,8 +8,6 @@ public class Bomb : InteractiveItem
     public float explosionForce = 10f;
     public GameObject explosionEffectPrefab; // 파티클 프리팹
 
-    private bool hasExploded = false;
-
     protected override void OnCollisionEnter(Collision collision)
     {
         //Debug.Log($"[Bomb] 충돌 감지! 대상: {collision.gameObject.name}");
