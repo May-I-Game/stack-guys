@@ -6,10 +6,14 @@ using UnityEngine.AI;
 public class BotController : PlayerController
 {
     [Header("Bot Settings")]
-    [SerializeField] private float updatePathInterval = 0.5f;              // 경로 업데이트 주기
-    // [SerializeField] private float waypointSearchInterval = 2f;         // 웨이포인트 재탐색 주기
-    [SerializeField] private float forwardThreshold = 1f;               // 전진 판정 거리
-    [SerializeField] private float updateAIInterval = 0.2f;             // AI 로직 업데이트
+    [SerializeField] private float minForwardDistance = 1f;             // 최소 전방 거리
+    [SerializeField] private float updateNavigationInterval = 0.5f;     // Nav 경로 설정 업데이트 인터벌
+    [SerializeField] private float updateGoalInterval = 0.5f;           // Goal 위치 업데이트 인터벌         Goal을 굳이 계속 찾을 필요 없음 수정 필요
+    [SerializeField] private float targetSelectionInterval = 0.2f;      // 다음 목표 업데이트 인터벌
+
+    private float nextGoalUpdateTime = 0f;                              // 다음 Goal 위치 업데이트 시간
+    private float nextNavigationUpdateTime = 0f;                        // 다음 Nav 경로 설정 업데이트 시간
+    private float nextTargetSelectionTime = 0f;                         // 다음 목표 업데이트 시간
 
     [Header("Random Path Settings")]
     [SerializeField] private bool useRandomWaypoint = true;             // 랜덤 웨이포인트 사용
@@ -27,15 +31,6 @@ public class BotController : PlayerController
     [SerializeField] private bool showGoalInEditor = false;             // 에디터/클라이언트에서 골 기즈모 표시 여부
 #endif
 
-    [Header("Debug Settings")]
-    [SerializeField] private bool enableDebugLogs = true;
-    [SerializeField] private float debugLogInterval = 3f;               // 로그 출력 주기
-
-    private Vector3 lastDebugPosition;                                  // 이전 디버그 시점에서 캐릭터 포지션
-    private float lastDebugLogTime = 0f;                                // 이전 디버그 시간
-    private float totalDistanceMoved = 0f;                              // 움직인 거리
-    private int consecutiveStuckFrames = 0;                             // 연속적으로 멈춰있는 회수
-
     private Transform goalTransform;
     private bool isGoingToGoal = false;                                 // Goal로 가는중인가?
 
@@ -45,14 +40,20 @@ public class BotController : PlayerController
     private Transform[] waypoints;                                      // 자동으로 찾은 웨이포인트들
     private Transform currentWaypoint;                                  // 현재 목표 웨이포인트
     private bool isGoingToWaypoint = false;                             // 웨이포인트로 가는 중인가?
-    private float nextWaypointSearchTime = 0f;                          // 다음 웨이포인트 재탐색 시간
-    private float nextPathUpdateTime = 0f;                              // 다음 업데이트 시간
-    private float nextAIUpdateTime = 0f;                                // 다음 AI 업데이트 시간
 
     // NavMeshLink 점프 관련 변수
     private bool isTraversingLink = false;                              // NavMeshLink 통과 중인가?
     private float linkTraverseTime = 0f;                                // NavMeshLink 통과 경과 시간
     private float linkJumpDuration = 0.5f;                              // NavMeshLink 점프 시간
+
+    [Header("Debug Settings")]
+    [SerializeField] private bool enableDebugLogs = true;
+    [SerializeField] private float debugLogInterval = 3f;               // 로그 출력 주기
+
+    private Vector3 lastDebugPosition;                                  // 이전 디버그 시점에서 캐릭터 포지션
+    private float lastDebugLogTime = 0f;                                // 이전 디버그 시간
+    private float totalDistanceMoved = 0f;                              // 움직인 거리
+    private int consecutiveStuckFrames = 0;                             // 연속적으로 멈춰있는 회수
 
     // 이 부분을 전처리기로 감싸면 Netcode가 초기화 순서를 체크할 때 문제 발생
     // 서버에서 선택한 웨이포인트 인덱스, 에디터 기즈모는 이 값을 통해 동일한 웨이포인트를 보여줌
@@ -137,35 +138,26 @@ public class BotController : PlayerController
             }
         }
 
-        // // 웨이포인트 주기적으로 재탐색
-        // if (Time.time > nextWaypointSearchTime)
-        // {
-        //     ServerPerformanceProfiler.Start("BotController.RefreshWayPoints");
-        //     RefreshWaypoints();
-        //     ServerPerformanceProfiler.End("BotController.RefreshWayPoints");
-        //     nextWaypointSearchTime = Time.time + waypointSearchInterval;
-        // }
-
         // 이동이 활성화 되어 있고 navAgent가 활성화가 되어 있을때 AI 작동
         if (inputEnabled.Value && navAgent != null && navAgent.enabled)
         {
             // 목표 지점이 없으면 일정 주기로 찾기
-            if (goalTransform == null && Time.time > nextPathUpdateTime)
+            if (goalTransform == null && Time.time > nextGoalUpdateTime)
             {
                 ServerPerformanceProfiler.Start("BotController.FindGoal");
                 FindGoal();
                 ServerPerformanceProfiler.End("BotController.FindGoal");
-                nextPathUpdateTime = Time.time + updatePathInterval;  // 스팸 호출 방지
+                nextGoalUpdateTime = Time.time + updateGoalInterval;  // 스팸 호출 방지
             }
 
             // 목표 지점이 있으면 길찾기 로직 (주기적으로만 실행)
-            if (goalTransform != null && Time.time > nextAIUpdateTime)
+            if (goalTransform != null && Time.time > nextTargetSelectionTime)
             {
                 ServerPerformanceProfiler.Start("BotController.BotUpdate");
                 UpdateBotTarget();
                 ServerPerformanceProfiler.End("BotController.BotUpdate");
 
-                nextAIUpdateTime = Time.time + updateAIInterval;  // 다음 AI 업데이트 시간 설정
+                nextTargetSelectionTime = Time.time + targetSelectionInterval;  // 다음 목표 업데이트 시간 설정
             }
 
             // 이동 입력은 매 프레임
@@ -248,9 +240,8 @@ public class BotController : PlayerController
 #if UNITY_EDITOR
             currentWaypointIndex.Value = -1;
 #endif
-            nextPathUpdateTime = 0f;
-            nextWaypointSearchTime = 0f;
-            nextAIUpdateTime = 0f;
+            nextNavigationUpdateTime = 0f;
+            nextTargetSelectionTime = 0f;
 
             // 목표 재탐색
             FindGoal();
@@ -307,7 +298,7 @@ public class BotController : PlayerController
     // SetDestination을 너무 자주 갱신하지 않도록 간격 제어, 완전 경로일 때만 설정
     private void SetDestinationIfDue(Vector3 targetPos)
     {
-        if (Time.time > nextPathUpdateTime)
+        if (Time.time > nextNavigationUpdateTime)
         {
             if (navAgent.isActiveAndEnabled && navAgent.isOnNavMesh)
             {
@@ -318,7 +309,7 @@ public class BotController : PlayerController
                 }
             }
 
-            nextPathUpdateTime = Time.time + updatePathInterval;
+            nextNavigationUpdateTime = Time.time + updateNavigationInterval;
         }
     }
 
@@ -328,17 +319,17 @@ public class BotController : PlayerController
         if (goalTransform == null) return;
         if (!navAgent.isActiveAndEnabled || !navAgent.isOnNavMesh) return;
 
-        if (Time.time > nextPathUpdateTime)
+        if (Time.time > nextNavigationUpdateTime)
         {
             navAgent.SetDestination(goalTransform.position);
-            nextPathUpdateTime = Time.time + updatePathInterval;
+            nextNavigationUpdateTime = Time.time + updateNavigationInterval;
         }
     }
 
     // 열린 문 우선순위 - FIFO + 내 앞 + 도달 가능 여부
     private Transform GetNextPriorityWaypointAhead()
     {
-        float zRef = transform.position.z + forwardThreshold;
+        float zRef = transform.position.z + minForwardDistance;
 
         for (int i = 0; i < openedDoorWaypoints.Count; i++)
         {
@@ -375,7 +366,7 @@ public class BotController : PlayerController
         }
 
         System.Collections.Generic.List<int> forwardIndices = new System.Collections.Generic.List<int>();
-        float zRef = transform.position.z + forwardThreshold;
+        float zRef = transform.position.z + minForwardDistance;
 
         for (int i = 0; i < waypoints.Length; i++)
         {
@@ -585,9 +576,9 @@ public class BotController : PlayerController
         isJumpQueued = true;
     }
 
-    // 길 찾기(NavMeshAgent) = 어디로 가야 하는지만 계산
+    // NavMeshAgen = 어디로 가야 하는지만 계산
     // 실제 이동/점프 물리 = PlayerController의 Rigidbody가 전부 담당
-    // 점프 구간 통과중 (진행도에 따른 포물선 점프)
+    // 점프 구간 통과중
     private void UpdateJumpLink()
     {
         if (!isTraversingLink) return;
@@ -603,30 +594,6 @@ public class BotController : PlayerController
             // 통과 완료
             CompleteJumpLink();
         }
-        // 여기서 직접 물리 처리 X
-        //else
-        //{
-        //    // 시작점에서 끝점까지 직선으로 이동한 위치
-        //    Vector3 horizontalPos = Vector3.Lerp(linkStartPos, linkEndPos, normalizedTime);
-
-        //    // 점프 높이 계산 (포물선)
-        //    float jumpHeight = 1f; // 점프 최대 높이
-        //    float verticalOffset = jumpHeight * 1f * normalizedTime * (1f - normalizedTime);
-
-        //    Vector3 targetPos = horizontalPos + Vector3.up * verticalOffset;
-        //    //Vector3 targetPos = horizontalPos;
-
-        //    // NavAgent 위치 업데이트 (수동)
-        //    navAgent.nextPosition = targetPos;
-        //    transform.position = targetPos;
-
-        //    // 진행 방향을 바라보도록 회전
-        //    Vector3 lookDir = (linkEndPos - linkStartPos).normalized;
-        //    if (lookDir != Vector3.zero)
-        //    {
-        //        transform.rotation = Quaternion.LookRotation(lookDir);
-        //    }
-        //}
     }
 
     // 점프 구간 통과 완료
@@ -734,7 +701,7 @@ public class BotController : PlayerController
         }
 
         // z 앞쪽 기준이 되는 값
-        float zRef = transform.position.z + forwardThreshold;
+        float zRef = transform.position.z + minForwardDistance;
 
         // 최종 선택될 웨이포인트
         Transform best = null;
