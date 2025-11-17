@@ -9,7 +9,7 @@ public class GoalFlag : NetworkBehaviour
         if (!IsServer) return;
 
         // 태그 및 게임상태 확인
-        if (!GameManager.instance.IsGame || !other.CompareTag("Player")) return;
+        if (!GameManager.Instance.IsGame || !other.CompareTag("Player")) return;
 
         // 플레이어 여부 확인
         if (!other.TryGetComponent<PlayerController>(out var player)) return;
@@ -18,6 +18,6 @@ public class GoalFlag : NetworkBehaviour
         string playerName = player.GetPlayerName();
 
         Debug.Log($"도착 완료!! 플레이어: {playerName}");
-        GameManager.instance.PlayerReachedGoal(playerName, player.OwnerClientId);
+        GameManager.Instance.PlayerReachedGoal(playerName, player.OwnerClientId);
     }
 }

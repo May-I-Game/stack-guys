@@ -63,7 +63,7 @@ public class PlayerInputHandler : NetworkBehaviour
         if (!IsOwner) return;
 
         // 로비/게임 중에만 입력 받기
-        if (GameManager.instance.IsLobby || GameManager.instance.IsGame)
+        if (GameManager.Instance.IsLobby || GameManager.Instance.IsGame)
         {
             // ============ PC: 기존 키보드 입력 ============ // WASD 입력 받기
             float horizontal = Input.GetAxisRaw("Horizontal"); // A, D
@@ -143,8 +143,8 @@ public class PlayerInputHandler : NetworkBehaviour
     public void OnJumpButtonPressed()
     {
         // 로비/게임 중일 때만 즉시 입력 처리
-        if (GameManager.instance != null &&
-            (GameManager.instance.IsLobby || GameManager.instance.IsGame))
+        if (GameManager.Instance != null &&
+            (GameManager.Instance.IsLobby || GameManager.Instance.IsGame))
         {
             JumpInput = true;
         }
@@ -153,8 +153,8 @@ public class PlayerInputHandler : NetworkBehaviour
     public void OnGrabButtonPressed()
     {
         // 로비/게임 중일 때만 즉시 입력 처리
-        if (GameManager.instance != null &&
-            (GameManager.instance.IsLobby || GameManager.instance.IsGame))
+        if (GameManager.Instance != null &&
+            (GameManager.Instance.IsLobby || GameManager.Instance.IsGame))
         {
             GrabInput = true;
         }

@@ -53,7 +53,7 @@ public class NetworkSpinner : NetworkBehaviour
     private void Update()
     {
         // 게임 매니저 조건 체크 (원래 코드 유지)
-        if (!(GameManager.instance && GameManager.instance.IsGame)) return;
+        if (!(GameManager.Instance && GameManager.Instance.IsGame)) return;
 
         CalculateRotation();
     }
