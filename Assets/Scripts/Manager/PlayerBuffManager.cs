@@ -49,6 +49,12 @@ public class PlayerBuffManager : NetworkBehaviour, IBuffable
     // 버프 적용
     public void ApplyBuff(BuffData data)
     {
+        // 서버 + Spawn된 상태에서만 NetworkVariable 수정
+        if (!IsServer || !IsSpawned)
+        {
+            return;
+        }
+
         //Debug.Log($"[PlayerBuffManager] ApplyBuff 호출! 타입: {data.type}, 값: {data.value}, IsServer: {IsServer}, IsSpawned: {IsSpawned}");
 
         // 같은 타입 버프 있으면 갱신
@@ -113,6 +119,9 @@ public class PlayerBuffManager : NetworkBehaviour, IBuffable
     // 버프 효과 실제로 적용
     private void ApplyBuffEffect(BuffData data)
     {
+        if (!IsServer || !IsSpawned)
+            return;
+
         switch (data.type)
         {
             // 속도 배율 설정
@@ -138,6 +147,9 @@ public class PlayerBuffManager : NetworkBehaviour, IBuffable
     // 버프 효과 제거한 뒤 원래 상태로 복구
     private void RemoveBuffEffect(BuffData data)
     {
+        if (!IsServer || !IsSpawned)
+            return;
+
         switch (data.type)
         {
             // 속도 복구
