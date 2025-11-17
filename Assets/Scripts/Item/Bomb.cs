@@ -6,7 +6,22 @@ public class Bomb : InteractiveItem
     [Header("Bomb Settings")]
     public float explosionRadius = 3f;
     public float explosionForce = 10f;
-    public GameObject explosionEffectPrefab; // 파티클 프리팹
+    public GameObject explosionEffectPrefab; // 폭발 이펙트 프리팹
+
+    [Header("Audio")]
+    public AudioSource bombAudioSource; // 폭탄 오디오 소스
+    public AudioClip throwClip; // 폭탄 던지기 사운드
+    public AudioClip explosionClip; // 폭탄 폭발 사운드
+    [Range(0f, 1f)] public float throwVolume = 0.6f; // 던지기 볼륨
+    [Range(0f, 1f)] public float explosionVolume = 0.8f; // 폭발 볼륨
+
+    public override void OnThrown()
+    {
+        base.OnThrown();
+
+        // 던지기 사운드 재생
+        PlayThrowSoundClientRpc();
+    }
 
     protected override void OnCollisionEnter(Collision collision)
     {
@@ -41,7 +56,7 @@ public class Bomb : InteractiveItem
 
     protected override void ActivateItem()
     {
-        // 1. 시각 효과 (ClientRPC로 모든 클라이언트에게 재생)
+        // 1. 시각 효과 및 사운드 (ClientRPC로 모든 클라이언트에게 재생)
         SpawnEffectClientRpc(transform.position);
 
         // 2. 범위 내 물리 효과 (서버 처리)
@@ -75,11 +90,28 @@ public class Bomb : InteractiveItem
     }
 
     [ClientRpc]
+    private void PlayThrowSoundClientRpc()
+    {
+        if (bombAudioSource != null && throwClip != null)
+        {
+            bombAudioSource.PlayOneShot(throwClip, throwVolume);
+        }
+    }
+
+    [ClientRpc]
     private void SpawnEffectClientRpc(Vector3 pos)
     {
+        // 폭발 이펙트 생성
         if (explosionEffectPrefab != null)
         {
             Instantiate(explosionEffectPrefab, pos, Quaternion.identity);
+        }
+
+        // 폭발 사운드 재생 (이펙트와 별도로 재생)
+        if (explosionClip != null)
+        {
+            // 3D 공간 사운드로 재생
+            AudioSource.PlayClipAtPoint(explosionClip, pos, explosionVolume);
         }
     }
 

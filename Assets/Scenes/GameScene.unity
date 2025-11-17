@@ -118598,7 +118598,7 @@ GameObject:
   - component: {fileID: 2069484212}
   - component: {fileID: 2069484213}
   m_Layer: 0
-  m_Name: Jump
+  m_Name: surround
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -118634,7 +118634,7 @@ AudioSource:
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -121240,6 +121240,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2115939286}
+  - component: {fileID: 2115939287}
   m_Layer: 3
   m_Name: rotate(clock)
   m_TagString: Untagged
@@ -121263,6 +121264,24 @@ Transform:
   - {fileID: 1824972071}
   m_Father: {fileID: 1232123518}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2115939287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2115939285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d67d992264c2894eb823cf83429bfd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 2069484213}
+  proximityClip: {fileID: 8300000, guid: 5d16995e2df5a764288ab2c46e5d7fa2, type: 3}
+  maxVolume: 0.7
+  triggerDistance: 5
+  maxDistance: 10
+  fadeByDistance: 1
 --- !u!1001 &2118801901
 PrefabInstance:
   m_ObjectHideFlags: 0
