@@ -68,6 +68,8 @@ GameObject:
   - component: {fileID: 6386258737349536658}
   - component: {fileID: 8964079162851683297}
   - component: {fileID: 2080325451570240587}
+  - component: {fileID: 3700501173133953596}
+  - component: {fileID: 1052413915172892336}
   m_Layer: 3
   m_Name: SM_Playground_02 1
   m_TagString: Untagged
@@ -231,6 +233,48 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.95446014, y: 0.9004307, z: 0.045877457}
   m_Center: {x: 0.704792, y: 2.5006244, z: -2.305614}
+--- !u!65 &3700501173133953596
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3378874583702896027}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.8, y: 0.8, z: 0.1}
+  m_Center: {x: 0.34, y: 1.52, z: 0}
+--- !u!65 &1052413915172892336
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3378874583702896027}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.8, y: 0.8, z: 0.1}
+  m_Center: {x: 0.34, y: 1.52, z: 0.74}
 --- !u!1 &6430752114916117228
 GameObject:
   m_ObjectHideFlags: 0
