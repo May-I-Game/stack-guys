@@ -67,6 +67,14 @@ public class PlayerController : NetworkBehaviour
     [Range(0f, 1f)] public float diveLandVoiceVolume = 0.7f; // 다이브 착지 보이스 볼륨
     [Range(0f, 1f)] public float diveLandImpactVolume = 0.8f; // 다이브 착지 충돌음 볼륨
 
+    public AudioSource buffAudioSource; // 버프 아이템 오디오 소스
+    public AudioClip buffPickupClip; // 버프 아이템 획득 사운드
+    [Range(0f, 1f)] public float buffPickupVolume = 0.7f; // 버프 아이템 획득 볼륨
+
+    public AudioSource buffLoopAudioSource; // 버프 루프 오디오 소스
+    public AudioClip buffLoopClip; // 버프 루프 사운드 (모든 버프 공통)
+    [Range(0f, 1f)] public float buffLoopVolume = 0.5f; // 버프 루프 볼륨
+
     [Header("Network Optimization")]
     [Tooltip("입력 전송 최소 간격 (초). 모바일 조이스틱 떨림 방지. 권장: 0.033~0.05")]
     public float inputSendInterval = 0.05f;  // 50ms = 20Hz
@@ -1223,9 +1231,16 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     private void PlayBuffPickupEffectClientRpc()
     {
+        // 파티클 재생
         if (buffPickupEffect != null)
         {
             buffPickupEffect.Play();
+        }
+
+        // 사운드 재생
+        if (buffAudioSource != null && buffPickupClip != null)
+        {
+            buffAudioSource.PlayOneShot(buffPickupClip, buffPickupVolume);
         }
     }
 
@@ -1254,18 +1269,21 @@ public class PlayerController : NetworkBehaviour
     private void SetSpeedBuffEffectClientRpc(bool enabled)
     {
         ToggleLoopEffect(speedBuffLoopEffect, enabled);
+        ToggleLoopSound(buffLoopClip, enabled);
     }
 
     [ClientRpc]
     private void SetJumpBuffEffectClientRpc(bool enabled)
     {
         ToggleLoopEffect(jumpBuffLoopEffect, enabled);
+        ToggleLoopSound(buffLoopClip, enabled);
     }
 
     [ClientRpc]
     private void SetInvincibleBuffEffectClientRpc(bool enabled)
     {
         ToggleLoopEffect(invincibleBuffLoopEffect, enabled);
+        ToggleLoopSound(buffLoopClip, enabled);
     }
 
     // 버프 시스템 공통 토글 함수
@@ -1281,6 +1299,33 @@ public class PlayerController : NetworkBehaviour
         else
         {
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+    }
+
+    // 버프 루프 사운드 토글 함수
+    private void ToggleLoopSound(AudioClip clip, bool enabled)
+    {
+        if (buffLoopAudioSource == null || clip == null) return;
+
+        if (enabled)
+        {
+            // 루프 사운드 재생
+            if (!buffLoopAudioSource.isPlaying || buffLoopAudioSource.clip != clip)
+            {
+                buffLoopAudioSource.clip = clip;
+                buffLoopAudioSource.volume = buffLoopVolume;
+                buffLoopAudioSource.loop = true;
+                buffLoopAudioSource.Play();
+            }
+        }
+        else
+        {
+            // 루프 사운드 중지
+            if (buffLoopAudioSource.isPlaying && buffLoopAudioSource.clip == clip)
+            {
+                buffLoopAudioSource.Stop();
+                buffLoopAudioSource.clip = null;
+            }
         }
     }
 

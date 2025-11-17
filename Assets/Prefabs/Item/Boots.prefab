@@ -153,12 +153,12 @@ MonoBehaviour:
   SyncPositionX: 1
   SyncPositionY: 1
   SyncPositionZ: 1
-  SyncRotAngleX: 1
+  SyncRotAngleX: 0
   SyncRotAngleY: 1
-  SyncRotAngleZ: 1
-  SyncScaleX: 1
-  SyncScaleY: 1
-  SyncScaleZ: 1
+  SyncRotAngleZ: 0
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
   PositionThreshold: 0.001
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01
@@ -185,7 +185,6 @@ MonoBehaviour:
   triggerType: 0
   buffDuration: 5
   buffValue: 2
-  buffEffectPrefab: {fileID: 0}
 --- !u!65 &7644117823275045194
 BoxCollider:
   m_ObjectHideFlags: 0
