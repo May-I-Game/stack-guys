@@ -22,12 +22,12 @@ public class PressTrap : MonoBehaviour
 
     private IEnumerator RandomPressLoop()
     {
-        while (GameManager.instance.IsLobby)
+        while (GameManager.Instance.IsLobby)
         {
             yield return null;
         }
 
-        while (GameManager.instance.IsGame)
+        while (GameManager.Instance.IsGame)
         {
             float waitTime = Random.Range(randomDelayRange.x, randomDelayRange.y);
             yield return new WaitForSeconds(waitTime);

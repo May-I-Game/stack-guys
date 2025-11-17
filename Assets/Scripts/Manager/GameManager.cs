@@ -76,14 +76,14 @@ public class GameManager : NetworkBehaviour
     private NetworkVariable<bool> isEndCountdownActive = new NetworkVariable<bool>(false);
     private NetworkVariable<bool> isGameReadyCountdownActive = new NetworkVariable<bool>(false);
 
-    public static GameManager instance;
+    public static GameManager Instance;
 
     private void Awake()
     {
         // 싱글톤 패턴
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
         }
         else
         {
