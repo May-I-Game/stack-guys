@@ -22,7 +22,7 @@ public class ItemSpawner : NetworkBehaviour
     public float spawnHeightOffset = 0.3f;
 
     // 스폰 간격 (초)
-    public float spawnInterval = 10f;
+    public float spawnInterval = 5f;
 
     // 스폰 위치 Transform
     public Transform spawnPoint;
@@ -41,7 +41,7 @@ public class ItemSpawner : NetworkBehaviour
         // 서버에서만 스폰 처리
         if (!IsServer) return;
 
-        // 스폰 시간이 되었고, 현재 아이템이 없을 때
+        // 스폰 시간이 되었고 현재 아이템이 없을 때
         if (Time.time >= nextSpawnTime && currentItem == null)
         {
             SpawnRandomItem();
