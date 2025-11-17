@@ -24,8 +24,6 @@ public class JumpBoostItem : BuffItem
 
         // 버프 적용 (IBuffable 인터페이스 사용)
         buffManager.ApplyBuff(buffData);
-
-        //Debug.Log($"[JumpBoostItem] {player.gameObject.name}에게 점프 버프 적용 완료! 배율: {buffValue}, 지속시간: {buffDuration}초");
     }
 
     [ClientRpc]
