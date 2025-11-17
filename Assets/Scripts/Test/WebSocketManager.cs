@@ -104,12 +104,30 @@ public class WebSocketManager : MonoBehaviour
     {
         protected override void OnOpen()
         {
+            // 🔥 최대 인원 체크 (100명 제한) - WebSocket 연결 단계에서 먼저 차단
+            const int MAX_PLAYERS = 100;
+            int currentPlayers = 0;
+
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+            {
+                currentPlayers = NetworkManager.Singleton.ConnectedClients.Count + Instance.ConnectedBotCount;
+            }
+
+            if (currentPlayers >= MAX_PLAYERS)
+            {
+                Debug.LogWarning($"⚠️ [WebSocket] 서버 정원 초과! 현재: {currentPlayers}명 / 최대: {MAX_PLAYERS}명 → WebSocket 연결 거부");
+                Context.WebSocket.Close(CloseStatusCode.Normal, "Server is full");
+                return;
+            }
+
             // ★ 중요: 큐에 넣어야 메인 스레드가 봇을 만듭니다.
             eventQueue.Enqueue(new ServerEvent
             {
                 type = EventType.Connect,
                 sessionId = this.ID
             });
+
+            Debug.Log($"✅ [WebSocket] Bot connected ({currentPlayers + 1}/{MAX_PLAYERS})");
         }
 
         protected override void OnMessage(MessageEventArgs e)
@@ -169,6 +187,16 @@ public class WebSocketManager : MonoBehaviour
     {
         if (connectedBots.ContainsKey(sessionId)) return;
 
+        // 🔥 최대 인원 체크 (100명 제한) - 봇 스폰 직전 최종 확인
+        const int MAX_PLAYERS = 100;
+        int currentPlayers = NetworkManager.Singleton.ConnectedClients.Count + ConnectedBotCount;
+
+        if (currentPlayers >= MAX_PLAYERS)
+        {
+            Debug.LogWarning($"⚠️ [WebSocket] 봇 스폰 거부! 현재: {currentPlayers}명 / 최대: {MAX_PLAYERS}명");
+            return;
+        }
+
         Vector3 spawnPos = new Vector3(UnityEngine.Random.Range(-545f, -535f), 1f, UnityEngine.Random.Range(10f, 15f));
         GameObject bot = Instantiate(playerPref, spawnPos, Quaternion.identity);
         bot.GetComponent<NetworkObject>().Spawn();
@@ -179,6 +207,7 @@ public class WebSocketManager : MonoBehaviour
         }
 
         connectedBots.Add(sessionId, bot.GetComponent<ConsoleBotController>());
+        Debug.Log($"✅ [WebSocket] Bot spawned ({currentPlayers + 1}/{MAX_PLAYERS})");
     }
 
     private void DestroyBot(string sessionId)
