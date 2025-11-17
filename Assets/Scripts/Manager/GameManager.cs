@@ -59,11 +59,6 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private Transform[] lobbySpawnPoints;
     [SerializeField] private Transform[] gameSpawnPoints;
 
-    [Header("Podium Positions")]
-    [SerializeField] private Transform firstPlacePodium;   // 1등 시상대 위치
-    [SerializeField] private Transform secondPlacePodium;  // 2등 시상대 위치
-    [SerializeField] private Transform thirdPlacePodium;   // 3등 시상대 위치
-
     [Header("Timeline")]
     [SerializeField] private PlayableDirector timeline;
 
@@ -80,9 +75,6 @@ public class GameManager : NetworkBehaviour
     private NetworkVariable<GameState> currentGameState = new NetworkVariable<GameState>(GameState.Lobby);
     private NetworkVariable<float> remainingTime = new NetworkVariable<float>(0f);
     private NetworkList<FixedString32Bytes> rankings;
-
-    // 시상대용 - 플레이어 이름과 ClientId 매핑 (서버에서만 사용)
-    private Dictionary<string, ulong> playerNameToClientId = new Dictionary<string, ulong>();
 
     //시네마틱 실행용 동기화 시간 변수
     private NetworkVariable<double> timelineStartTime = new NetworkVariable<double>(0);
@@ -313,11 +305,6 @@ public class GameManager : NetworkBehaviour
             
 
         rankings.Add(playerName);              // NetworkList는 서버에서만 쓰기
-        // 시상대용 매핑 저장
-        if (!playerNameToClientId.ContainsKey(playerName))
-        {
-            playerNameToClientId[playerName] = clientId;
-        }
 
         if (rankings.Count == 1 && !isCountingDown)
         {
@@ -436,8 +423,6 @@ public class GameManager : NetworkBehaviour
 
         currentGameState.Value = GameState.Ended;
 
-        // 시상대에 1, 2, 3등 캐릭터 배치
-        MovePlayersToPodium();
 
         // 매치메이킹 서버에 게임 종료 신호 전송
         NetworkGameManager networkManager = FindObjectOfType<NetworkGameManager>();
@@ -450,41 +435,6 @@ public class GameManager : NetworkBehaviour
         ShowResultsClientRpc();
     }
 
-    // 시상대에 1, 2, 3등 캐릭터를 이동시키는 함수
-    private void MovePlayersToPodium()
-    {
-        if (!IsServer) return;
-
-        // 1등 배치
-        if (rankings.Count > 0 && firstPlacePodium != null)
-        {
-            string firstName = rankings[0].ToString();
-            if (playerNameToClientId.ContainsKey(firstName))
-            {
-                MovePlayerToPodiumPosition(playerNameToClientId[firstName], firstPlacePodium);
-            }
-        }
-
-        // 2등 배치
-        if (rankings.Count > 1 && secondPlacePodium != null)
-        {
-            string secondName = rankings[1].ToString();
-            if (playerNameToClientId.ContainsKey(secondName))
-            {
-                MovePlayerToPodiumPosition(playerNameToClientId[secondName], secondPlacePodium);
-            }
-        }
-
-        // 3등 배치
-        if (rankings.Count > 2 && thirdPlacePodium != null)
-        {
-            string thirdName = rankings[2].ToString();
-            if (playerNameToClientId.ContainsKey(thirdName))
-            {
-                MovePlayerToPodiumPosition(playerNameToClientId[thirdName], thirdPlacePodium);
-            }
-        }
-    }
 
     private void MovePlayerToPodiumPosition(ulong clientId, Transform podiumTransform)
     {
@@ -502,18 +452,6 @@ public class GameManager : NetworkBehaviour
         }
 
         PlayerController player = playerObject.GetComponent<PlayerController>();
-        if (player != null)
-        {
-            // 입력 비활성화 및 상태 초기화
-            player.inputEnabled.Value = false;
-            player.ReleaseGrab();
-            player.ForceClearInputOnServer();
-
-            // 시상대 위치로 이동
-            player.DoRespawn(podiumTransform.position, podiumTransform.rotation);
-
-            Debug.Log($"[Podium] 플레이어를 시상대로 이동시켰습니다.");
-        }
     }
 
     private void OnGameReadyCountdownChanged(bool previous, bool current)
