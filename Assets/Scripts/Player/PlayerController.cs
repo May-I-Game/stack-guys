@@ -43,6 +43,10 @@ public class PlayerController : NetworkBehaviour
     public ParticleSystem speedBuffLoopEffect;       // 속도 버프 루프
     public ParticleSystem invincibleBuffLoopEffect;  // 무적 버프 루프
 
+    // 버프 적용 배율 (봇이면 1로 처리)
+    protected float SpeedMul => buffManager != null ? buffManager.SpeedMultiplier : 1f;
+    protected float JumpMul => buffManager != null ? buffManager.JumpMultiplier : 1f;
+
     [Header("Network Optimization")]
     [Tooltip("입력 전송 최소 간격 (초). 모바일 조이스틱 떨림 방지. 권장: 0.033~0.05")]
     public float inputSendInterval = 0.05f;  // 50ms = 20Hz
@@ -66,7 +70,7 @@ public class PlayerController : NetworkBehaviour
     protected Rigidbody rb;
     private CapsuleCollider col;
     private PlayerInputHandler inputHandler;
-    protected PlayerBuffManager buffManager;// 버프 관리자
+    protected PlayerBuffManager buffManager;    // 버프 관리자
 
     protected Vector2 moveDir = Vector2.zero;
     private Vector2 lastSentInput = Vector2.zero;  // 실제로 서버에 전송한 마지막 입력
@@ -453,7 +457,7 @@ public class PlayerController : NetworkBehaviour
             ServerPerformanceProfiler.Start("PlayerController.Move");
 
             // 이동 버프 적용
-            float currentSpeed = walkSpeed * buffManager.SpeedMultiplier;
+            float currentSpeed = walkSpeed * SpeedMul;
 
             // 이동
             Vector3 movement = new Vector3(
@@ -509,7 +513,7 @@ public class PlayerController : NetworkBehaviour
             if (netIsGrounded.Value)
             {
                 // 점프 버프 적용
-                float currentJumpForce = jumpForce * buffManager.JumpMultiplier;
+                float currentJumpForce = jumpForce * JumpMul;
 
                 // 봇일때 점프
                 if (this is BotController bot)
