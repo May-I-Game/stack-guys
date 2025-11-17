@@ -44,6 +44,39 @@ public class PlayerController : NetworkBehaviour
     public ParticleSystem speedBuffLoopEffect;       // 속도 버프 루프
     public ParticleSystem invincibleBuffLoopEffect;  // 무적 버프 루프
 
+    // 버프 적용 배율 (봇이면 1로 처리)
+    protected float SpeedMul => buffManager != null ? buffManager.SpeedMultiplier : 1f;
+    protected float JumpMul => buffManager != null ? buffManager.JumpMultiplier : 1f;
+
+    [Header("Audio")]
+    public AudioSource footstepAudioSource; // 발걸음 오디오 소스
+    public AudioClip footstepClip; // 발걸음 사운드 클립
+    [Range(0f, 1f)] public float footstepVolume = 0.5f; // 발걸음 볼륨
+    public float footstepInterval = 0.4f; // 발걸음 재생 간격 (초)
+
+    public AudioSource jumpAudioSource; // 점프 오디오 소스
+    public AudioClip jumpVoiceClip; // 점프 캐릭터 보이스 클립
+    public AudioClip jumpEffectClip; // 점프 효과음 클립
+    [Range(0f, 1f)] public float jumpVoiceVolume = 0.7f; // 점프 보이스 볼륨
+    [Range(0f, 1f)] public float jumpEffectVolume = 0.5f; // 점프 효과음 볼륨
+
+    public AudioSource diveAudioSource; // 다이브 오디오 소스
+    public AudioClip diveStartClip; // 다이브 시작 효과음
+    public AudioClip diveLandVoiceClip; // 다이브 착지 캐릭터 보이스
+    public AudioClip diveLandImpactClip; // 다이브 착지 바닥 충돌음
+    [Range(0f, 1f)] public float diveStartVolume = 0.6f; // 다이브 시작 볼륨
+    [Range(0f, 1f)] public float diveLandVoiceVolume = 0.7f; // 다이브 착지 보이스 볼륨
+    [Range(0f, 1f)] public float diveLandImpactVolume = 0.8f; // 다이브 착지 충돌음 볼륨
+
+    public AudioSource buffAudioSource; // 버프 아이템 오디오 소스
+    public AudioClip buffPickupClip; // 버프 아이템 획득 사운드
+    [Range(0f, 1f)] public float buffPickupVolume = 0.7f; // 버프 아이템 획득 볼륨
+
+    public AudioSource buffLoopAudioSource; // 버프 루프 오디오 소스
+    public AudioClip buffLoopClip; // 버프 루프 사운드 (속도/점프 버프용)
+    public AudioClip invincibleBuffLoopClip; // 무적 버프 루프 사운드
+    [Range(0f, 1f)] public float buffLoopVolume = 0.5f; // 버프 루프 볼륨
+
     [Header("Network Optimization")]
     [Tooltip("입력 전송 최소 간격 (초). 모바일 조이스틱 떨림 방지. 권장: 0.033~0.05")]
     public float inputSendInterval = 0.05f;  // 50ms = 20Hz
@@ -67,7 +100,7 @@ public class PlayerController : NetworkBehaviour
     protected Rigidbody rb;
     private CapsuleCollider col;
     private PlayerInputHandler inputHandler;
-    protected PlayerBuffManager buffManager;// 버프 관리자
+    protected PlayerBuffManager buffManager;    // 버프 관리자
 
     protected Vector2 moveDir = Vector2.zero;
     private Vector2 lastSentInput = Vector2.zero;  // 실제로 서버에 전송한 마지막 입력
@@ -92,6 +125,9 @@ public class PlayerController : NetworkBehaviour
 
     // 걷기 파티클 재생 상태 추적
     private bool isWalkParticlePlaying = false;
+
+    // 발걸음 사운드 타이머
+    private float footstepTimer = 0f;
 
     // 잡기 관련 변수
     protected NetworkVariable<bool> netIsGrabbed = new NetworkVariable<bool>(false); // 잡혀있는지
@@ -197,12 +233,7 @@ public class PlayerController : NetworkBehaviour
         inputHandler = GetComponent<PlayerInputHandler>();
         respawnManager = FindFirstObjectByType<RespawnManager>();
 
-        // 버프 매니저 초기화
         buffManager = GetComponent<PlayerBuffManager>();
-        if (buffManager == null)
-        {
-            buffManager = gameObject.AddComponent<PlayerBuffManager>();
-        }
 
         // GC 최적화: WaitForSeconds 사전 생성
         botRespawnWait = new WaitForSeconds(2.267f);
@@ -210,6 +241,12 @@ public class PlayerController : NetworkBehaviour
         // Animator가 설정되지 않았다면 자동으로 찾기
         animator = animator != null ? animator : GetComponent<Animator>();
         animator = animator != null ? animator : GetComponentInChildren<Animator>();
+
+        // AudioSource 초기 설정 (Owner만 설정)
+        if (IsOwner && footstepAudioSource != null)
+        {
+            footstepAudioSource.playOnAwake = false;
+        }
     }
 
     protected virtual void Update()
@@ -264,6 +301,9 @@ public class PlayerController : NetworkBehaviour
         // 점프 입력
         if (inputHandler.JumpInput)
         {
+            // 점프 사운드 즉시 로컬 재생 (지연 방지)
+            PlayJumpSoundLocal();
+
             JumpPlayerServerRpc();
             inputHandler.ResetJumpInput();
         }
@@ -277,6 +317,8 @@ public class PlayerController : NetworkBehaviour
 
         InterpolateMovement();
         UpdateAnimation();
+        // 파티클 상태가 업데이트된 후 발걸음 사운드 재생
+        UpdateFootstepSoundLocal();
     }
 
     protected virtual void FixedUpdate()
@@ -461,7 +503,7 @@ public class PlayerController : NetworkBehaviour
             ServerPerformanceProfiler.Start("PlayerController.Move");
 
             // 이동 버프 적용
-            float currentSpeed = walkSpeed * buffManager.SpeedMultiplier;
+            float currentSpeed = walkSpeed * SpeedMul;
 
             // 이동
             Vector3 movement = new Vector3(
@@ -517,7 +559,7 @@ public class PlayerController : NetworkBehaviour
             if (netIsGrounded.Value)
             {
                 // 점프 버프 적용
-                float currentJumpForce = jumpForce * buffManager.JumpMultiplier;
+                float currentJumpForce = jumpForce * JumpMul;
 
                 // 봇일때 점프
                 if (this is BotController bot)
@@ -531,6 +573,8 @@ public class PlayerController : NetworkBehaviour
                 }
                 // 점프 파티클 재생
                 PlayJumpParticle();
+                // 점프 사운드 재생
+                PlayJumpSound();
 
                 netIsGrounded.Value = false; // 점프 시 강제로 false 설정
                 canDive = true; // 점프 후 다이브 가능
@@ -555,6 +599,15 @@ public class PlayerController : NetworkBehaviour
         rb.linearVelocity = Vector3.zero; // 기존 속도 초기화
         rb.AddForce(diveDirection, ForceMode.Impulse);
 
+        // 다이브 시작 사운드 즉시 로컬 재생 (Owner만, 지연 방지)
+        if (IsOwner)
+        {
+            PlayDiveStartSoundLocal();
+        }
+
+        // 다이브 시작 사운드 재생 (다른 플레이어들을 위해)
+        PlayDiveStartSound();
+
         // 다이브 애니메이션 실행 (공중)
         SetTriggerClientRpc("Dive");
     }
@@ -566,8 +619,15 @@ public class PlayerController : NetworkBehaviour
 
         isDiving = false;
         isDiveGrounded = true;
+
+        // 이동 입력 초기화 (걷기 파티클 즉시 재생 방지)
+        moveDir = Vector2.zero;
+        netIsMove.Value = false;
+
         // 다이브 착지 파티클 재생
         PlayDiveLandParticle();
+        // 다이브 착지 사운드 재생
+        PlayDiveLandSound();
 
         Debug.Log("[다이브 착지] 착지 애니메이션 재생, 조작 불가");
         SetTriggerClientRpc("DiveLand");
@@ -1083,6 +1143,106 @@ public class PlayerController : NetworkBehaviour
             jumpParticle.Play();
         }
     }
+
+    // 점프 사운드 로컬 재생 (Owner 전용, 즉시 재생)
+    private void PlayJumpSoundLocal()
+    {
+        if (jumpAudioSource != null)
+        {
+            // 캐릭터 보이스 재생
+            if (jumpVoiceClip != null)
+            {
+                jumpAudioSource.PlayOneShot(jumpVoiceClip, jumpVoiceVolume);
+            }
+
+            // 효과음 재생
+            if (jumpEffectClip != null)
+            {
+                jumpAudioSource.PlayOneShot(jumpEffectClip, jumpEffectVolume);
+            }
+        }
+    }
+
+    // 점프 사운드 재생 (서버에서 호출, 다른 클라이언트에서 재생)
+    private void PlayJumpSound()
+    {
+        PlayJumpSoundClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayJumpSoundClientRpc()
+    {
+        // Owner는 이미 로컬에서 재생했으므로 스킵
+        if (IsOwner) return;
+
+        if (jumpAudioSource != null)
+        {
+            // 캐릭터 보이스 재생
+            if (jumpVoiceClip != null)
+            {
+                jumpAudioSource.PlayOneShot(jumpVoiceClip, jumpVoiceVolume);
+            }
+
+            // 효과음 재생
+            if (jumpEffectClip != null)
+            {
+                jumpAudioSource.PlayOneShot(jumpEffectClip, jumpEffectVolume);
+            }
+        }
+    }
+
+    // 다이브 시작 사운드 로컬 재생 (Owner 전용, 즉시 재생)
+    private void PlayDiveStartSoundLocal()
+    {
+        if (diveAudioSource != null && diveStartClip != null)
+        {
+            diveAudioSource.PlayOneShot(diveStartClip, diveStartVolume);
+        }
+    }
+
+    // 다이브 시작 사운드 재생 (서버에서 호출, 다른 클라이언트에서 재생)
+    private void PlayDiveStartSound()
+    {
+        PlayDiveStartSoundClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayDiveStartSoundClientRpc()
+    {
+        // Owner는 이미 로컬에서 재생했으므로 스킵
+        if (IsOwner) return;
+
+        if (diveAudioSource != null && diveStartClip != null)
+        {
+            diveAudioSource.PlayOneShot(diveStartClip, diveStartVolume);
+        }
+    }
+
+    // 다이브 착지 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
+    private void PlayDiveLandSound()
+    {
+        PlayDiveLandSoundClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayDiveLandSoundClientRpc()
+    {
+        if (diveAudioSource != null)
+        {
+            // 캐릭터 보이스 재생
+            if (diveLandVoiceClip != null)
+            {
+                diveAudioSource.PlayOneShot(diveLandVoiceClip, diveLandVoiceVolume);
+            }
+
+            // 바닥 충돌음 재생
+            if (diveLandImpactClip != null)
+            {
+                diveAudioSource.PlayOneShot(diveLandImpactClip, diveLandImpactVolume);
+            }
+        }
+    }
+
     // 다이브 착지 파티클 재생 (서버에서 호출, 모든 클라이언트에서 재생)
     private void PlayDiveLandParticle()
     {
@@ -1139,9 +1299,16 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     private void PlayBuffPickupEffectClientRpc()
     {
+        // 파티클 재생
         if (buffPickupEffect != null)
         {
             buffPickupEffect.Play();
+        }
+
+        // 사운드 재생
+        if (buffAudioSource != null && buffPickupClip != null)
+        {
+            buffAudioSource.PlayOneShot(buffPickupClip, buffPickupVolume);
         }
     }
 
@@ -1170,18 +1337,21 @@ public class PlayerController : NetworkBehaviour
     private void SetSpeedBuffEffectClientRpc(bool enabled)
     {
         ToggleLoopEffect(speedBuffLoopEffect, enabled);
+        ToggleLoopSound(buffLoopClip, enabled);
     }
 
     [ClientRpc]
     private void SetJumpBuffEffectClientRpc(bool enabled)
     {
         ToggleLoopEffect(jumpBuffLoopEffect, enabled);
+        ToggleLoopSound(buffLoopClip, enabled);
     }
 
     [ClientRpc]
     private void SetInvincibleBuffEffectClientRpc(bool enabled)
     {
         ToggleLoopEffect(invincibleBuffLoopEffect, enabled);
+        ToggleLoopSound(invincibleBuffLoopClip, enabled);
     }
 
     // 버프 시스템 공통 토글 함수
@@ -1197,6 +1367,57 @@ public class PlayerController : NetworkBehaviour
         else
         {
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+    }
+
+    // 버프 루프 사운드 토글 함수
+    private void ToggleLoopSound(AudioClip clip, bool enabled)
+    {
+        if (buffLoopAudioSource == null || clip == null) return;
+
+        if (enabled)
+        {
+            // 루프 사운드 재생
+            if (!buffLoopAudioSource.isPlaying || buffLoopAudioSource.clip != clip)
+            {
+                buffLoopAudioSource.clip = clip;
+                buffLoopAudioSource.volume = buffLoopVolume;
+                buffLoopAudioSource.loop = true;
+                buffLoopAudioSource.Play();
+            }
+        }
+        else
+        {
+            // 루프 사운드 중지
+            if (buffLoopAudioSource.isPlaying && buffLoopAudioSource.clip == clip)
+            {
+                buffLoopAudioSource.Stop();
+                buffLoopAudioSource.clip = null;
+            }
+        }
+    }
+
+    // 발걸음 사운드 업데이트 (로컬 클라이언트에서만 호출)
+    private void UpdateFootstepSoundLocal()
+    {
+        if (footstepAudioSource == null || footstepClip == null) return;
+
+        // 파티클이 재생 중일 때만 발걸음 소리 재생
+        if (isWalkParticlePlaying)
+        {
+            footstepTimer += Time.deltaTime;
+
+            // 타이머가 간격을 넘으면 발걸음 소리 재생
+            if (footstepTimer >= footstepInterval)
+            {
+                footstepAudioSource.PlayOneShot(footstepClip, footstepVolume);
+                footstepTimer = 0f; // 타이머 리셋
+            }
+        }
+        else
+        {
+            // 걷지 않으면 타이머 리셋
+            footstepTimer = 0.3f;
         }
     }
     #endregion

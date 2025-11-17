@@ -147,7 +147,7 @@ public class PlayerBuffManager : NetworkBehaviour, IBuffable
                 //Debug.Log($"[PlayerBuffManager] 점프력 배율 설정: {netJumpMultiplier.Value}");
                 break;
 
-            // 무적 상태 해제
+            // 무적 상태 설정
             case BuffType.Invincibility:
                 netIsInvincible.Value = true;
                 if (owner != null)
