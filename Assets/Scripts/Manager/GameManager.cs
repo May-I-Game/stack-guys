@@ -33,7 +33,13 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private GameObject LobbyUI;
     [SerializeField] private GameObject gameUI;
 
-    [Header("Settings")]
+    [Header("Options Button")]
+    [SerializeField] private Button optionsButton;
+    [SerializeField] private Button closeOptionsButton;
+    [SerializeField] private GameObject optionsPanel;   // 옵션창 (Panel)
+    [SerializeField] private GameObject Options;
+
+[Header("Settings")]
     [SerializeField] private float startCountdownTime = 5f;
     [SerializeField] private float endCountdownTime = 10f;
     [SerializeField] private string mainSceneName = "Login";
@@ -95,7 +101,12 @@ public class GameManager : NetworkBehaviour
         // 버튼 이벤트 연결
         if (mainButton != null)
             mainButton.onClick.AddListener(GoToMain);
+        //옵션 버튼 연결
+        if (closeOptionsButton != null)
+            closeOptionsButton.onClick.AddListener(OnClickCloseOptions);
 
+        if (optionsButton != null)
+            optionsButton.onClick.AddListener(OnClickOptionsButton);
         // 커서 관리
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
@@ -483,7 +494,14 @@ public class GameManager : NetworkBehaviour
         {
             gameUI.SetActive(false);
         }
-        // 결과 화면 표시
+        if (optionsPanel != null)
+        {
+            optionsPanel.SetActive(false);
+        }
+        if (Options != null)
+        {
+            Options.SetActive(false);
+        }
         if (resultPanel != null)
         {
             resultPanel.SetActive(true);
@@ -523,7 +541,22 @@ public class GameManager : NetworkBehaviour
         {
             gameUI.gameObject.SetActive(true);
         }
+        if (optionsPanel != null)
+        {
+            optionsPanel.SetActive(false);
+        }
+    }
 
+    public void OnClickOptionsButton()
+    {
+        if (optionsPanel != null)
+            optionsPanel.SetActive(true);
+    }
+
+    public void OnClickCloseOptions()
+    {
+        if (optionsPanel != null)
+            optionsPanel.SetActive(false);
     }
 
     // 서버에서 모든 플레이어의 입력을 차단하고 상태 초기화
@@ -680,6 +713,7 @@ public class GameManager : NetworkBehaviour
         if (PingCount != null) PingCount.SetActive(isActive);
         if (LobbyUI != null) LobbyUI.SetActive(false); // 로비는 항상 끔
         if (gameUI != null) gameUI.SetActive(isActive);
+        if (Options != null) Options.SetActive(isActive);
     }
 
     private void OnTimelineFinished(PlayableDirector director)
