@@ -992,20 +992,32 @@ public class PlayerController : NetworkBehaviour
             rb.angularVelocity = Vector3.zero;
         }
 
-        Vector3 delta = transform.position - pos;
+        Vector3 delta = pos - transform.position;
 
         transform.position = pos;
         transform.rotation = rot;
 
-        CamWarpClientRpc(delta);
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { OwnerClientId }
+            }
+        };
+
+        CamWarpClientRpc(delta, clientRpcParams);
 
         ResetPlayerState();
     }
 
     [ClientRpc]
-    private void CamWarpClientRpc(Vector3 delta)
+    private void CamWarpClientRpc(Vector3 delta, ClientRpcParams clientRpcParams = default)
     {
         cam.OnTargetObjectWarped(this.transform, delta);
+        cam.ForceCameraPosition(
+            cam.transform.position + delta,
+            cam.transform.rotation
+        );
     }
 
     private void ResetPlayerState()

@@ -200,7 +200,7 @@ GameObject:
   - component: {fileID: 4846523436901864715}
   - component: {fileID: 839170452935536650}
   - component: {fileID: 6940478144070636885}
-  - component: {fileID: 3250961361653112875}
+  - component: {fileID: 183554141278587033}
   - component: {fileID: 7852736242742384866}
   m_Layer: 6
   m_Name: Canvas
@@ -275,7 +275,7 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 1
---- !u!114 &3250961361653112875
+--- !u!114 &183554141278587033
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1127,7 +1127,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1649,6 +1649,10 @@ MonoBehaviour:
   jumpParticle: {fileID: 1848845334207585020}
   diveLandParticle: {fileID: 1758183842164637633}
   respawnParticle: {fileID: 703512417872782416}
+  buffPickupEffect: {fileID: 0}
+  jumpBuffLoopEffect: {fileID: 0}
+  speedBuffLoopEffect: {fileID: 0}
+  invincibleBuffLoopEffect: {fileID: 0}
   inputSendInterval: 0.05
   inputDeltaThreshold: 0.1
   speedThreshold: 0.5

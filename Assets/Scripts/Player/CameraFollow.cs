@@ -140,7 +140,7 @@ public class CameraFollow : MonoBehaviour
                 // 드래그 시작 조건: 할당된 터치 없음 & "상단 영역" & (옵션) UI 위 아님
                 if (cameraTouchId == -1 && IsTouchInTopRegion(touch.position))
                 {
-                    if (!ignoreUIOnStart || !IsPointerOverUI())
+                    if (!ignoreUIOnStart || !IsPointerOverUI(touch.fingerId))
                     {
                         cameraTouchId = touch.fingerId;
                         dragActive = true;
@@ -239,6 +239,20 @@ public class CameraFollow : MonoBehaviour
                && screenPosition.y <= Screen.height
                && screenPosition.x >= 0
                && screenPosition.x <= Screen.width;
+    }
+
+    // 상단 70%에 HUD/버튼/슬라이더 같은 UI 있으면 드래그 무시
+    bool IsPointerOverUI(int touchId = -1)
+    {
+        if (EventSystem.current == null) return false;
+
+        // 터치 ID가 있으면 해당 터치로 체크
+        if (touchId >= 0)
+        {
+            return EventSystem.current.IsPointerOverGameObject(touchId);
+        }
+        // 마우스 체크
+        return EventSystem.current.IsPointerOverGameObject();
     }
 
     // 현재 yaw를 목표 yaw로 부드럽게 감쇠 보간
@@ -344,12 +358,5 @@ public class CameraFollow : MonoBehaviour
             currentYaw = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
             smoothYaw = currentYaw;
         }
-    }
-
-    // 상단 70%에 HUD/버튼/슬라이더 같은 UI 있으면 드래그 무시
-    bool IsPointerOverUI()
-    {
-        if (EventSystem.current == null) return false;
-        return EventSystem.current.IsPointerOverGameObject();
     }
 }
