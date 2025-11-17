@@ -2,7 +2,6 @@ using UnityEngine;
 using Unity.Netcode;
 using System.Collections;
 using System.Collections.Generic;
-using Microsoft.IdentityModel.Tokens;
 
 // 버프 관리 전담 매니저
 public class PlayerBuffManager : NetworkBehaviour, IBuffable
