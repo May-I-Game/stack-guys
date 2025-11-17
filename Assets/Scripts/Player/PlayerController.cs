@@ -37,6 +37,26 @@ public class PlayerController : NetworkBehaviour
     public ParticleSystem diveLandParticle; // 다이브 착지 파티클
     public ParticleSystem respawnParticle; // 리스폰 파티클
 
+    [Header("Audio")]
+    public AudioSource footstepAudioSource; // 발걸음 오디오 소스
+    public AudioClip footstepClip; // 발걸음 사운드 클립
+    [Range(0f, 1f)] public float footstepVolume = 0.5f; // 발걸음 볼륨
+    public float footstepInterval = 0.4f; // 발걸음 재생 간격 (초)
+
+    public AudioSource jumpAudioSource; // 점프 오디오 소스
+    public AudioClip jumpVoiceClip; // 점프 캐릭터 보이스 클립
+    public AudioClip jumpEffectClip; // 점프 효과음 클립
+    [Range(0f, 1f)] public float jumpVoiceVolume = 0.7f; // 점프 보이스 볼륨
+    [Range(0f, 1f)] public float jumpEffectVolume = 0.5f; // 점프 효과음 볼륨
+
+    public AudioSource diveAudioSource; // 다이브 오디오 소스
+    public AudioClip diveStartClip; // 다이브 시작 효과음
+    public AudioClip diveLandVoiceClip; // 다이브 착지 캐릭터 보이스
+    public AudioClip diveLandImpactClip; // 다이브 착지 바닥 충돌음
+    [Range(0f, 1f)] public float diveStartVolume = 0.6f; // 다이브 시작 볼륨
+    [Range(0f, 1f)] public float diveLandVoiceVolume = 0.7f; // 다이브 착지 보이스 볼륨
+    [Range(0f, 1f)] public float diveLandImpactVolume = 0.8f; // 다이브 착지 충돌음 볼륨
+
     [Header("Network Optimization")]
     [Tooltip("입력 전송 최소 간격 (초). 모바일 조이스틱 떨림 방지. 권장: 0.033~0.05")]
     public float inputSendInterval = 0.05f;  // 50ms = 20Hz
@@ -85,6 +105,9 @@ public class PlayerController : NetworkBehaviour
 
     // 걷기 파티클 재생 상태 추적
     private bool isWalkParticlePlaying = false;
+
+    // 발걸음 사운드 타이머
+    private float footstepTimer = 0f;
 
     // 잡기 관련 변수
     protected NetworkVariable<bool> netIsGrabbed = new NetworkVariable<bool>(false); // 잡혀있는지
@@ -201,6 +224,12 @@ public class PlayerController : NetworkBehaviour
         // Animator가 설정되지 않았다면 자동으로 찾기
         animator = animator != null ? animator : GetComponent<Animator>();
         animator = animator != null ? animator : GetComponentInChildren<Animator>();
+
+        // AudioSource 초기 설정 (Owner만 설정)
+        if (IsOwner && footstepAudioSource != null)
+        {
+            footstepAudioSource.playOnAwake = false;
+        }
     }
 
     protected virtual void Update()
@@ -268,6 +297,8 @@ public class PlayerController : NetworkBehaviour
 
         InterpolateMovement();
         UpdateAnimation();
+        // 파티클 상태가 업데이트된 후 발걸음 사운드 재생
+        UpdateFootstepSoundLocal();
     }
 
     protected virtual void FixedUpdate()
@@ -522,6 +553,8 @@ public class PlayerController : NetworkBehaviour
                 }
                 // 점프 파티클 재생
                 PlayJumpParticle();
+                // 점프 사운드 재생
+                PlayJumpSound();
 
                 netIsGrounded.Value = false; // 점프 시 강제로 false 설정
                 canDive = true; // 점프 후 다이브 가능
@@ -546,6 +579,9 @@ public class PlayerController : NetworkBehaviour
         rb.linearVelocity = Vector3.zero; // 기존 속도 초기화
         rb.AddForce(diveDirection, ForceMode.Impulse);
 
+        // 다이브 시작 사운드 재생
+        PlayDiveStartSound();
+
         // 다이브 애니메이션 실행 (공중)
         SetTriggerClientRpc("Dive");
     }
@@ -557,8 +593,15 @@ public class PlayerController : NetworkBehaviour
 
         isDiving = false;
         isDiveGrounded = true;
+
+        // 이동 입력 초기화 (걷기 파티클 즉시 재생 방지)
+        moveDir = Vector2.zero;
+        netIsMove.Value = false;
+
         // 다이브 착지 파티클 재생
         PlayDiveLandParticle();
+        // 다이브 착지 사운드 재생
+        PlayDiveLandSound();
 
         Debug.Log("[다이브 착지] 착지 애니메이션 재생, 조작 불가");
         SetTriggerClientRpc("DiveLand");
@@ -1053,6 +1096,72 @@ public class PlayerController : NetworkBehaviour
             jumpParticle.Play();
         }
     }
+
+    // 점프 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
+    private void PlayJumpSound()
+    {
+        PlayJumpSoundClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayJumpSoundClientRpc()
+    {
+        if (jumpAudioSource != null)
+        {
+            // 캐릭터 보이스 재생
+            if (jumpVoiceClip != null)
+            {
+                jumpAudioSource.PlayOneShot(jumpVoiceClip, jumpVoiceVolume);
+            }
+
+            // 효과음 재생
+            if (jumpEffectClip != null)
+            {
+                jumpAudioSource.PlayOneShot(jumpEffectClip, jumpEffectVolume);
+            }
+        }
+    }
+
+    // 다이브 시작 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
+    private void PlayDiveStartSound()
+    {
+        PlayDiveStartSoundClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayDiveStartSoundClientRpc()
+    {
+        if (diveAudioSource != null && diveStartClip != null)
+        {
+            diveAudioSource.PlayOneShot(diveStartClip, diveStartVolume);
+        }
+    }
+
+    // 다이브 착지 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
+    private void PlayDiveLandSound()
+    {
+        PlayDiveLandSoundClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayDiveLandSoundClientRpc()
+    {
+        if (diveAudioSource != null)
+        {
+            // 캐릭터 보이스 재생
+            if (diveLandVoiceClip != null)
+            {
+                diveAudioSource.PlayOneShot(diveLandVoiceClip, diveLandVoiceVolume);
+            }
+
+            // 바닥 충돌음 재생
+            if (diveLandImpactClip != null)
+            {
+                diveAudioSource.PlayOneShot(diveLandImpactClip, diveLandImpactVolume);
+            }
+        }
+    }
+
     // 다이브 착지 파티클 재생 (서버에서 호출, 모든 클라이언트에서 재생)
     private void PlayDiveLandParticle()
     {
@@ -1086,6 +1195,30 @@ public class PlayerController : NetworkBehaviour
         if (respawnParticle != null)
         {
             respawnParticle.Play();
+        }
+    }
+
+    // 발걸음 사운드 업데이트 (로컬 클라이언트에서만 호출)
+    private void UpdateFootstepSoundLocal()
+    {
+        if (footstepAudioSource == null || footstepClip == null) return;
+
+        // 파티클이 재생 중일 때만 발걸음 소리 재생
+        if (isWalkParticlePlaying)
+        {
+            footstepTimer += Time.deltaTime;
+
+            // 타이머가 간격을 넘으면 발걸음 소리 재생
+            if (footstepTimer >= footstepInterval)
+            {
+                footstepAudioSource.PlayOneShot(footstepClip, footstepVolume);
+                footstepTimer = 0f; // 타이머 리셋
+            }
+        }
+        else
+        {
+            // 걷지 않으면 타이머 리셋
+            footstepTimer = 0.3f;
         }
     }
     #endregion
