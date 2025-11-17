@@ -153,6 +153,6 @@ MonoBehaviour:
   - itemPrefab: {fileID: 8508335998800669964, guid: e656360f249397748b69c001cb39ea43, type: 3}
     spawnWeight: 1
   spawnHeightOffset: 1
-  spawnInterval: 10
+  spawnInterval: 5
   spawnPoint: {fileID: 0}
   enableDebugLog: 1
