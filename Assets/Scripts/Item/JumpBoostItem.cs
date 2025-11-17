@@ -1,4 +1,3 @@
-using Unity.Netcode;
 using UnityEngine;
 
 // 일정 시간 동안 점프 높이
@@ -24,13 +23,5 @@ public class JumpBoostItem : BuffItem
 
         // 버프 적용 (IBuffable 인터페이스 사용)
         buffManager.ApplyBuff(buffData);
-    }
-
-    [ClientRpc]
-    protected override void SpawnBuffEffectClientRpc(Vector3 position)
-    {
-        base.SpawnBuffEffectClientRpc(position);
-
-        // 점프 효과 프리팹 적용 부분
     }
 }
