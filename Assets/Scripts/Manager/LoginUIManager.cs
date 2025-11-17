@@ -34,13 +34,6 @@ public class LoginUIManager : MonoBehaviour
     [Tooltip("로딩 중 표시할 UI 패널 (캔버스에 미리 배치되어 있어야 함)")]
     public GameObject loadingPanel;
 
-    [Header("Options Button")]
-    [SerializeField] private Button optionsButton;
-    [SerializeField] private Button closeOptionsButton;
-
-    [Header("Options UI")]
-    [SerializeField] private GameObject optionsPanel;   // 옵션창 (Panel)
-
     private int clientCharIndex;
     private string clientName;
     private bool isConnecting = false;
@@ -76,16 +69,6 @@ public class LoginUIManager : MonoBehaviour
         characterSelectPopup?.SetActive(false);
         audioSource = GetComponent<AudioSource>();
         loadingPanel.SetActive(false);
-        optionsPanel?.SetActive(false);
-
-        if (closeOptionsButton != null)
-            closeOptionsButton.onClick.AddListener(OnClickCloseOptions);
-
-        if (optionsButton != null)
-            optionsButton.onClick.AddListener(OnClickOptionsButton);
-
-        if (optionsPanel != null)
-            optionsPanel.SetActive(false);
 
         audioSource = GetComponent<AudioSource>();
 
@@ -128,19 +111,6 @@ public class LoginUIManager : MonoBehaviour
                 OnConnectionFailed("Client connection attempt failed.");
             }
         }
-    }
-
-    // ========================== 옵션 버튼 ==========================
-    public void OnClickOptionsButton()
-    {
-        if (optionsPanel != null)
-            optionsPanel.SetActive(true);
-    }
-
-    public void OnClickCloseOptions()
-    {
-        if (optionsPanel != null)
-            optionsPanel.SetActive(false);
     }
 
     // ========================== 캐릭터 선택 ==========================

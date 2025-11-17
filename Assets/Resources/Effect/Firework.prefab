@@ -4955,7 +4955,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 0
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -9628,6 +9628,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     shakesDelay: 0
+    useDistanceCheck: 0
+    maxDistance: 20
   animatedLights: []
   fadeOutReference: {fileID: 0}
 --- !u!1 &9034376611552921419
