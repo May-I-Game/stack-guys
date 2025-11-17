@@ -23,12 +23,5 @@ public class SpeedBoostItem : BuffItem
         // 버프 적용 (IBuffable 인터페이스 사용)
         buffManager.ApplyBuff(buffData);
     }
-
-    [ClientRpc]
-    protected override void SpawnBuffEffectClientRpc(Vector3 position)
-    {
-        base.SpawnBuffEffectClientRpc(position);
-
-        // 속도 버프 이펙트 효과
-    }
 }
+
