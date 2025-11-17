@@ -12,10 +12,10 @@ GameObject:
   - component: {fileID: 314996288179850476}
   - component: {fileID: 2574898166391781414}
   - component: {fileID: 5599063504657195560}
-  - component: {fileID: 6322908236015739414}
-  - component: {fileID: 3270908217711692269}
+  - component: {fileID: 1553652940607405943}
+  - component: {fileID: -5471212520354648784}
   m_Layer: 0
-  m_Name: BuffItemSpawner
+  m_Name: SodaItemSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -111,7 +111,7 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -8079445096277181685, guid: e12a855ea4fde3547a387fc32834602c, type: 3}
---- !u!114 &6322908236015739414
+--- !u!114 &1553652940607405943
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -123,7 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1009661164
+  GlobalObjectIdHash: 2870123302
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -136,7 +136,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &3270908217711692269
+--- !u!114 &-5471212520354648784
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -150,11 +150,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   spawnableItems:
-  - itemPrefab: {fileID: -4799041860675748242, guid: d6fb11350ff5c404d900751170df6089, type: 3}
-    spawnWeight: 1
   - itemPrefab: {fileID: 5064044707539063021, guid: 8fb1d509b36523f4da50aab4a023f7ed, type: 3}
-    spawnWeight: 1
-  - itemPrefab: {fileID: 1863145528742717711, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
     spawnWeight: 1
   spawnHeightOffset: 1
   spawnInterval: 5
