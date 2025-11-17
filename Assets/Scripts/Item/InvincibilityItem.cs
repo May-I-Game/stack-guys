@@ -23,12 +23,4 @@ public class InvincibilityItem : BuffItem
         // 버프 적용 (IBuffAble 사용)
         buffManager.ApplyBuff(buffData);
     }
-
-    [ClientRpc]
-    protected override void PickupEffectClientRpc(Vector3 position)
-    {
-        base.PickupEffectClientRpc(position);
-
-        // 무적 이펙트
-    }
 }
