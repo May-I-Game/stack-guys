@@ -31,7 +31,7 @@ public class NetworkPoolManager : NetworkBehaviour, INetworkPrefabInstanceHandle
             {
                 CreateNewInstance();
             }
-            Debug.Log($"[NetworkPoolManager] {InitialPoolSize}개 시체 풀링 완료");
+            Debug.Log($"[NetworkPoolManager] {InitialPoolSize}개 {PrefabToPool.name} 풀링 완료");
         }
     }
 
