@@ -206,7 +206,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   triggerType: 0
   buffDuration: 5
-  buffValue: 1.5
+  buffValue: 2
   buffEffectPrefab: {fileID: 0}
 --- !u!65 &4721824964102028181
 BoxCollider:
