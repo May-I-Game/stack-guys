@@ -23,4 +23,12 @@ public class InvincibilityItem : BuffItem
         // 버프 적용 (IBuffAble 사용)
         buffManager.ApplyBuff(buffData);
     }
+
+    [ClientRpc]
+    protected override void SpawnBuffEffectClientRpc(Vector3 position)
+    {
+        base.SpawnBuffEffectClientRpc(position);
+
+        // 무적 이펙트
+    }
 }
