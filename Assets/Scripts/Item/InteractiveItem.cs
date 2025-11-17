@@ -58,7 +58,7 @@ public abstract class InteractiveItem : GrabbableObject
         {
             // Debug.Log("[InteractiveItem] 조건 통과! ActivateItem 호출");
 
-            // 던진 사람은 영향 x
+            // 던진 사람과 충돌시 터지지 않음
             if (thrower != null && collision.gameObject == thrower.gameObject) return;
 
             ActivateItem();
