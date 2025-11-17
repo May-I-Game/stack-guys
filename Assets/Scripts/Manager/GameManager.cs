@@ -66,11 +66,19 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private AudioSource lobbyBGM;
     [SerializeField] private AudioSource trackBGM;
 
+    [Header("Countdown Audio")]
+    public AudioSource countdownAudioSource; // 카운트다운 오디오 소스
+    public AudioClip countdownClip; // 3, 2, 1 숫자 효과음
+    public AudioClip startClip; // START!! 효과음
+    [Range(0f, 1f)] public float countdownVolume = 0.7f; // 카운트 볼륨
+    [Range(0f, 1f)] public float startVolume = 0.8f; // Start 볼륨
+
     public bool IsLobby => currentGameState.Value == GameState.Lobby;
     public bool IsGame => currentGameState.Value == GameState.Playing;
 
     private bool isCountingDown = false;
     private Coroutine countdownCoroutine;
+    private int lastCountdownNumber = -1; // 중복 소리 재생 방지용
 
     private NetworkVariable<GameState> currentGameState = new NetworkVariable<GameState>(GameState.Lobby);
     private NetworkVariable<float> remainingTime = new NetworkVariable<float>(0f);
@@ -106,6 +114,20 @@ public class GameManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        // 오디오 소스 자동 설정
+        if (countdownAudioSource == null)
+        {
+            countdownAudioSource = GetComponent<AudioSource>();
+            if (countdownAudioSource == null)
+            {
+                countdownAudioSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
+
+        // 오디오 소스 기본 설정
+        countdownAudioSource.playOnAwake = false;
+        countdownAudioSource.spatialBlend = 0f; // 2D 사운드 (UI 효과음)
+
         // UI 초기 숨기기
         if (resultPanel != null)
             resultPanel.SetActive(false);
@@ -302,7 +324,7 @@ public class GameManager : NetworkBehaviour
             player.ReleaseGrab();
             player.ForceClearInputOnServer();
         }
-            
+
 
         rankings.Add(playerName);              // NetworkList는 서버에서만 쓰기
 
@@ -462,6 +484,7 @@ public class GameManager : NetworkBehaviour
             if (!current)
             {
                 inGameReadyText.text = "";
+                lastCountdownNumber = -1; // 카운트다운 종료 시 리셋
             }
         }
     }
@@ -700,10 +723,24 @@ public class GameManager : NetworkBehaviour
             if (count > 0)
             {
                 inGameReadyText.text = count.ToString();
+
+                // 카운트 숫자가 바뀔 때만 소리 재생 (중복 방지)
+                if (count != lastCountdownNumber && IsServer)
+                {
+                    lastCountdownNumber = count;
+                    PlayCountdownSoundClientRpc();
+                }
             }
             else
             {
                 inGameReadyText.text = "START!!";
+
+                // START 표시 시 한 번만 소리 재생
+                if (lastCountdownNumber != 0 && IsServer)
+                {
+                    lastCountdownNumber = 0;
+                    PlayStartSoundClientRpc();
+                }
             }
         }
 
@@ -796,7 +833,7 @@ public class GameManager : NetworkBehaviour
         if (gameUI != null) gameUI.SetActive(isActive);
         if (Options != null) Options.SetActive(isActive);
         if (Guide != null) Guide.SetActive(isActive);
-        
+
     }
 
     private void OnTimelineFinished(PlayableDirector director)
@@ -857,5 +894,23 @@ public class GameManager : NetworkBehaviour
 
         }
         return null;
+    }
+
+    [ClientRpc]
+    private void PlayCountdownSoundClientRpc()
+    {
+        if (countdownAudioSource != null && countdownClip != null)
+        {
+            countdownAudioSource.PlayOneShot(countdownClip, countdownVolume);
+        }
+    }
+
+    [ClientRpc]
+    private void PlayStartSoundClientRpc()
+    {
+        if (countdownAudioSource != null && startClip != null)
+        {
+            countdownAudioSource.PlayOneShot(startClip, startVolume);
+        }
     }
 }

@@ -12,6 +12,11 @@ public class DoubleDoorTrigger : NetworkBehaviour
     public float leftOpenAngle = -90f;
     public float rightOpenAngle = 90f;
 
+    [Header("Audio")]
+    public AudioSource audioSource; // 문 오디오 소스
+    public AudioClip doorOpenClip; // 문 열리는 사운드
+    [Range(0f, 1f)] public float doorOpenVolume = 0.7f; // 문 열리는 볼륨
+
     private readonly NetworkVariable<bool> hasOpened = new(false);
     private readonly NetworkVariable<bool> isAnimating = new(false);
     private Vector3 leftInitialRotation;
@@ -43,6 +48,20 @@ public class DoubleDoorTrigger : NetworkBehaviour
         {
             doorNavObstacle = GetComponent<DoorNavObstacle>();
         }
+
+        // 오디오 소스 자동 설정
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
+
+        // 오디오 소스 기본 설정
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 1f; // 3D 사운드
     }
 
     void OnTriggerEnter(Collider other)
@@ -59,6 +78,9 @@ public class DoubleDoorTrigger : NetworkBehaviour
         {
             hasOpened.Value = true;
             isAnimating.Value = true;
+
+            // 문 열리는 사운드 재생
+            PlayDoorOpenSoundClientRpc();
 
             // door의 Obstacle 제어 : 문 열기
             if (doorNavObstacle != null)
@@ -93,6 +115,15 @@ public class DoubleDoorTrigger : NetworkBehaviour
                 rightDoor.localEulerAngles = RightTargetRotation;
                 isAnimating.Value = false;
             }
+        }
+    }
+
+    [ClientRpc]
+    private void PlayDoorOpenSoundClientRpc()
+    {
+        if (audioSource != null && doorOpenClip != null)
+        {
+            audioSource.PlayOneShot(doorOpenClip, doorOpenVolume);
         }
     }
 }
