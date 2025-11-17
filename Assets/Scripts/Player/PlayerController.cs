@@ -72,7 +72,8 @@ public class PlayerController : NetworkBehaviour
     [Range(0f, 1f)] public float buffPickupVolume = 0.7f; // 버프 아이템 획득 볼륨
 
     public AudioSource buffLoopAudioSource; // 버프 루프 오디오 소스
-    public AudioClip buffLoopClip; // 버프 루프 사운드 (모든 버프 공통)
+    public AudioClip buffLoopClip; // 버프 루프 사운드 (속도/점프 버프용)
+    public AudioClip invincibleBuffLoopClip; // 무적 버프 루프 사운드
     [Range(0f, 1f)] public float buffLoopVolume = 0.5f; // 버프 루프 볼륨
 
     [Header("Network Optimization")]
@@ -1283,7 +1284,7 @@ public class PlayerController : NetworkBehaviour
     private void SetInvincibleBuffEffectClientRpc(bool enabled)
     {
         ToggleLoopEffect(invincibleBuffLoopEffect, enabled);
-        ToggleLoopSound(buffLoopClip, enabled);
+        ToggleLoopSound(invincibleBuffLoopClip, enabled);
     }
 
     // 버프 시스템 공통 토글 함수
