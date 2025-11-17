@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 27914afe379cde145a2db27318acb5a5
+guid: cd551e0180a51274dbc18e31d383fc32
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -123,23 +123,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: unnamed__1_-removebg-preview1_3
+      name: "\uC81C\uBAA9_\uC5C6\uC74C-removebg-preview_0"
       rect:
         serializedVersion: 2
-        x: 42
-        y: 140
-        width: 415
-        height: 210
+        x: 43
+        y: 73
+        width: 57
+        height: 47
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1b7ec491ff7ded643b838e9708b45dd9
-      internalID: -2019013355
+      spriteID: 4b019a6e417867a4d95b1d7e86c3c10a
+      internalID: -1640481055
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: a66a8ed6848c9944e8439bccef902384
+    spriteID: 735c18be64302a04f8c691d2c3c4b5f5
     internalID: 0
     vertices: []
     indices: 
@@ -158,10 +158,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      unnamed__1_-removebg-preview1_0: 112647845
-      unnamed__1_-removebg-preview1_1: -402026567
-      unnamed__1_-removebg-preview1_2: -2125344256
-      unnamed__1_-removebg-preview1_3: -2019013355
+      "\uC81C\uBAA9_\uC5C6\uC74C-removebg-preview_0": -1640481055
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
