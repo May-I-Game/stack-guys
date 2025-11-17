@@ -298,6 +298,9 @@ public class PlayerController : NetworkBehaviour
         // 점프 입력
         if (inputHandler.JumpInput)
         {
+            // 점프 사운드 즉시 로컬 재생 (지연 방지)
+            PlayJumpSoundLocal();
+
             JumpPlayerServerRpc();
             inputHandler.ResetJumpInput();
         }
@@ -593,7 +596,13 @@ public class PlayerController : NetworkBehaviour
         rb.linearVelocity = Vector3.zero; // 기존 속도 초기화
         rb.AddForce(diveDirection, ForceMode.Impulse);
 
-        // 다이브 시작 사운드 재생
+        // 다이브 시작 사운드 즉시 로컬 재생 (Owner만, 지연 방지)
+        if (IsOwner)
+        {
+            PlayDiveStartSoundLocal();
+        }
+
+        // 다이브 시작 사운드 재생 (다른 플레이어들을 위해)
         PlayDiveStartSound();
 
         // 다이브 애니메이션 실행 (공중)
@@ -1111,14 +1120,8 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    // 점프 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
-    private void PlayJumpSound()
-    {
-        PlayJumpSoundClientRpc();
-    }
-
-    [ClientRpc]
-    private void PlayJumpSoundClientRpc()
+    // 점프 사운드 로컬 재생 (Owner 전용, 즉시 재생)
+    private void PlayJumpSoundLocal()
     {
         if (jumpAudioSource != null)
         {
@@ -1136,7 +1139,44 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    // 다이브 시작 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
+    // 점프 사운드 재생 (서버에서 호출, 다른 클라이언트에서 재생)
+    private void PlayJumpSound()
+    {
+        PlayJumpSoundClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayJumpSoundClientRpc()
+    {
+        // Owner는 이미 로컬에서 재생했으므로 스킵
+        if (IsOwner) return;
+
+        if (jumpAudioSource != null)
+        {
+            // 캐릭터 보이스 재생
+            if (jumpVoiceClip != null)
+            {
+                jumpAudioSource.PlayOneShot(jumpVoiceClip, jumpVoiceVolume);
+            }
+
+            // 효과음 재생
+            if (jumpEffectClip != null)
+            {
+                jumpAudioSource.PlayOneShot(jumpEffectClip, jumpEffectVolume);
+            }
+        }
+    }
+
+    // 다이브 시작 사운드 로컬 재생 (Owner 전용, 즉시 재생)
+    private void PlayDiveStartSoundLocal()
+    {
+        if (diveAudioSource != null && diveStartClip != null)
+        {
+            diveAudioSource.PlayOneShot(diveStartClip, diveStartVolume);
+        }
+    }
+
+    // 다이브 시작 사운드 재생 (서버에서 호출, 다른 클라이언트에서 재생)
     private void PlayDiveStartSound()
     {
         PlayDiveStartSoundClientRpc();
@@ -1145,6 +1185,9 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     private void PlayDiveStartSoundClientRpc()
     {
+        // Owner는 이미 로컬에서 재생했으므로 스킵
+        if (IsOwner) return;
+
         if (diveAudioSource != null && diveStartClip != null)
         {
             diveAudioSource.PlayOneShot(diveStartClip, diveStartVolume);
