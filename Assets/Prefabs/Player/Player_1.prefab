@@ -2360,16 +2360,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1034700375001605414, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
       propertyPath: m_Color.r
-      value: 0.76470584
-      objectReference: {fileID: 0}
-    - target: {fileID: 1034700375001605414, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
-      propertyPath: m_Intensity
-      value: 0
-      objectReference: {fileID: 0}
-      value: 0.30474383
-      objectReference: {fileID: 0}
-    - target: {fileID: 1034700375001605414, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
-      propertyPath: m_Color.r
       value: 0.5361363
       objectReference: {fileID: 0}
     - target: {fileID: 1034700375001605414, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
@@ -2429,7 +2419,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
     m_RemovedGameObjects:
     - {fileID: 7708729512989566163, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
     m_AddedGameObjects: []
@@ -2506,7 +2495,6 @@ PrefabInstance:
       value: itemGetParticle
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
     m_RemovedGameObjects:
     - {fileID: 2009675295209177906, guid: 964f31a73329d2f42824c8c47d084c19, type: 3}
     m_AddedGameObjects: []
