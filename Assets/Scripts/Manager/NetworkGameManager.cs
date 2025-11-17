@@ -21,8 +21,11 @@ public class NetworkGameManager : MonoBehaviour
 
     [Header("Matchmaking Heartbeat")]
     [SerializeField] private string matchmakingServerUrl = "http://3.34.45.60:8000";
-    [SerializeField] private string serverPublicIP = "3.37.88.2";
+    [SerializeField] private string serverPublicIP = "3.37.88.2"; // Fallback IP (로컬 개발용)
     [SerializeField] private int heartbeatInterval = 5;
+
+    // EC2 메타데이터에서 자동 감지된 Public IP (ASG 대응)
+    private string detectedPublicIP = null;
 
     private bool hasInitialized = false;
     private Dictionary<ulong, int> clientCharacterSelections = new Dictionary<ulong, int>();
@@ -120,14 +123,55 @@ public class NetworkGameManager : MonoBehaviour
         // 서버 시작
         NetworkManager.Singleton.StartServer();
 
-        // 매치메이킹 서버 등록 + 하트비트 시작
-        StartCoroutine(RegisterAndHeartbeat());
+        // 🔥 ASG 대응: EC2 메타데이터로 Public IP 자동 감지 후 매치메이킹 등록
+        StartCoroutine(DetectPublicIPAndRegister());
 
         // GameScene 로드 (필요한 경우)
         if (SceneManager.GetActiveScene().name != gameSceneName)
         {
             NetworkManager.Singleton.SceneManager.LoadScene(gameSceneName, LoadSceneMode.Single);
         }
+    }
+
+    private IEnumerator DetectPublicIPAndRegister()
+    {
+#if UNITY_SERVER && !UNITY_EDITOR
+        // 서버 빌드에서만 EC2 메타데이터 API 호출
+        string metadataUrl = "http://169.254.169.254/latest/meta-data/public-ipv4";
+
+        Debug.Log("[EC2] Detecting Public IP from metadata...");
+
+        using (UnityWebRequest www = UnityWebRequest.Get(metadataUrl))
+        {
+            www.timeout = 5; // 5초 타임아웃
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                detectedPublicIP = www.downloadHandler.text.Trim();
+                Debug.Log($"✅ [EC2] Auto-detected Public IP: {detectedPublicIP}");
+            }
+            else
+            {
+                Debug.LogWarning($"⚠️ [EC2] Failed to get metadata (error: {www.error}), using fallback IP: {serverPublicIP}");
+                detectedPublicIP = serverPublicIP;
+            }
+        }
+#else
+        // 에디터 또는 클라이언트 빌드에서는 Inspector 값 사용
+        Debug.Log($"[EC2] Not a server build, using Inspector IP: {serverPublicIP}");
+        detectedPublicIP = serverPublicIP;
+        yield return null;
+#endif
+
+        // 매치메이킹 서버 등록 + 하트비트 시작
+        StartCoroutine(RegisterAndHeartbeat());
+    }
+
+    private string GetCurrentPublicIP()
+    {
+        // 감지된 IP가 있으면 사용, 없으면 fallback
+        return detectedPublicIP ?? serverPublicIP;
     }
 
     private void SpawnPlayerForClient(ulong clientId)
@@ -175,6 +219,17 @@ public class NetworkGameManager : MonoBehaviour
     {
         if (networkManager.IsServer)
         {
+            // 🔥 최대 인원 체크 (100명 제한)
+            int currentPlayers = networkManager.ConnectedClients.Count + WebSocketManager.Instance.ConnectedBotCount;
+            const int MAX_PLAYERS = 100;
+
+            if (currentPlayers > MAX_PLAYERS)
+            {
+                Debug.LogWarning($"⚠️ 서버 정원 초과! 현재: {currentPlayers}명 / 최대: {MAX_PLAYERS}명 → 클라이언트 {clientId} 연결 거부");
+                networkManager.DisconnectClient(clientId);
+                return;
+            }
+
             // 옵저버 모드
             if (!clientPlayerNames.ContainsKey(clientId))
             {
@@ -232,6 +287,18 @@ public class NetworkGameManager : MonoBehaviour
     // ConnectionApproval 콜백
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
     {
+        // 🔥 최대 인원 체크 (100명 제한) - 연결 승인 전에 먼저 체크
+        const int MAX_PLAYERS = 100;
+        int currentPlayers = networkManager.ConnectedClients.Count + WebSocketManager.Instance.ConnectedBotCount;
+
+        if (currentPlayers >= MAX_PLAYERS)
+        {
+            Debug.LogWarning($"⚠️ 서버 정원 초과! 현재: {currentPlayers}명 / 최대: {MAX_PLAYERS}명 → 클라이언트 {request.ClientNetworkId} 연결 거부");
+            response.Approved = false;
+            response.Reason = "Server is full";
+            return;
+        }
+
         int characterIndex = 0;
         string playerName = null;
 
@@ -273,7 +340,7 @@ public class NetworkGameManager : MonoBehaviour
         // 연결 승인
         response.Approved = true;
         response.CreatePlayerObject = false;
-        Debug.Log("Connection Approved");
+        Debug.Log($"Connection Approved ({currentPlayers + 1}/{MAX_PLAYERS})");
     }
 
     public void SetObserverMode()
@@ -416,9 +483,14 @@ public class NetworkGameManager : MonoBehaviour
         var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         int port = transport != null ? transport.ConnectionData.Port : 7779;
 
-        string serverId = $"game-server-{port}";
+        // 🔥 ASG 대응: 감지된 Public IP 사용
+        string publicIP = GetCurrentPublicIP();
+
+        // 🔥 Server ID를 IP:Port 조합으로 생성 (ASG에서 중복 방지)
+        string serverId = $"game-server-{publicIP.Replace(".", "-")}-{port}";
+
         string jsonData =
-            $"{{\"server_id\":\"{serverId}\",\"ip\":\"{serverPublicIP}\",\"port\":{port},\"current_players\":0,\"max_players\":8,\"status\":\"AVAILABLE\"}}";
+            $"{{\"server_id\":\"{serverId}\",\"ip\":\"{publicIP}\",\"port\":{port},\"current_players\":0,\"max_players\":100,\"status\":\"AVAILABLE\"}}";
 
         using (UnityWebRequest www =
                new UnityWebRequest($"{matchmakingServerUrl}/api/server/register", "POST"))
@@ -453,13 +525,17 @@ public class NetworkGameManager : MonoBehaviour
         int port = 7779;
         int currentPlayers = 0;
         string status = "AVAILABLE";
+        string serverId = ""; // 🔥 try 블록 밖에서 선언
 
         try
         {
             var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
             port = transport != null ? transport.ConnectionData.Port : 7779;
 
-            string serverId = $"game-server-{port}";
+            // 🔥 ASG 대응: IP:Port 조합으로 고유한 Server ID 생성
+            string publicIP = GetCurrentPublicIP();
+            serverId = $"game-server-{publicIP.Replace(".", "-")}-{port}";
+
             currentPlayers = NetworkManager.Singleton.ConnectedClients.Count
                            + WebSocketManager.Instance.ConnectedBotCount;
 
@@ -475,7 +551,7 @@ public class NetworkGameManager : MonoBehaviour
                     {
                         status = "IN_GAME";
                     }
-                    else if (currentPlayers >= 8)
+                    else if (currentPlayers >= 100)
                     {
                         status = "FULL";
                     }
@@ -514,8 +590,9 @@ public class NetworkGameManager : MonoBehaviour
                 $"[Heartbeat] Exception in heartbeat preparation: {e.Message}\n{e.StackTrace}");
         }
 
+        // 🔥 ASG 대응: IP:Port 조합으로 고유한 Server ID 생성 (위에서 이미 선언됨)
         string jsonData =
-            $"{{\"server_id\":\"game-server-{port}\",\"port\":{port},\"current_players\":{currentPlayers},\"status\":\"{status}\",\"cpu_usage\":0.0,\"memory_usage\":0.0}}";
+            $"{{\"server_id\":\"{serverId}\",\"port\":{port},\"current_players\":{currentPlayers},\"status\":\"{status}\",\"cpu_usage\":0.0,\"memory_usage\":0.0}}";
 
         using (UnityWebRequest www =
                new UnityWebRequest($"{matchmakingServerUrl}/api/server/heartbeat", "POST"))
@@ -544,7 +621,10 @@ public class NetworkGameManager : MonoBehaviour
     {
         var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         int port = transport != null ? transport.ConnectionData.Port : 7779;
-        string serverId = $"game-server-{port}";
+
+        // 🔥 ASG 대응: IP:Port 조합으로 고유한 Server ID 생성
+        string publicIP = GetCurrentPublicIP();
+        string serverId = $"game-server-{publicIP.Replace(".", "-")}-{port}";
 
         string jsonData = $"{{\"server_id\":\"{serverId}\",\"port\":{port}}}";
 
