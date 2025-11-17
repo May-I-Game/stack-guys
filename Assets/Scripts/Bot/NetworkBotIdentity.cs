@@ -2,7 +2,6 @@ using Unity.Netcode;
 using UnityEngine;
 
 // 봇을 식별하기 위한 네트워크 컴포넌트
-// PlayerController와 다른 시스템에서 봇 여부를 확인할 때 사용
 public class NetworkBotIdentity : NetworkBehaviour
 {
     // 캐릭터가 봇인지 여부

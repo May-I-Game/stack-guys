@@ -1,4 +1,3 @@
-using UnityEngine;
 using Unity.Netcode;
 
 // 데이터 종류 + 인터페이스
