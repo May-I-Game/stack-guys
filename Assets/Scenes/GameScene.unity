@@ -7130,7 +7130,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 444618451}
   - {fileID: 2002609204}
   m_Father: {fileID: 432186055}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -36650,10 +36649,6 @@ Transform:
   - {fileID: 2060825218}
   - {fileID: 10976194}
   - {fileID: 1684298031}
-  - {fileID: 1592624376}
-  - {fileID: 2109794582}
-  - {fileID: 40683899}
-  - {fileID: 2102984050}
   - {fileID: 1473254022}
   m_Father: {fileID: 397409946}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -92215,9 +92210,6 @@ MonoBehaviour:
   - {fileID: 860471980}
   - {fileID: 1623331315}
   - {fileID: 1062744171}
-  firstPlacePodium: {fileID: 0}
-  secondPlacePodium: {fileID: 0}
-  thirdPlacePodium: {fileID: 0}
   timeline: {fileID: 742404446}
   lobbyBGM: {fileID: 1858479388}
   trackBGM: {fileID: 891478643}
@@ -93094,7 +93086,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1623331314}
+  m_GameObject: {fileID: 1622664780}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.72, y: 0.434, z: -10.34}
@@ -123696,5 +123688,4 @@ SceneRoots:
   - {fileID: 971201074}
   - {fileID: 1657112969}
   - {fileID: 2000712414}
-  - {fileID: 665989102}
   - {fileID: 1734396422}
