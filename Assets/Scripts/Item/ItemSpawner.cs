@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-// 아이템 자동 스폰 시스템
 public class ItemSpawner : NetworkBehaviour
 {
     [System.Serializable]
@@ -11,8 +10,7 @@ public class ItemSpawner : NetworkBehaviour
         // 스폰할 아이템 프리팹
         public NetworkObject itemPrefab;
 
-        // 스폰 가중치 (1 ~ 10f)
-        [Range(1f, 10f)]
+        // 스폰 가중치 (높을수록 자주 나옴, 1~10)
         public float spawnWeight = 1f;
     }
 
@@ -20,14 +18,14 @@ public class ItemSpawner : NetworkBehaviour
     [Header("Spawn Settings")]
     public List<SpawnableItem> spawnableItems = new List<SpawnableItem>();
 
+    // 아이템을 공중으로 띄울 거리
+    public float spawnHeightOffset = 0.3f;
+
     // 스폰 간격 (초)
     public float spawnInterval = 10f;
 
-    // 스폰 위치 Transform (없으면 이 오브젝트 위치)
+    // 스폰 위치 Transform
     public Transform spawnPoint;
-
-    // 아이템이 바닥에서 띄워진 거리
-    public float spawnHeightOffset = 0.3f;
 
     [Header("Debug")]
     public bool enableDebugLog = true;
@@ -54,17 +52,20 @@ public class ItemSpawner : NetworkBehaviour
         if (currentItem != null && !currentItem.IsSpawned)
         {
             currentItem = null;
+            if (enableDebugLog)
+            {
+                Debug.Log($"[ItemSpawner] 아이템이 사용됨 다음 스폰: {spawnPoint}초 후");
+            }
         }
     }
 
-    // 랜덤 아이템 스폰 (가중치 기반)
+    // 랜덤 아이템을 스폰
     private void SpawnRandomItem()
     {
         // 스폰 가능한 아이템이 없으면 무시
         if (spawnableItems == null || spawnableItems.Count == 0)
         {
-            Debug.LogWarning("[ItemSpawner] spawnableItems 리스트 없음");
-            return;
+            Debug.LogWarning("[ItemSpawner] spawnableItems 리스트가 비어있음");
         }
 
         // 총 가중치 계산
@@ -79,8 +80,7 @@ public class ItemSpawner : NetworkBehaviour
 
         if (totalWeight <= 0f)
         {
-            Debug.LogWarning("[ItemSpawner] 유효한 아이템 없음");
-            return;
+            Debug.LogWarning("[ItemSpawner] 유효한 아이템이 없음");
         }
 
         // 가중치 기반 랜덤 선택
@@ -94,10 +94,9 @@ public class ItemSpawner : NetworkBehaviour
             cumulativeWeight += item.spawnWeight;
             if (randomValue <= cumulativeWeight)
             {
-                // 아이템 띄우기
+                // 아이템 스폰
                 Vector3 basePos = spawnPoint != null ? spawnPoint.position : transform.position;
 
-                // 아이템 스폰
                 Vector3 spawnPos = basePos + Vector3.up * spawnHeightOffset;
                 Quaternion spawnRot = spawnPoint != null ? spawnPoint.rotation : transform.rotation;
 
