@@ -25,9 +25,9 @@ public class InvincibilityItem : BuffItem
     }
 
     [ClientRpc]
-    protected override void SpawnBuffEffectClientRpc(Vector3 position)
+    protected override void PickupEffectClientRpc(Vector3 position)
     {
-        base.SpawnBuffEffectClientRpc(position);
+        base.PickupEffectClientRpc(position);
 
         // 무적 이펙트
     }

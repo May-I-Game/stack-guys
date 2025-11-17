@@ -25,9 +25,9 @@ public class SpeedBoostItem : BuffItem
     }
 
     [ClientRpc]
-    protected override void SpawnBuffEffectClientRpc(Vector3 position)
+    protected override void PickupEffectClientRpc(Vector3 position)
     {
-        base.SpawnBuffEffectClientRpc(position);
+        base.PickupEffectClientRpc(position);
 
         // 속도 버프 이펙트 효과
     }
