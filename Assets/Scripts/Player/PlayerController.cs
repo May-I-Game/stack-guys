@@ -37,6 +37,16 @@ public class PlayerController : NetworkBehaviour
     public ParticleSystem diveLandParticle; // 다이브 착지 파티클
     public ParticleSystem respawnParticle; // 리스폰 파티클
 
+    [Header("Buff Effects")]
+    public ParticleSystem buffPickupEffect;          // 아이템 먹는 순간 번쩍
+    public ParticleSystem jumpBuffLoopEffect;        // 점프 버프 루프
+    public ParticleSystem speedBuffLoopEffect;       // 속도 버프 루프
+    public ParticleSystem invincibleBuffLoopEffect;  // 무적 버프 루프
+
+    // 버프 적용 배율 (봇이면 1로 처리)
+    protected float SpeedMul => buffManager != null ? buffManager.SpeedMultiplier : 1f;
+    protected float JumpMul => buffManager != null ? buffManager.JumpMultiplier : 1f;
+
     [Header("Audio")]
     public AudioSource footstepAudioSource; // 발걸음 오디오 소스
     public AudioClip footstepClip; // 발걸음 사운드 클립
@@ -80,7 +90,7 @@ public class PlayerController : NetworkBehaviour
     protected Rigidbody rb;
     private CapsuleCollider col;
     private PlayerInputHandler inputHandler;
-    protected PlayerBuffManager buffManager;// 버프 관리자
+    protected PlayerBuffManager buffManager;    // 버프 관리자
 
     protected Vector2 moveDir = Vector2.zero;
     private Vector2 lastSentInput = Vector2.zero;  // 실제로 서버에 전송한 마지막 입력
@@ -211,12 +221,7 @@ public class PlayerController : NetworkBehaviour
         inputHandler = GetComponent<PlayerInputHandler>();
         respawnManager = FindFirstObjectByType<RespawnManager>();
 
-        // 버프 매니저 초기화
         buffManager = GetComponent<PlayerBuffManager>();
-        if (buffManager == null)
-        {
-            buffManager = gameObject.AddComponent<PlayerBuffManager>();
-        }
 
         // GC 최적화: WaitForSeconds 사전 생성
         botRespawnWait = new WaitForSeconds(2.267f);
@@ -483,7 +488,7 @@ public class PlayerController : NetworkBehaviour
             ServerPerformanceProfiler.Start("PlayerController.Move");
 
             // 이동 버프 적용
-            float currentSpeed = walkSpeed * buffManager.SpeedMultiplier;
+            float currentSpeed = walkSpeed * SpeedMul;
 
             // 이동
             Vector3 movement = new Vector3(
@@ -539,7 +544,7 @@ public class PlayerController : NetworkBehaviour
             if (netIsGrounded.Value)
             {
                 // 점프 버프 적용
-                float currentJumpForce = jumpForce * buffManager.JumpMultiplier;
+                float currentJumpForce = jumpForce * JumpMul;
 
                 // 봇일때 점프
                 if (this is BotController bot)
@@ -1195,6 +1200,87 @@ public class PlayerController : NetworkBehaviour
         if (respawnParticle != null)
         {
             respawnParticle.Play();
+        }
+    }
+
+    //////////////////////////////////////////////////////////////
+    // 버프 아이템 이펙트 (1회용, 루프용)
+    // 서버 권한 기반으로 제어, 실제 재생은 ClientRpc로 각 클라이언트에서 처리
+    //////////////////////////////////////////////////////////////
+
+    // 아이템 먹는 순간 1번 이펙트 재생용
+    public void PlayBuffPickupEffect()
+    {
+        if (!IsServer) return;
+
+        // 이펙트가 실제로 세팅되어 있을 때만 RPC 호출
+        if (buffPickupEffect != null)
+        {
+            PlayBuffPickupEffectClientRpc();
+        }
+    }
+
+    [ClientRpc]
+    private void PlayBuffPickupEffectClientRpc()
+    {
+        if (buffPickupEffect != null)
+        {
+            buffPickupEffect.Play();
+        }
+    }
+
+    // 버프 타입별 루프용 이펙트 on/off
+    public void SetBuffLoopEffect(BuffType type, bool enabled)
+    {
+        if (!IsServer) return;
+
+        switch (type)
+        {
+            case BuffType.Speed:
+                SetSpeedBuffEffectClientRpc(enabled);
+                break;
+
+            case BuffType.Jump:
+                SetJumpBuffEffectClientRpc(enabled);
+                break;
+
+            case BuffType.Invincibility:
+                SetInvincibleBuffEffectClientRpc(enabled);
+                break;
+        }
+    }
+
+    [ClientRpc]
+    private void SetSpeedBuffEffectClientRpc(bool enabled)
+    {
+        ToggleLoopEffect(speedBuffLoopEffect, enabled);
+    }
+
+    [ClientRpc]
+    private void SetJumpBuffEffectClientRpc(bool enabled)
+    {
+        ToggleLoopEffect(jumpBuffLoopEffect, enabled);
+    }
+
+    [ClientRpc]
+    private void SetInvincibleBuffEffectClientRpc(bool enabled)
+    {
+        ToggleLoopEffect(invincibleBuffLoopEffect, enabled);
+    }
+
+    // 버프 시스템 공통 토글 함수
+    private void ToggleLoopEffect(ParticleSystem ps, bool enabled)
+    {
+        if (ps == null) return;
+
+        if (enabled)
+        {
+            if (!ps.isPlaying)
+                ps.Play();
+        }
+        else
+        {
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
     }
 
