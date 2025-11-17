@@ -9,6 +9,9 @@ using WebSocketSharp.Server;
 
 public class WebSocketManager : MonoBehaviour
 {
+    public static WebSocketManager Instance;
+    public int ConnectedBotCount => connectedBots.Count;
+
     public GameObject playerPref;
     private WebSocketServer ws;
 
@@ -33,7 +36,20 @@ public class WebSocketManager : MonoBehaviour
         public string parameter;    // 매개변수 (필요시 int 등으로 변경 가능)
     }
 
-    void Start()
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void Start()
     {
         if (!NetworkManager.Singleton.IsServer) return;
 
