@@ -226,5 +226,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   triggerType: 0
-  buffDuration: 10
+  buffDuration: 5
   buffValue: 1.5
+  buffEffectPrefab: {fileID: 0}

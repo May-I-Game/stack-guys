@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
@@ -39,7 +40,17 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private GameObject optionsPanel;   // 옵션창 (Panel)
     [SerializeField] private GameObject Options;
 
-[Header("Settings")]
+    [Header("Guide Button")]
+    [SerializeField] private Button GuideButton;
+    [SerializeField] private Button closeGuideButton;
+    [SerializeField] private GameObject GuidePanel;   // 가이드창 (Panel)
+    [SerializeField] private GameObject Guide;
+    [SerializeField] private Button left;
+    [SerializeField] private Button right;
+    [SerializeField] private GameObject first;
+    [SerializeField] private GameObject second;
+
+    [Header("Settings")]
     [SerializeField] private float startCountdownTime = 5f;
     [SerializeField] private float endCountdownTime = 10f;
     [SerializeField] private string mainSceneName = "Login";
@@ -107,6 +118,18 @@ public class GameManager : NetworkBehaviour
 
         if (optionsButton != null)
             optionsButton.onClick.AddListener(OnClickOptionsButton);
+
+        if (GuideButton != null)
+            GuideButton.onClick.AddListener(OnClickGuideButton);
+
+        if (closeGuideButton != null)
+            closeGuideButton.onClick.AddListener(OnClickCloseGuide);
+
+        if (left != null)
+            left.onClick.AddListener(Left_page);
+
+        if (right != null)
+            right.onClick.AddListener(Right_page);
         // 커서 관리
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
@@ -271,15 +294,6 @@ public class GameManager : NetworkBehaviour
         var playerObj = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
         if (playerObj == null) return;
 
-        // 중복 체크
-        for (int i = 0; i < rankings.Count; i++)
-        {
-            if (rankings[i].ToString() == playerName)
-            {
-                Debug.Log($"[중복 방지] {playerName}은(는) 이미 도착했습니다!");
-                return;
-            }
-        }
 
         var player = playerObj.GetComponent<PlayerController>();
         if (player != null)
@@ -409,6 +423,7 @@ public class GameManager : NetworkBehaviour
 
         currentGameState.Value = GameState.Ended;
 
+
         // 매치메이킹 서버에 게임 종료 신호 전송
         NetworkGameManager networkManager = FindObjectOfType<NetworkGameManager>();
         if (networkManager != null)
@@ -418,6 +433,25 @@ public class GameManager : NetworkBehaviour
 
         // 클라에 결과 화면 표시
         ShowResultsClientRpc();
+    }
+
+
+    private void MovePlayerToPodiumPosition(ulong clientId, Transform podiumTransform)
+    {
+        if (!NetworkManager.Singleton.ConnectedClients.ContainsKey(clientId))
+        {
+            Debug.LogWarning($"[Podium] ClientId {clientId}를 찾을 수 없습니다.");
+            return;
+        }
+
+        NetworkObject playerObject = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
+        if (playerObject == null)
+        {
+            Debug.LogWarning($"[Podium] ClientId {clientId}의 PlayerObject를 찾을 수 없습니다.");
+            return;
+        }
+
+        PlayerController player = playerObject.GetComponent<PlayerController>();
     }
 
     private void OnGameReadyCountdownChanged(bool previous, bool current)
@@ -502,6 +536,14 @@ public class GameManager : NetworkBehaviour
         {
             Options.SetActive(false);
         }
+        if (GuidePanel != null)
+        {
+            GuidePanel.SetActive(false);
+        }
+        if (Guide != null)
+        {
+            Guide.SetActive(false);
+        }
         if (resultPanel != null)
         {
             resultPanel.SetActive(true);
@@ -545,6 +587,18 @@ public class GameManager : NetworkBehaviour
         {
             optionsPanel.SetActive(false);
         }
+        if (Options != null)
+        {
+            Options.SetActive(true);
+        }
+        if (GuidePanel != null)
+        {
+            GuidePanel.SetActive(false);
+        }
+        if (Guide != null)
+        {
+            Guide.SetActive(true);
+        }
     }
 
     public void OnClickOptionsButton()
@@ -559,6 +613,33 @@ public class GameManager : NetworkBehaviour
             optionsPanel.SetActive(false);
     }
 
+    public void OnClickGuideButton()
+    {
+        if (GuidePanel != null)
+            GuidePanel.SetActive(true);
+    }
+
+    public void OnClickCloseGuide()
+    {
+        if (GuidePanel != null)
+            GuidePanel.SetActive(false);
+    }
+
+    public void Left_page()
+    {
+        if (second != null)
+            second.SetActive(false);
+        if (first != null)
+            first.SetActive(true);
+    }
+
+    public void Right_page()
+    {
+        if (first != null)
+            first.SetActive(false);
+        if (second != null)
+            second.SetActive(true);
+    }
     // 서버에서 모든 플레이어의 입력을 차단하고 상태 초기화
     private void DisableAllPlayersInputOnServer()
     {
@@ -714,6 +795,8 @@ public class GameManager : NetworkBehaviour
         if (LobbyUI != null) LobbyUI.SetActive(false); // 로비는 항상 끔
         if (gameUI != null) gameUI.SetActive(isActive);
         if (Options != null) Options.SetActive(isActive);
+        if (Guide != null) Guide.SetActive(isActive);
+        
     }
 
     private void OnTimelineFinished(PlayableDirector director)
