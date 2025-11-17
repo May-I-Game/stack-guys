@@ -194,12 +194,7 @@ public class PlayerController : NetworkBehaviour
         inputHandler = GetComponent<PlayerInputHandler>();
         respawnManager = FindFirstObjectByType<RespawnManager>();
 
-        // 버프 매니저 초기화
         buffManager = GetComponent<PlayerBuffManager>();
-        if (buffManager == null)
-        {
-            buffManager = gameObject.AddComponent<PlayerBuffManager>();
-        }
 
         // GC 최적화: WaitForSeconds 사전 생성
         botRespawnWait = new WaitForSeconds(2.267f);
