@@ -62,12 +62,39 @@ public class BatchNetworkManager : NetworkBehaviour
 
     private const int MAX_SNAPSHOTS_PER_PACKET = 100;
 
+    // 로그 집계용
+    private float _logTimer = 0f;
+    private long _totalSnapshotsSentInSecond = 0;
+
     public static BatchNetworkManager Instance;
 
     private void Awake()
     {
         Instance = this;
         _sqrSyncDistance = syncDistance * syncDistance;
+    }
+
+    private void Update()
+    {
+        // 서버가 아니거나, 연결된 클라가 없으면 중지
+        if (!IsServer || NetworkManager.Singleton.ConnectedClientsIds.Count == 0) return;
+
+        _logTimer += Time.deltaTime;
+
+        // 1초마다
+        if (_logTimer >= 1.0f)
+        {
+            // 합산된 로그 출력 (개수 * 10바이트 * 8비트) / 1000 = 총 Kbps
+            float totalKbps = (_totalSnapshotsSentInSecond * 10 * 8) / 1000f;
+
+            Debug.Log(
+                $"[BatchNetworkManager] 총 전송 스냅샷: {_totalSnapshotsSentInSecond}개, " +
+                $"총 서버 아웃바운드: {totalKbps:F1}Kbps"
+            );
+
+            _logTimer -= 1.0f;
+            _totalSnapshotsSentInSecond = 0;
+        }
     }
 
     public override void OnNetworkSpawn()
@@ -185,10 +212,7 @@ public class BatchNetworkManager : NetworkBehaviour
             NetworkDelivery.UnreliableSequenced
         );
 
-        // Debug.Log(
-        //     $"[BatchNetworkManager] 전송: {snapshots.Count}명, " +
-        //     $"대역폭: {(snapshots.Count * 10 * NetworkManager.NetworkTickSystem.TickRate * 8 / 1000f):F1}Kbps"
-        // );
+        _totalSnapshotsSentInSecond += snapshots.Count;
     }
 
     private bool IsDirty(ulong netId, PlayerController player)

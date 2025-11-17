@@ -39,7 +39,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private GameObject optionsPanel;   // 옵션창 (Panel)
     [SerializeField] private GameObject Options;
 
-[Header("Settings")]
+    [Header("Settings")]
     [SerializeField] private float startCountdownTime = 5f;
     [SerializeField] private float endCountdownTime = 10f;
     [SerializeField] private string mainSceneName = "Login";
@@ -708,10 +708,10 @@ public class GameManager : NetworkBehaviour
 
     private void ToggleGameUI(bool isActive)
     {
+        if (LobbyUI != null) LobbyUI.SetActive(false); // 로비는 항상 끔
         if (Mobile != null) Mobile.SetActive(isActive);
         if (FPSCount != null) FPSCount.SetActive(isActive);
         if (PingCount != null) PingCount.SetActive(isActive);
-        if (LobbyUI != null) LobbyUI.SetActive(false); // 로비는 항상 끔
         if (gameUI != null) gameUI.SetActive(isActive);
         if (Options != null) Options.SetActive(isActive);
     }

@@ -51,7 +51,7 @@ public class WebSocketManager : MonoBehaviour
 
     private void Start()
     {
-        if (!NetworkManager.Singleton.IsServer) return;
+        if (!NetworkManager.Singleton || !NetworkManager.Singleton.IsServer) return;
 
         // 웹소켓 서버 생성 (서버 포트 + 1000)
         var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
@@ -68,7 +68,7 @@ public class WebSocketManager : MonoBehaviour
 
     void Update()
     {
-        if (!NetworkManager.Singleton.IsServer) return;
+        if (!NetworkManager.Singleton || !NetworkManager.Singleton.IsServer) return;
 
         while (eventQueue.TryDequeue(out ServerEvent evt))
         {
@@ -91,8 +91,6 @@ public class WebSocketManager : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        if (!NetworkManager.Singleton.IsServer) return;
-
         if (ws != null)
         {
             ws.Stop();
@@ -104,7 +102,7 @@ public class WebSocketManager : MonoBehaviour
     {
         protected override void OnOpen()
         {
-            // ★ 중요: 큐에 넣어야 메인 스레드가 봇을 만듭니다.
+            // 큐에 넣어야 메인 스레드가 봇을 만듬
             eventQueue.Enqueue(new ServerEvent
             {
                 type = EventType.Connect,
