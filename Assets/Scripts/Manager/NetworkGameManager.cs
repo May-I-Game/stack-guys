@@ -460,9 +460,10 @@ public class NetworkGameManager : MonoBehaviour
             port = transport != null ? transport.ConnectionData.Port : 7779;
 
             string serverId = $"game-server-{port}";
-            currentPlayers = NetworkManager.Singleton.ConnectedClients.Count;
+            currentPlayers = NetworkManager.Singleton.ConnectedClients.Count
+                           + WebSocketManager.Instance.ConnectedBotCount;
 
-            var gameManager = GameManager.instance;
+            var gameManager = GameManager.Instance;
             if (gameManager != null && gameManager.IsSpawned)
             {
                 try

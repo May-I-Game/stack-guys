@@ -26,13 +26,13 @@ public class JiggleBallTrap : MonoBehaviour
     {
         while (true)
         {
-            while ((GameManager.instance && GameManager.instance.IsLobby)
+            while ((GameManager.Instance && GameManager.Instance.IsLobby)
                || (EditorManager.Instance && EditorManager.Instance.IsEdit))
             {
                 yield return null;
             }
 
-            while ((GameManager.instance && GameManager.instance.IsGame)
+            while ((GameManager.Instance && GameManager.Instance.IsGame)
                    || (EditorManager.Instance && EditorManager.Instance.IsGame))
             {
                 yield return RotateTo(leftZ);
