@@ -12,12 +12,31 @@ public class JumpPad : NetworkBehaviour
     [SerializeField] private float cooldownTime = 0.5f; // 연속 발동 방지
     private float lastLaunchTime = -999f;
 
+    [Header("Audio")]
+    public AudioSource audioSource; // 점프패드 오디오 소스
+    public AudioClip launchClip; // 점프패드 발사 사운드
+    [Range(0f, 1f)] public float launchVolume = 0.7f; // 발사 볼륨
+
     private BoxCollider triggerCollider;
 
     private void Awake()
     {
         triggerCollider = GetComponent<BoxCollider>();
         triggerCollider.isTrigger = true;
+
+        // 오디오 소스 자동 설정
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
+
+        // 오디오 소스 기본 설정
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 1f; // 3D 사운드
     }
 
     // 플레이어 충돌 감지 및 점프 실행
@@ -40,6 +59,9 @@ public class JumpPad : NetworkBehaviour
         // 서버에서만 물리 적용
         LaunchPlayer(rb);
         lastLaunchTime = Time.time;
+
+        // 점프패드 발사 사운드 재생
+        PlayLaunchSoundClientRpc();
     }
 
     // 플레이어에게 발사 힘 적용
@@ -49,5 +71,14 @@ public class JumpPad : NetworkBehaviour
         Vector3 direction = transform.up;
 
         rb.AddForce(direction * launchForce, ForceMode.VelocityChange);
+    }
+
+    [ClientRpc]
+    private void PlayLaunchSoundClientRpc()
+    {
+        if (audioSource != null && launchClip != null)
+        {
+            audioSource.PlayOneShot(launchClip, launchVolume);
+        }
     }
 }
