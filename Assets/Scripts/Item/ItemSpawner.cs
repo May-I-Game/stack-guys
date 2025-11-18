@@ -112,4 +112,13 @@ public class ItemSpawner : NetworkBehaviour
             }
         }
     }
+
+    // 아이템이 사용되었을 때 외부에서 호출하는 메서드
+    public void OnItemConsumed()
+    {
+        if (!IsServer) return;
+
+        currentItem = null;
+        nextSpawnTime = Time.time + spawnInterval;
+    }
 }
