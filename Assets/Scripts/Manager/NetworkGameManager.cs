@@ -20,7 +20,7 @@ public class NetworkGameManager : MonoBehaviour
     [SerializeField] private float maxBackgroundTime = 30f;
 
     [Header("Matchmaking Heartbeat")]
-    [SerializeField] private string matchmakingServerUrl = "http://3.34.45.60:8000";
+    [SerializeField] private string matchmakingServerUrl = "http://matchmaking-alb-1609632759.ap-northeast-2.elb.amazonaws.com";
     [SerializeField] private string serverPublicIP = "3.37.88.2"; // Fallback IP (로컬 개발용)
     [SerializeField] private int heartbeatInterval = 5;
 

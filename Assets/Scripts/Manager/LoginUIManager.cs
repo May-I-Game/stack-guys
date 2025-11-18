@@ -27,7 +27,7 @@ public class LoginUIManager : MonoBehaviour
     [SerializeField] private GameObject characterSelectPopup;
 
     [Header("Matchmaking Server")]
-    [SerializeField] private string productionMatchmakingUrl = "http://3.34.45.60:8000";        // 프로덕션 매치메이킹 서버
+    [SerializeField] private string productionMatchmakingUrl = "http://matchmaking-alb-1609632759.ap-northeast-2.elb.amazonaws.com";        // 프로덕션 매치메이킹 서버
     [SerializeField] private bool useMatchmaking = false;                                       // 매치메이킹 사용 여부
 
     [Header("Loading UI")]
