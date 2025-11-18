@@ -192,7 +192,7 @@ GameObject:
   - component: {fileID: 8581008419994592112}
   - component: {fileID: 5073603661746958848}
   - component: {fileID: 7831154286216140243}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Props_2a
   m_TagString: Death
   m_Icon: {fileID: 0}
@@ -300,7 +300,7 @@ GameObject:
   - component: {fileID: 6069938867132018013}
   - component: {fileID: 3461538208936662323}
   - component: {fileID: 728332053115706751}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Props_2a
   m_TagString: Death
   m_Icon: {fileID: 0}
@@ -498,7 +498,7 @@ GameObject:
   - component: {fileID: 6378742548699010844}
   - component: {fileID: 3850877897804787730}
   - component: {fileID: 7077780297469665218}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Props_2a
   m_TagString: Death
   m_Icon: {fileID: 0}
@@ -731,7 +731,7 @@ GameObject:
   - component: {fileID: 8746782325427227920}
   - component: {fileID: 6274993538573644047}
   - component: {fileID: 7890837408828656573}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Props_2a
   m_TagString: Death
   m_Icon: {fileID: 0}
