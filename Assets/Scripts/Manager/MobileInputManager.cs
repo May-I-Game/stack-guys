@@ -8,6 +8,7 @@ public class MobileInputManager : MonoBehaviour
     public FixedJoystick joystick;
     public Button jumpButton;
     public Button grabButton;
+    public Button[] stickerButtons;
 
     private Canvas canvas;
 
