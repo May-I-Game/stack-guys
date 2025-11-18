@@ -12,6 +12,12 @@ public class PressButton : NetworkBehaviour
     [SerializeField] private float pressDepth = 0.1f;   // 버튼이 눌리는 깊이
     [SerializeField] private float buttonSpeed = 10f;   // 버튼 애니메이션 속도
 
+    [Header("Audio Settings")]
+    [SerializeField] private AudioSource audioSource; // 오디오 소스
+    [SerializeField] private AudioClip buttonPressClip; // 버튼 눌림 효과음
+    [SerializeField] private AudioClip buttonReleaseClip; // 버튼 해제 효과음
+    [Range(0f, 1f)][SerializeField] private float volume = 0.7f; // 볼륨
+
     private int objectsOnPlate = 0;
     private bool isPressed = false;
 
@@ -123,6 +129,22 @@ public class PressButton : NetworkBehaviour
     {
         Debug.Log($"[PressButton] 벽 상태 변경: {oldValue} -> {newValue}");
         UpdateWallState(newValue);
+
+        // 버튼 상태에 따라 효과음 재생
+        PlayButtonSound(newValue);
+    }
+
+    // 버튼 효과음 재생
+    private void PlayButtonSound(bool isPressed)
+    {
+        if (audioSource == null) return;
+
+        AudioClip clipToPlay = isPressed ? buttonPressClip : buttonReleaseClip;
+
+        if (clipToPlay != null)
+        {
+            audioSource.PlayOneShot(clipToPlay, volume);
+        }
     }
 
     // 벽의 활성화 상태 업데이트
