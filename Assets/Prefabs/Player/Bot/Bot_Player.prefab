@@ -1127,7 +1127,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1637,10 +1637,20 @@ MonoBehaviour:
     m_Bits: 1096
   bounceForce: 5
   animator: {fileID: 0}
+  walkParticle: {fileID: 0}
+  jumpParticle: {fileID: 0}
+  diveLandParticle: {fileID: 0}
+  respawnParticle: {fileID: 0}
+  buffPickupEffect: {fileID: 0}
+  jumpBuffLoopEffect: {fileID: 0}
+  speedBuffLoopEffect: {fileID: 0}
+  invincibleBuffLoopEffect: {fileID: 0}
   inputSendInterval: 0.05
   inputDeltaThreshold: 0.1
   speedThreshold: 0.5
   groundCheckInterval: 2
+  lerpSpeed: 15
+  smoothTime: 0.1
   bodyPrefab: {fileID: -6685113623952814118, guid: fa07a6d37dbbb2742b1571d531f8ba7c, type: 3}
   RespawnId:
     m_InternalValue: 0

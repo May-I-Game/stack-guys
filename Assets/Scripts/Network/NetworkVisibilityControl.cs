@@ -24,6 +24,8 @@ public class NetworkVisibilityControl : NetworkBehaviour
         if (!IsServer || Time.time - lastCheckTime < updateInterval) return;
         lastCheckTime = Time.time;
 
+        if (NetworkManager.Singleton == null) return;
+
         foreach (var clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
             UpdateVisibility(clientId);

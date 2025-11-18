@@ -1,4 +1,6 @@
 using NUnit.Framework.Internal;
+using System.Collections;
+using Unity.Cinemachine;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -149,6 +151,8 @@ public class PlayerController : NetworkBehaviour
     private float _lastSyncedRotY;
     private bool _lastSyncStateInitialized = false;
 
+    private CinemachineCamera cam;
+
     // 리스폰 구역 Index 값
     public NetworkVariable<int> RespawnId = new(
         0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -186,10 +190,10 @@ public class PlayerController : NetworkBehaviour
 
         if (IsOwner)
         {
-            Camera.main.GetComponent<CameraFollow>().target = this.transform;
+            cam = FindAnyObjectByType<CinemachineCamera>();
+            cam.Follow = this.transform;
 
             string savedName = PlayerPrefs.GetString("player_name", ""); // 소문자!
-
             playerName.Value = savedName;
             Debug.Log($"플레이어 이름 설정: {savedName}");
         }
@@ -371,9 +375,17 @@ public class PlayerController : NetworkBehaviour
         float sqrDist = (transform.position - _targetPos).sqrMagnitude;
         if (sqrDist > 9.0f) // 3 * 3 = 9
         {
+            Vector3 delta = _targetPos - transform.position;
+
             transform.position = _targetPos;
             transform.rotation = Quaternion.Euler(0, _targetRotY, 0);
             _currentVelocity = Vector3.zero;
+
+            if (IsOwner)
+            {
+                cam.OnTargetObjectWarped(this.transform, delta);
+            }
+            
             return;
         }
 
@@ -1035,7 +1047,6 @@ public class PlayerController : NetworkBehaviour
 
         ResetPlayerState();
     }
-
 
     // 좌표를 이용한 텔레포트
     // 순간이동에도 쓰이므로 public

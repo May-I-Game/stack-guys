@@ -60,6 +60,7 @@ public class NetworkSpinner : NetworkBehaviour
 
     private void CalculateRotation()
     {
+        if (NetworkManager.Singleton == null) return;
         // Time.deltaTime을 더하는게 아니라, "현재 서버 시간"을 기반으로 절대각을 계산함
         // 모든 클라이언트는 NetworkManager를 통해 동기화된 ServerTime을 사용하여 동일한 결과를 얻음
         double time = NetworkManager.Singleton.ServerTime.Time;
