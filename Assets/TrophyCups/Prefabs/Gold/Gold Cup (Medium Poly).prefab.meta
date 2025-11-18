@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 9fc0d4010bbf28b4594072e72b8655ab
-DefaultImporter:
+guid: 6e4ca06b53b95c94fbf6c697ac670bf2
+PrefabImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 
@@ -10,5 +10,5 @@ AssetOrigin:
   productId: 188059
   packageName: Trophy Cups/Challaces FREE
   packageVersion: 1.0
-  assetPath: Assets/Scenes/SampleScene.unity
+  assetPath: Assets/TrophyCups/Prefabs/Gold/Gold Cup (Medium Poly).prefab
   uploadId: 415770
