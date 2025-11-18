@@ -461,7 +461,7 @@ MonoBehaviour:
   groundCheckInterval: 2
   lerpSpeed: 15
   smoothTime: 0.1
-  bodyPrefab: {fileID: 2354954351810252770, guid: 0708bba17fbec6249998b48e1a436e2b, type: 3}
+  bodyPrefab: {fileID: 4151685488280018792, guid: ab8b5b52bb5b12c46ac5d47fd491857a, type: 3}
   RespawnId:
     m_InternalValue: 0
   respawnManager: {fileID: 0}
@@ -2298,7 +2298,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6961286565246192699, guid: c4760c00960a8d7408a7561628714ab0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -350
+      value: -230
       objectReference: {fileID: 0}
     - target: {fileID: 6961286565246192699, guid: c4760c00960a8d7408a7561628714ab0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
