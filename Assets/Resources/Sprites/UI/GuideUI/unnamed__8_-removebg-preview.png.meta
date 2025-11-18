@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 522eeb7449920eb4a8688a81b65e413c
+guid: 48a43d12dfdcfba4aaba7b94a26f9747
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -123,13 +123,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: unnamed (6)-Photoroom_0
+      name: unnamed__8_-removebg-preview_0
       rect:
         serializedVersion: 2
-        x: 192
-        y: 230
-        width: 640
-        height: 656
+        x: 52
+        y: 145
+        width: 398
+        height: 215
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -138,74 +138,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f0d3496c709e69048b33aa4ec96de2b2
-      internalID: -1196710976
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: unnamed (6)-Photoroom_1
-      rect:
-        serializedVersion: 2
-        x: 835
-        y: 592
-        width: 4
-        height: 4
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bf84921f9c961674e8c0c77348da0e2e
-      internalID: 242114740
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: unnamed (6)-Photoroom_2
-      rect:
-        serializedVersion: 2
-        x: 185
-        y: 585
-        width: 6
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f6d955178b6a82445b19d244733a4d5b
-      internalID: 507354069
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: unnamed (6)-Photoroom_3
-      rect:
-        serializedVersion: 2
-        x: 184
-        y: 542
-        width: 7
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4540a8f695766b148b8a81f8f6e303fc
-      internalID: 1737977762
+      spriteID: cef182a4d5d2eae4dae7293d27d86888
+      internalID: 427393394
       vertices: []
       indices: 
       edges: []
@@ -214,7 +148,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 0d99617e5b19ee04292c3a20831dd27e
+    spriteID: 09d446e5b05622644986c382e0507d62
     internalID: 0
     vertices: []
     indices: 
@@ -224,10 +158,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      unnamed (6)-Photoroom_0: -1196710976
-      unnamed (6)-Photoroom_1: 242114740
-      unnamed (6)-Photoroom_2: 507354069
-      unnamed (6)-Photoroom_3: 1737977762
+      unnamed__8_-removebg-preview_0: 427393394
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
