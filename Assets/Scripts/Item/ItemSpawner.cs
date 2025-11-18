@@ -101,6 +101,14 @@ public class ItemSpawner : NetworkBehaviour
                 Quaternion spawnRot = spawnPoint != null ? spawnPoint.rotation : transform.rotation;
 
                 currentItem = Instantiate(item.itemPrefab, spawnPos, spawnRot);
+
+                // 스폰한 아이템에 스포너를 기록
+                InteractiveItem interactiveItem = currentItem.GetComponent<InteractiveItem>();
+                if (interactiveItem != null)
+                {
+                    interactiveItem.SourceSpawner = this;
+                }
+
                 currentItem.Spawn();
 
                 if (enableDebugLog)
