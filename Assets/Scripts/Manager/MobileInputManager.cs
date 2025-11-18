@@ -8,8 +8,11 @@ public class MobileInputManager : MonoBehaviour
     public FixedJoystick joystick;
     public Button jumpButton;
     public Button grabButton;
+    public Button stickerButton;
+    public GameObject stickerPanel;
+    public Button[] stickerReqButtons;
 
-    private Canvas canvas;
+    [SerializeField] private GameObject mobileUI; // 켜고 끌 GameObject
 
     void Awake()
     {
@@ -22,28 +25,45 @@ public class MobileInputManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        canvas = GetComponent<Canvas>();
     }
+
     public void ToggleCanvas()
     {
-        if (canvas != null)
+        if (mobileUI != null)
         {
-            canvas.enabled = !canvas.enabled;
-        }
-    }
-    public void ShowCanvas()
-    {
-        if (canvas != null)
-        {
-            canvas.enabled = true;
-        }
-    }
-    public void HideCanvas()
-    {
-        if (canvas != null)
-        {
-            canvas.enabled = false;
+            mobileUI.SetActive(!mobileUI.activeSelf);
         }
     }
 
+    public void ShowCanvas()
+    {
+        if (mobileUI != null)
+        {
+            mobileUI.SetActive(true);
+        }
+    }
+
+    public void HideCanvas()
+    {
+        if (mobileUI != null)
+        {
+            mobileUI.SetActive(false);
+        }
+    }
+
+    public void ShowStickerPanel()
+    {
+        if (stickerPanel != null)
+        {
+            stickerPanel.SetActive(true);
+        }
+    }
+
+    public void HideStickerPanel()
+    {
+        if (stickerPanel != null)
+        {
+            stickerPanel.SetActive(false);
+        }
+    }
 }
