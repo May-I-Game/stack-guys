@@ -16,6 +16,8 @@ TagManager:
   - Waypoint
   - Ocean
   - SpawnPoint
+  - FxTemporaire
+  - Item
   layers:
   - Default
   - TransparentFX
