@@ -40,8 +40,8 @@ public class Bomb : InteractiveItem
         {
             if (Rb != null)
             {
-                Rb.isKinematic = false;     // 물리 활성화
-                Rb.useGravity = true;       // 중력 활성화
+                Rb.isKinematic = true;      // 먹기 전에는 고정 (물리 비활성화)
+                Rb.useGravity = true;       // 중력 설정은 유지 (먹은 후 활성화될 때 사용)
             }
         }
         else
