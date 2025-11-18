@@ -25165,8 +25165,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   botPrefab: {fileID: 5309982938216476723, guid: b1c3c2cd08f943a4dbfeb3812b3980b1, type: 3}
-  preBotCount: 100
-  preSpawnManager: {fileID: 940291386}
   debugSpawnPoints:
   - {fileID: 937392694}
 --- !u!114 &465919177
@@ -31515,6 +31513,10 @@ MonoBehaviour:
   buttonTransform: {fileID: 571864469}
   pressDepth: 0.2
   buttonSpeed: 10
+  audioSource: {fileID: 0}
+  buttonPressClip: {fileID: 0}
+  buttonReleaseClip: {fileID: 0}
+  volume: 0.7
 --- !u!65 &571864474
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -72835,6 +72837,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   syncDistance: 30
+  posDeltaThreshold: 0.05
+  rotDeltaThreshold: 1
 --- !u!114 &1311659525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74277,6 +74281,10 @@ MonoBehaviour:
   joystick: {fileID: 1109821949}
   jumpButton: {fileID: 651195158}
   grabButton: {fileID: 1696346244}
+  stickerButton: {fileID: 0}
+  stickerPanel: {fileID: 0}
+  stickerReqButtons: []
+  mobileUI: {fileID: 0}
 --- !u!114 &1349129574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96993,13 +97001,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   gameStartcountdown: {fileID: 198184170}
-  NowPlayerCount: {fileID: 118828026}
   gameEndcountdown: {fileID: 632597635}
-  resultPanel: {fileID: 144982544}
+  inGameReadyText: {fileID: 0}
+  NowPlayerCount: {fileID: 118828026}
   firstPlaceText: {fileID: 181618487}
   secondPlaceText: {fileID: 1488948640}
   thirdPlaceText: {fileID: 896327750}
-  mainButton: {fileID: 1104206172}
   QualifiedText: {fileID: 22612626}
   Mobile: {fileID: 1349129572}
   FPSCount: {fileID: 1108644784}
@@ -97129,6 +97136,11 @@ MonoBehaviour:
   timeline: {fileID: 1153312842}
   lobbyBGM: {fileID: 999795626}
   trackBGM: {fileID: 1317285441}
+  countdownAudioSource: {fileID: 0}
+  lobbyCountdownClip: {fileID: 0}
+  gameCountdownClip: {fileID: 0}
+  countdownStartClip: {fileID: 0}
+  countdownVolume: 0.7
 --- !u!114 &1737122432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101391,6 +101403,10 @@ MonoBehaviour:
   buttonTransform: {fileID: 1796287710}
   pressDepth: 0.2
   buttonSpeed: 10
+  audioSource: {fileID: 0}
+  buttonPressClip: {fileID: 0}
+  buttonReleaseClip: {fileID: 0}
+  volume: 0.7
 --- !u!65 &1796287715
 BoxCollider:
   m_ObjectHideFlags: 0
