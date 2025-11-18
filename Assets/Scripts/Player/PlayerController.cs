@@ -73,32 +73,10 @@ public class PlayerController : NetworkBehaviour
     public AudioClip buffPickupClip; // 버프 아이템 획득 사운드
     [Range(0f, 1f)] public float buffPickupVolume = 0.7f; // 버프 아이템 획득 볼륨
 
-    public AudioSource buffLoopAudioSource; // 버프 루프 오디오 소스 (속도/점프)
+    public AudioSource buffLoopAudioSource; // 버프 루프 오디오 소스
     public AudioClip buffLoopClip; // 버프 루프 사운드 (속도/점프 버프용)
-    [Range(0f, 1f)] public float buffLoopVolume = 0.5f; // 버프 루프 볼륨
-
-    public AudioSource invincibleBuffLoopAudioSource; // 무적 버프 루프 오디오 소스
     public AudioClip invincibleBuffLoopClip; // 무적 버프 루프 사운드
-    [Range(0f, 1f)] public float invincibleBuffLoopVolume = 0.5f; // 무적 버프 루프 볼륨
-
-    public AudioSource respawnAudioSource; // 리스폰 오디오 소스
-    public AudioClip respawnClip; // 리스폰 효과음
-    [Range(0f, 1f)] public float respawnVolume = 0.7f; // 리스폰 볼륨
-
-    public AudioSource deathAudioSource; // 죽음 오디오 소스
-    public AudioClip deathVoiceClip; // 죽음 음성 효과음 (항상 재생)
-    public AudioClip deathSpikeClip; // 가시/장애물 죽음 환경음 (Death 태그)
-    public AudioClip deathOceanClip; // 물에 빠진 죽음 환경음 (Ocean 태그)
-    [Range(0f, 1f)] public float deathVolume = 0.7f; // 죽음 볼륨
-
-    public AudioSource hitAudioSource; // 피격 오디오 소스
-    public AudioClip hitVoiceClip; // 피격 음성 효과음 (항상 재생)
-    public AudioClip hitImpactClip; // 피격 환경 효과음 (충돌음)
-    [Range(0f, 1f)] public float hitVolume = 0.7f; // 피격 볼륨
-
-    public AudioSource throwAudioSource; // 던지기 오디오 소스
-    public AudioClip throwClip; // 던지기 효과음
-    [Range(0f, 1f)] public float throwVolume = 0.7f; // 던지기 볼륨
+    [Range(0f, 1f)] public float buffLoopVolume = 0.5f; // 버프 루프 볼륨
 
     [Header("Network Optimization")]
     [Tooltip("입력 전송 최소 간격 (초). 모바일 조이스틱 떨림 방지. 권장: 0.033~0.05")]
@@ -407,7 +385,7 @@ public class PlayerController : NetworkBehaviour
             {
                 cam.OnTargetObjectWarped(this.transform, delta);
             }
-
+            
             return;
         }
 
@@ -810,17 +788,13 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        // 던지기 효과음 재생
-        PlayThrowSound();
-
         // 던지기 방향 계산 (앞쪽 + 약간 위)
-        Vector3 throwDirection = Vector3.zero;
+        Vector3 throwDirection = (transform.forward + Vector3.up * 0.5f).normalized;
 
         // 플레이어를 던지는 경우
         PlayerController targetPlayer = holdingObject.GetComponent<PlayerController>();
         if (targetPlayer != null)
         {
-            throwDirection = (transform.forward + Vector3.up * 0.5f).normalized;
             ThrowPlayer(targetPlayer, throwDirection);
         }
 
@@ -828,7 +802,6 @@ public class PlayerController : NetworkBehaviour
         GrabbableObject grabbable = holdingObject.GetComponent<GrabbableObject>();
         if (grabbable != null)
         {
-            throwDirection = (transform.forward + Vector3.up * 0.2f).normalized;
             ThrowObject(grabbable, throwDirection);
         }
 
@@ -862,39 +835,14 @@ public class PlayerController : NetworkBehaviour
     {
         // NEW: GrabbableObject에 던져졌음을 알림 (NetworkTransform 최적화)
         target.OnThrown();
+        target.Rb.AddForce(throwDirection * throwForce, ForceMode.Impulse);
 
-        // Rigidbody 물리 활성화
-        target.Rb.WakeUp();
-
-        // 충돌 재활성화 (원래 레이어로 복구)
+        // 충돌 재활성화
         target.GameObj.layer = heldObjectOriginLayer;
         SetTriggerClientRpc("Throw");
 
-        // 플레이어의 현재 이동 속도 계산
-        Vector3 playerVelocity = Vector3.zero;
-        if (moveDir.magnitude >= 0.1f)
-        {
-            float currentSpeed = walkSpeed * SpeedMul;
-            playerVelocity = new Vector3(moveDir.x, 0, moveDir.y) * currentSpeed;
-        }
-
-        // 던지는 방향 속도 + 플레이어 이동 속도 합산
-        Vector3 throwVelocity = throwDirection * throwForce + playerVelocity;
-
-        // ForceMode.VelocityChange - mass 무시, 즉시 velocity 변경
-        // 다음 물리 업데이트까지 기다림 WaitForFixedUpdate 후 적용 (안정적인 물리 적용)
-        StartCoroutine(ApplyThrowForce(target.Rb, throwVelocity));
-    }
-
-    private System.Collections.IEnumerator ApplyThrowForce(Rigidbody rb, Vector3 velocity)
-    {
-        // 다음 FixedUpdate까지 대기
-        yield return new WaitForFixedUpdate();
-
-        if (rb != null && !rb.isKinematic)
-        {
-            rb.AddForce(velocity, ForceMode.VelocityChange);
-        }
+        //Debug.Log($"[잡기] 오브젝트 레이어 변환: {target.gameObject.layer}");
+        //Debug.Log("[잡기] 오브젝트를 던졌습니다");
     }
 
     protected void PlayerHeld()
@@ -1027,7 +975,7 @@ public class PlayerController : NetworkBehaviour
         escapeJumpCount = 0;
     }
 
-    public void PlayerDeath(bool isOceanDeath = false)
+    public void PlayerDeath()
     {
         if (netIsDeath.Value) return;
 
@@ -1039,9 +987,6 @@ public class PlayerController : NetworkBehaviour
         // 인풋벡터 초기화
         moveDir = Vector2.zero;
         ReleaseGrab();
-
-        // 죽음 사운드 재생 (죽음 타입에 따라)
-        PlayDeathSound(isOceanDeath);
 
         SetTriggerClientRpc("Death");
 
@@ -1099,8 +1044,6 @@ public class PlayerController : NetworkBehaviour
 
         // 리스폰 파티클 재생
         PlayRespawnParticle();
-        // 리스폰 사운드 재생
-        PlayRespawnSound();
 
         ResetPlayerState();
     }
@@ -1323,86 +1266,6 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    // 리스폰 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
-    private void PlayRespawnSound()
-    {
-        PlayRespawnSoundClientRpc();
-    }
-
-    [ClientRpc]
-    private void PlayRespawnSoundClientRpc()
-    {
-        if (respawnAudioSource != null && respawnClip != null)
-        {
-            respawnAudioSource.PlayOneShot(respawnClip, respawnVolume);
-        }
-    }
-
-    // 죽음 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
-    private void PlayDeathSound(bool isOceanDeath)
-    {
-        PlayDeathSoundClientRpc(isOceanDeath);
-    }
-
-    [ClientRpc]
-    private void PlayDeathSoundClientRpc(bool isOceanDeath)
-    {
-        if (deathAudioSource != null)
-        {
-            // 1. 음성 효과음 재생 (항상)
-            if (deathVoiceClip != null)
-            {
-                deathAudioSource.PlayOneShot(deathVoiceClip, deathVolume);
-            }
-
-            // 2. 환경 효과음 재생 (태그에 따라)
-            AudioClip environmentClip = isOceanDeath ? deathOceanClip : deathSpikeClip;
-            if (environmentClip != null)
-            {
-                deathAudioSource.PlayOneShot(environmentClip, deathVolume);
-            }
-        }
-    }
-
-    // 피격 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
-    private void PlayHitSound()
-    {
-        PlayHitSoundClientRpc();
-    }
-
-    [ClientRpc]
-    private void PlayHitSoundClientRpc()
-    {
-        if (hitAudioSource != null)
-        {
-            // 1. 음성 효과음 재생 (항상)
-            if (hitVoiceClip != null)
-            {
-                hitAudioSource.PlayOneShot(hitVoiceClip, hitVolume);
-            }
-
-            // 2. 환경 효과음 재생 (충돌음)
-            if (hitImpactClip != null)
-            {
-                hitAudioSource.PlayOneShot(hitImpactClip, hitVolume);
-            }
-        }
-    }
-
-    private void PlayThrowSound()
-    {
-        PlayThrowSoundClientRpc();
-    }
-
-    [ClientRpc]
-    private void PlayThrowSoundClientRpc()
-    {
-        if (throwAudioSource != null && throwClip != null)
-        {
-            throwAudioSource.PlayOneShot(throwClip, throwVolume);
-        }
-    }
-
     //////////////////////////////////////////////////////////////
     // 버프 아이템 이펙트 (1회용, 루프용)
     // 서버 권한 기반으로 제어, 실제 재생은 ClientRpc로 각 클라이언트에서 처리
@@ -1497,33 +1360,26 @@ public class PlayerController : NetworkBehaviour
     // 버프 루프 사운드 토글 함수
     private void ToggleLoopSound(AudioClip clip, bool enabled)
     {
-        if (clip == null) return;
-
-        // 무적 버프인 경우 별도 오디오 소스 사용
-        bool isInvincibleClip = (clip == invincibleBuffLoopClip);
-        AudioSource targetAudioSource = isInvincibleClip ? invincibleBuffLoopAudioSource : buffLoopAudioSource;
-        float targetVolume = isInvincibleClip ? invincibleBuffLoopVolume : buffLoopVolume;
-
-        if (targetAudioSource == null) return;
+        if (buffLoopAudioSource == null || clip == null) return;
 
         if (enabled)
         {
             // 루프 사운드 재생
-            if (!targetAudioSource.isPlaying || targetAudioSource.clip != clip)
+            if (!buffLoopAudioSource.isPlaying || buffLoopAudioSource.clip != clip)
             {
-                targetAudioSource.clip = clip;
-                targetAudioSource.volume = targetVolume;
-                targetAudioSource.loop = true;
-                targetAudioSource.Play();
+                buffLoopAudioSource.clip = clip;
+                buffLoopAudioSource.volume = buffLoopVolume;
+                buffLoopAudioSource.loop = true;
+                buffLoopAudioSource.Play();
             }
         }
         else
         {
             // 루프 사운드 중지
-            if (targetAudioSource.isPlaying && targetAudioSource.clip == clip)
+            if (buffLoopAudioSource.isPlaying && buffLoopAudioSource.clip == clip)
             {
-                targetAudioSource.Stop();
-                targetAudioSource.clip = null;
+                buffLoopAudioSource.Stop();
+                buffLoopAudioSource.clip = null;
             }
         }
     }
@@ -1551,7 +1407,7 @@ public class PlayerController : NetworkBehaviour
             footstepTimer = 0.3f;
         }
     }
-    #endregion
+    #endregion  
 
     // 충돌관리 로직
     #region Physics
@@ -1623,23 +1479,12 @@ public class PlayerController : NetworkBehaviour
         switch (collision.gameObject.tag)
         {
             case "Ocean":
-                // 물에 빠져서 죽음
-                PlayerDeath(isOceanDeath: true);
-                break;
-
             case "Death":
-                // 무적 버프 중이면 죽지 않음
-                if (buffManager != null && buffManager.IsInvincible)
-                {
-                    break;
-                }
-                // 일반 죽음
-                PlayerDeath(isOceanDeath: false);
+                // 캐릭터가 가지고 있는 리스폰 인덱스로 이동
+                PlayerDeath();
                 break;
 
             case "weakObstacles":
-                // 피격 사운드 재생
-                PlayHitSound();
                 // 충돌 지점의 평균 법선 벡터 계산
                 Vector3 avgNormal = Vector3.zero;
                 foreach (ContactPoint contact in collision.contacts)
@@ -1651,7 +1496,6 @@ public class PlayerController : NetworkBehaviour
                 // 장애물에 부딪힘
                 PlayHitAnimation("weakHit");
                 BouncePlayer(avgNormal, bounceForce);
-
                 break;
 
             case "StrongObstacles":

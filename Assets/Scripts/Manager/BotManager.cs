@@ -79,7 +79,7 @@ public class BotManager : NetworkBehaviour
             if (botController != null)
             {
                 // 봇 이름 설정
-                PlayerCanvasManager nameSync = botNetobj.GetComponent<PlayerCanvasManager>();
+                PlayerNameSync nameSync = botNetobj.GetComponent<PlayerNameSync>();
                 if (nameSync != null)
                 {
                     string botName = NetworkBotIdentity.GenerateBotName();
@@ -142,7 +142,7 @@ public class BotManager : NetworkBehaviour
             );
 
             // 봇 이름 설정
-            PlayerCanvasManager nameSync = botNetobj.GetComponent<PlayerCanvasManager>();
+            PlayerNameSync nameSync = botNetobj.GetComponent<PlayerNameSync>();
             if (nameSync != null)
             {
                 // 고유한 봇 이름 생성
