@@ -52,6 +52,12 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private AudioClip countdownStartClip; // START 효과음
     [Range(0f, 1f)][SerializeField] private float countdownVolume = 0.7f;
 
+    [Header("Podium")]
+    [SerializeField] private Transform firstPlacePodium;
+    [SerializeField] private Transform secondPlacePodium;
+    [SerializeField] private Transform thirdPlacePodium;
+    [SerializeField] private PlayableDirector podiumTimeline;
+
     public bool IsLobby => currentGameState.Value == GameState.Lobby;
     public bool IsGame => currentGameState.Value == GameState.Playing;
 

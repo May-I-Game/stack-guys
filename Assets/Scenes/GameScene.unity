@@ -76812,7 +76812,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1327341674
 RectTransform:
   m_ObjectHideFlags: 0
@@ -94239,6 +94239,10 @@ MonoBehaviour:
   gameCountdownClip: {fileID: 8300000, guid: 03c5aa7a8ef7d414ba057c180562cf91, type: 3}
   countdownStartClip: {fileID: 8300000, guid: 5c8a58b39037fce40a4c43c460c38c07, type: 3}
   countdownVolume: 0.7
+  firstPlacePodium: {fileID: 0}
+  secondPlacePodium: {fileID: 0}
+  thirdPlacePodium: {fileID: 0}
+  podiumTimeline: {fileID: 0}
 --- !u!114 &1600138839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -102778,15 +102782,15 @@ MonoBehaviour:
   optionsPanel: {fileID: 2069911420}
   options: {fileID: 51401531}
   GuideButton: {fileID: 924764372}
-  closeGuideButton: {fileID: 0}
-  closeItemButton: {fileID: 0}
-  GuidePanel: {fileID: 0}
-  ItemPanel: {fileID: 0}
+  closeGuideButton: {fileID: 1939475779}
+  closeItemButton: {fileID: 787856059}
+  GuidePanel: {fileID: 1327341673}
+  ItemPanel: {fileID: 1327341673}
   guide: {fileID: 1093006061}
-  left: {fileID: 0}
-  right: {fileID: 0}
-  first: {fileID: 0}
-  second: {fileID: 0}
+  left: {fileID: 1546025440}
+  right: {fileID: 1382932995}
+  first: {fileID: 1146862932}
+  second: {fileID: 532696337}
 --- !u!1 &1761439519
 GameObject:
   m_ObjectHideFlags: 0
