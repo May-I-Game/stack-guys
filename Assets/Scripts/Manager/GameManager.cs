@@ -68,6 +68,13 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private AudioSource lobbyBGM;
     [SerializeField] private AudioSource trackBGM;
 
+    [Header("Podium")]
+    [SerializeField] private Transform firstPlacePodium;
+    [SerializeField] private Transform secondPlacePodium;
+    [SerializeField] private Transform thirdPlacePodium;
+    [SerializeField] private PlayableDirector podiumTimeline;
+    [SerializeField] private float podiumTimelineDuration = 12f; // 타임라인 길이 (수동 설정)
+
     public bool IsLobby => currentGameState.Value == GameState.Lobby;
     public bool IsGame => currentGameState.Value == GameState.Playing;
 
@@ -78,9 +85,13 @@ public class GameManager : NetworkBehaviour
     private NetworkVariable<float> remainingTime = new NetworkVariable<float>(0f);
     private NetworkList<FixedString32Bytes> rankings;
 
-    //시네마틱 실행용 동기화 시간 변수
     private NetworkVariable<double> timelineStartTime = new NetworkVariable<double>(0);
     private NetworkVariable<bool> shouldPlayTimeline = new NetworkVariable<bool>(false);
+
+    //시상식 시네마틱 동기화 시간 변수
+    private NetworkVariable<double> podiumTimelineStartTime = new NetworkVariable<double>(0);
+    private NetworkVariable<bool> shouldPlayPodiumTimeline = new NetworkVariable<bool>(false);
+
     private const float SYNC_BUFFER = 0.3f;
 
     //로비 및 게임 종료 시 사용
@@ -88,6 +99,8 @@ public class GameManager : NetworkBehaviour
     private NetworkVariable<bool> isStartCountdownActive = new NetworkVariable<bool>(false);
     private NetworkVariable<bool> isEndCountdownActive = new NetworkVariable<bool>(false);
     private NetworkVariable<bool> isGameReadyCountdownActive = new NetworkVariable<bool>(false);
+
+    private Camera mainCamera;
 
     public static GameManager Instance;
 
@@ -139,6 +152,10 @@ public class GameManager : NetworkBehaviour
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
 
+        mainCamera = Camera.main;
+        if (podiumTimeline != null)
+            podiumTimeline.gameObject.SetActive(false);
+
         if (IsServer)
         {
             currentGameState.Value = GameState.Lobby;
@@ -151,6 +168,7 @@ public class GameManager : NetworkBehaviour
         {
             remainingTime.OnValueChanged += UpdateCountDownUI;
             shouldPlayTimeline.OnValueChanged += OnTimelineTriggered; // 시네마틱 동기화 변수
+            shouldPlayPodiumTimeline.OnValueChanged += OnPodiumTimelineTriggered; // 시상식 시네마틱 동기화 변수
 
             // 플레이어 수 변경 감지
             currentPlayerCount.OnValueChanged += UpdatePlayerCountUI;
@@ -189,6 +207,7 @@ public class GameManager : NetworkBehaviour
         {
             remainingTime.OnValueChanged -= UpdateCountDownUI;
             shouldPlayTimeline.OnValueChanged -= OnTimelineTriggered; // 시네마틱 동기화 변수
+            shouldPlayPodiumTimeline.OnValueChanged -= OnPodiumTimelineTriggered; // 시상식 시네마틱 동기화 변수
 
             // 플레이어 수 변경 감지
             currentPlayerCount.OnValueChanged -= UpdatePlayerCountUI;
@@ -426,8 +445,9 @@ public class GameManager : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        currentGameState.Value = GameState.Ended;
+        Debug.Log("[GameManager] EndGame 호출됨");
 
+        currentGameState.Value = GameState.Ended;
 
         // 매치메이킹 서버에 게임 종료 신호 전송
         NetworkGameManager networkManager = FindObjectOfType<NetworkGameManager>();
@@ -436,10 +456,149 @@ public class GameManager : NetworkBehaviour
             networkManager.NotifyGameEnded();
         }
 
-        // 클라에 결과 화면 표시
-        ShowResultsClientRpc();
+        // 시상식 시네마틱 시작
+        Debug.Log("[GameManager] PodiumCeremony 코루틴 시작");
+        StartCoroutine(PodiumCeremony());
     }
 
+    private IEnumerator PodiumCeremony()
+    {
+        Debug.Log("[GameManager - SERVER] 시상식 시작");
+
+        // 1, 2, 3등 플레이어를 시상대로 이동
+        Dictionary<string, ulong> playerNameToClientId = new Dictionary<string, ulong>();
+
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            NetworkObject playerObject = client.PlayerObject;
+            if (playerObject == null) continue;
+
+            // 봇은 제외
+            BotController botController = playerObject.GetComponent<BotController>();
+            if (botController != null) continue;
+
+            PlayerController player = playerObject.GetComponent<PlayerController>();
+            if (player == null) continue;
+
+            string playerName = player.GetPlayerName();
+            playerNameToClientId[playerName] = client.ClientId;
+        }
+
+        // 1등 이동
+        if (rankings.Count > 0 && firstPlacePodium != null)
+        {
+            string firstName = rankings[0].ToString();
+            if (playerNameToClientId.ContainsKey(firstName))
+            {
+                MovePlayerToPodiumPosition(playerNameToClientId[firstName], firstPlacePodium);
+                Debug.Log($"[GameManager - SERVER] 1등 {firstName} 시상대로 이동");
+            }
+        }
+
+        // 2등 이동
+        if (rankings.Count > 1 && secondPlacePodium != null)
+        {
+            string secondName = rankings[1].ToString();
+            if (playerNameToClientId.ContainsKey(secondName))
+            {
+                MovePlayerToPodiumPosition(playerNameToClientId[secondName], secondPlacePodium);
+                Debug.Log($"[GameManager - SERVER] 2등 {secondName} 시상대로 이동");
+            }
+        }
+
+        // 3등 이동
+        if (rankings.Count > 2 && thirdPlacePodium != null)
+        {
+            string thirdName = rankings[2].ToString();
+            if (playerNameToClientId.ContainsKey(thirdName))
+            {
+                MovePlayerToPodiumPosition(playerNameToClientId[thirdName], thirdPlacePodium);
+                Debug.Log($"[GameManager - SERVER] 3등 {thirdName} 시상대로 이동");
+            }
+        }
+
+        // 시상식 타임라인 동기화 시작
+        podiumTimelineStartTime.Value = NetworkManager.Singleton.ServerTime.Time + SYNC_BUFFER;
+        shouldPlayPodiumTimeline.Value = true;
+
+        Debug.Log($"[GameManager - SERVER] 시상식 타임라인 시작 신호 전송, {podiumTimelineDuration}초 대기 시작");
+
+        // 시상식 지속 시간 대기 (수동 설정된 시간 사용)
+        float elapsedTime = 0f;
+        while (elapsedTime < podiumTimelineDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        Debug.Log("[GameManager - SERVER] 시상식 대기 완료, 결과 화면 표시 RPC 호출");
+
+        // 결과 화면 표시
+        ShowResultsClientRpc();
+
+        Debug.Log("[GameManager - SERVER] ShowResultsClientRpc 호출 완료");
+    }
+
+    private void OnPodiumTimelineTriggered(bool previous, bool current)
+    {
+        if (current && !previous)
+        {
+            StartCoroutine(PlayPodiumTimelineAtSyncTime());
+        }
+    }
+
+    private IEnumerator PlayPodiumTimelineAtSyncTime()
+    {
+        Debug.Log("[GameManager] 시상식 타임라인 시작 대기 중...");
+
+        // 네트워크 시간과 동기화
+        while (NetworkManager.Singleton.ServerTime.Time < podiumTimelineStartTime.Value)
+        {
+            yield return null;
+        }
+
+        Debug.Log("[GameManager] 시상식 타임라인 재생 시작");
+
+        // UI 숨기기
+        if (gameEndcountdown != null)
+            gameEndcountdown.gameObject.SetActive(false);
+        if (Mobile != null)
+            Mobile.SetActive(false);
+        if (FPSCount != null)
+            FPSCount.SetActive(false);
+        if (PingCount != null)
+            PingCount.SetActive(false);
+        if (LobbyUI != null)
+            LobbyUI.SetActive(false);
+        if (gameUI != null)
+            gameUI.SetActive(false);
+        if (optionsPanel != null)
+            optionsPanel.SetActive(false);
+        if (Options != null)
+            Options.SetActive(false);
+        if (GuidePanel != null)
+            GuidePanel.SetActive(false);
+        if (Guide != null)
+            Guide.SetActive(false);
+
+        // 시상식 타임라인 활성화 및 재생
+        if (podiumTimeline != null)
+        {
+            podiumTimeline.gameObject.SetActive(true);
+            podiumTimeline.Play();
+            Debug.Log($"[GameManager] 타임라인 재생 중... 길이: {podiumTimeline.duration}초");
+        }
+        else
+        {
+            Debug.LogWarning("[GameManager] podiumTimeline이 null입니다!");
+        }
+
+        // 커서 숨기기 (시상식 중에는)
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    // 이제 사용하지 않는 ShowPodiumCameraClientRpc 제거됨
 
     private void MovePlayerToPodiumPosition(ulong clientId, Transform podiumTransform)
     {
@@ -457,6 +616,13 @@ public class GameManager : NetworkBehaviour
         }
 
         PlayerController player = playerObject.GetComponent<PlayerController>();
+        if (player != null)
+        {
+            player.inputEnabled.Value = false;
+            player.ReleaseGrab();
+            player.ForceClearInputOnServer();
+            player.DoRespawn(podiumTransform.position, podiumTransform.rotation);
+        }
     }
 
     private void OnGameReadyCountdownChanged(bool previous, bool current)
@@ -510,8 +676,26 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void ShowResultsClientRpc()
     {
+        Debug.Log("[GameManager - CLIENT] 결과 화면 표시 ClientRpc 호출됨");
+
+        // 시상식 타임라인 끄기
+        if (podiumTimeline != null)
+        {
+            podiumTimeline.Stop();
+            podiumTimeline.gameObject.SetActive(false);
+            Debug.Log("[GameManager - CLIENT] 타임라인 정지 및 비활성화");
+        }
+
+        // 메인 카메라 복구
+        if (mainCamera != null)
+        {
+            mainCamera.gameObject.SetActive(true);
+            Debug.Log("[GameManager - CLIENT] 메인 카메라 활성화");
+        }
+
         //카운트 다운 내리기
-        gameEndcountdown.gameObject.SetActive(false);
+        if (gameEndcountdown != null)
+            gameEndcountdown.gameObject.SetActive(false);
 
         if (Mobile != null)
         {
@@ -800,13 +984,13 @@ public class GameManager : NetworkBehaviour
 
     private void ToggleGameUI(bool isActive)
     {
-        if (LobbyUI != null) LobbyUI.SetActive(false); // 로비는 항상 끔
         if (Mobile != null) Mobile.SetActive(isActive);
         if (FPSCount != null) FPSCount.SetActive(isActive);
         if (PingCount != null) PingCount.SetActive(isActive);
+        if (LobbyUI != null) LobbyUI.SetActive(false); // 로비는 항상 끔
         if (gameUI != null) gameUI.SetActive(isActive);
-        if (Options != null) Options.SetActive(isActive);
-        if (Guide != null) Guide.SetActive(isActive);
+        if (Options != null) Options.SetActive(false);
+        if (Guide != null) Guide.SetActive(false);
 
     }
 
