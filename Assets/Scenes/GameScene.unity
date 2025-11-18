@@ -104104,6 +104104,7 @@ MonoBehaviour:
   - {fileID: 1503271906}
   - {fileID: 963050117}
   - {fileID: 92739513}
+  mobileUI: {fileID: 614424049}
 --- !u!1 &1761439519
 GameObject:
   m_ObjectHideFlags: 0
