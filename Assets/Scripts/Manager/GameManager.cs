@@ -22,35 +22,15 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private TMP_Text gameEndcountdown; // 1등이 결정난 이후 10초 카운트
     [SerializeField] private TMP_Text inGameReadyText; // 3..2..1.. 시작 텍스트
     [SerializeField] private TMP_Text NowPlayerCount; // 현재 접속자 수
-    [SerializeField] private GameObject resultPanel; // 하얀 결과 화면
     [SerializeField] private TMP_Text firstPlaceText;
     [SerializeField] private TMP_Text secondPlaceText;
     [SerializeField] private TMP_Text thirdPlaceText;
-    [SerializeField] private Button mainButton;
     [SerializeField] private TMP_Text QualifiedText;
     [SerializeField] private GameObject Mobile;
     [SerializeField] private GameObject FPSCount;
     [SerializeField] private GameObject PingCount;
     [SerializeField] private GameObject LobbyUI;
     [SerializeField] private GameObject gameUI;
-
-    [Header("Options Button")]
-    [SerializeField] private Button optionsButton;
-    [SerializeField] private Button closeOptionsButton;
-    [SerializeField] private GameObject optionsPanel;   // 옵션창 (Panel)
-    [SerializeField] private GameObject Options;
-
-    [Header("Guide Button")]
-    [SerializeField] private Button GuideButton;
-    [SerializeField] private Button closeGuideButton;
-    [SerializeField] private Button closeItemButton;
-    [SerializeField] private GameObject GuidePanel;   // 가이드창 (Panel)
-    [SerializeField] private GameObject ItemPanel;
-    [SerializeField] private GameObject Guide;
-    [SerializeField] private Button left;
-    [SerializeField] private Button right;
-    [SerializeField] private GameObject first;
-    [SerializeField] private GameObject second;
 
     [Header("Settings")]
     [SerializeField] private float startCountdownTime = 5f;
@@ -113,33 +93,6 @@ public class GameManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        // UI 초기 숨기기
-        if (resultPanel != null)
-            resultPanel.SetActive(false);
-        // 버튼 이벤트 연결
-        if (mainButton != null)
-            mainButton.onClick.AddListener(GoToMain);
-        //옵션 버튼 연결
-        if (closeOptionsButton != null)
-            closeOptionsButton.onClick.AddListener(OnClickCloseOptions);
-
-        if (optionsButton != null)
-            optionsButton.onClick.AddListener(OnClickOptionsButton);
-
-        if (GuideButton != null)
-            GuideButton.onClick.AddListener(OnClickGuideButton);
-
-        if (closeGuideButton != null)
-            closeGuideButton.onClick.AddListener(OnClickCloseGuide);
-
-        if (closeItemButton != null)
-            closeItemButton.onClick.AddListener(OnClickCloseItem);
-
-        if (left != null)
-            left.onClick.AddListener(Left_page);
-
-        if (right != null)
-            right.onClick.AddListener(Right_page);
         // 커서 관리
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
@@ -543,26 +496,13 @@ public class GameManager : NetworkBehaviour
         {
             gameUI.SetActive(false);
         }
-        if (optionsPanel != null)
-        {
-            optionsPanel.SetActive(false);
-        }
-        if (Options != null)
-        {
-            Options.SetActive(false);
-        }
-        if (GuidePanel != null)
-        {
-            GuidePanel.SetActive(false);
-        }
-        if (Guide != null)
-        {
-            Guide.SetActive(false);
-        }
-        if (resultPanel != null)
-        {
-            resultPanel.SetActive(true);
-        }
+
+        UIManager.Instance.ToggleOptionPanel(false);
+        UIManager.Instance.ToggleOptionButton(false);
+        UIManager.Instance.ToggleGuidePanel(false);
+        UIManager.Instance.ToggleGuideButton(false);
+
+        UIManager.Instance.ToggleResultPanel(true);
 
         // 커서 보이기
         Cursor.lockState = CursorLockMode.None;
@@ -598,69 +538,13 @@ public class GameManager : NetworkBehaviour
         {
             gameUI.gameObject.SetActive(true);
         }
-        if (optionsPanel != null)
-        {
-            optionsPanel.SetActive(false);
-        }
-        if (Options != null)
-        {
-            Options.SetActive(false);
-        }
-        if (GuidePanel != null)
-        {
-            GuidePanel.SetActive(false);
-        }
-        if (Guide != null)
-        {
-            Guide.SetActive(false);
-        }
+
+        UIManager.Instance.ToggleOptionPanel(false);
+        UIManager.Instance.ToggleOptionButton(false);
+        UIManager.Instance.ToggleGuidePanel(false);
+        UIManager.Instance.ToggleGuideButton(false);
     }
 
-    public void OnClickOptionsButton()
-    {
-        if (optionsPanel != null)
-            optionsPanel.SetActive(true);
-    }
-
-    public void OnClickCloseOptions()
-    {
-        if (optionsPanel != null)
-            optionsPanel.SetActive(false);
-    }
-
-    public void OnClickGuideButton()
-    {
-        if (GuidePanel != null)
-            GuidePanel.SetActive(true);
-    }
-
-    public void OnClickCloseGuide()
-    {
-        if (GuidePanel != null)
-            GuidePanel.SetActive(false);
-    }
-
-    public void OnClickCloseItem()
-    {
-        if (ItemPanel != null)
-            ItemPanel.SetActive(false);
-    }
-
-    public void Left_page()
-    {
-        if (second != null)
-            second.SetActive(false);
-        if (first != null)
-            first.SetActive(true);
-    }
-
-    public void Right_page()
-    {
-        if (first != null)
-            first.SetActive(false);
-        if (second != null)
-            second.SetActive(true);
-    }
     // 서버에서 모든 플레이어의 입력을 차단하고 상태 초기화
     private void DisableAllPlayersInputOnServer()
     {
@@ -788,12 +672,6 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    private void GoToMain()
-    {
-        NetworkManager.Singleton.Shutdown();
-        SceneManager.LoadScene(mainSceneName);
-    }
-
     private void OnTimelineTriggered(bool previous, bool current)
     {
         if (current && !previous)
@@ -840,9 +718,8 @@ public class GameManager : NetworkBehaviour
         if (gameUI != null) gameUI.SetActive(isActive);
 
         // 게임 시작 후에는 Options와 Guide를 끔
-        if (Options != null) Options.SetActive(false);
-        if (Guide != null) Guide.SetActive(false);
-
+        UIManager.Instance.ToggleOptionButton(false);
+        UIManager.Instance.ToggleGuideButton(false);
     }
 
     private void OnTimelineFinished(PlayableDirector director)
