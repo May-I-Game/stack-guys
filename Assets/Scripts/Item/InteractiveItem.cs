@@ -33,9 +33,13 @@ public abstract class InteractiveItem : GrabbableObject
         {
             ActivateItem();
         }
-        else
+        else if (triggerType == ItemTriggerType.UseOnImpact)
         {
-            Debug.Log($"[InteractiveItem] UseOnGrab이 아님. triggerType: {triggerType}");
+            // UseOnImpact 타입(폭탄)은 잡는 순간 스포너에게 알림
+            if (SourceSpawner != null)
+            {
+                SourceSpawner.OnItemConsumed();
+            }
         }
     }
 
@@ -78,8 +82,8 @@ public abstract class InteractiveItem : GrabbableObject
         if (!IsSpawned) return;
         //Debug.Log($"[Item] {gameObject.name} 사용됨!");
 
-        // 스포너에게 아이템이 사용되었음을 알림
-        if (SourceSpawner != null)
+        // UseOnGrab 타입(버프 아이템)만 여기서 스포너에게 알림
+        if (triggerType == ItemTriggerType.UseOnGrab && SourceSpawner != null)
         {
             SourceSpawner.OnItemConsumed();
         }
