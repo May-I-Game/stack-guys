@@ -35,18 +35,18 @@ public class Bomb : InteractiveItem
     {
         base.OnNetworkSpawn();
 
-        // 서버만 물리 활성화 (던질 수 있게)
+        // 서버만 물리 활성화 (권위 서버 모델)
         if (IsServer)
         {
             if (Rb != null)
             {
-                Rb.isKinematic = true;      // 먹기 전에는 고정 (물리 비활성화)
-                Rb.useGravity = true;       // 중력 설정은 유지 (먹은 후 활성화될 때 사용)
+                Rb.isKinematic = false;  // 서버: 물리 계산
+                Rb.useGravity = true;
             }
         }
         else
         {
-            // 클라이언트는 Kinematic
+            // 클라이언트는 Kinematic (NetworkTransform으로 위치만 받음)
             if (Rb != null)
             {
                 Rb.isKinematic = true;
