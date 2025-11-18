@@ -1570,6 +1570,11 @@ public class PlayerController : NetworkBehaviour
                 break;
 
             case "Death":
+                // 무적 버프 중이면 죽지 않음
+                if (buffManager != null && buffManager.IsInvincible)
+                {
+                    break;
+                }
                 // 일반 죽음
                 PlayerDeath(isOceanDeath: false);
                 break;
