@@ -8,7 +8,9 @@ public class MobileInputManager : MonoBehaviour
     public FixedJoystick joystick;
     public Button jumpButton;
     public Button grabButton;
-    public Button[] stickerButtons;
+    public Button stickerButton;
+    public GameObject stickerPanel;
+    public Button[] stickerReqButtons;
 
     private Canvas canvas;
 
@@ -46,5 +48,18 @@ public class MobileInputManager : MonoBehaviour
             canvas.enabled = false;
         }
     }
-
+    public void ShowStickerPanel()
+    {
+        if (stickerPanel != null)
+        {
+            stickerPanel.SetActive(true);
+        }
+    }
+    public void HideStickerPanel()
+    {
+        if (stickerPanel != null)
+        {
+            stickerPanel.SetActive(true);
+        }
+    }
 }
