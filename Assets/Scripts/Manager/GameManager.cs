@@ -800,10 +800,10 @@ public class GameManager : NetworkBehaviour
 
     private void ToggleGameUI(bool isActive)
     {
+        if (LobbyUI != null) LobbyUI.SetActive(false); // 로비는 항상 끔
         if (Mobile != null) Mobile.SetActive(isActive);
         if (FPSCount != null) FPSCount.SetActive(isActive);
         if (PingCount != null) PingCount.SetActive(isActive);
-        if (LobbyUI != null) LobbyUI.SetActive(false); // 로비는 항상 끔
         if (gameUI != null) gameUI.SetActive(isActive);
         if (Options != null) Options.SetActive(isActive);
         if (Guide != null) Guide.SetActive(isActive);
