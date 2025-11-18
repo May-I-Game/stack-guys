@@ -1130,7 +1130,7 @@ MonoBehaviour:
   groundCheckInterval: 2
   lerpSpeed: 15
   smoothTime: 0.1
-  bodyPrefab: {fileID: 2354954351810252770, guid: 0708bba17fbec6249998b48e1a436e2b, type: 3}
+  bodyPrefab: {fileID: -2869515067810661690, guid: 7d37a12a75157724d9ec53117425c635, type: 3}
   RespawnId:
     m_InternalValue: 0
   respawnManager: {fileID: 0}
@@ -1191,8 +1191,8 @@ RectTransform:
   m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_ConstrainProportionsScale: 1
   m_Children:
-  - {fileID: 3514012858640485769}
   - {fileID: 2054341815238008228}
+  - {fileID: 3514012858640485769}
   m_Father: {fileID: 6127548992975062395}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1974,7 +1974,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6961286565246192699, guid: c4760c00960a8d7408a7561628714ab0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -350
+      value: -230
       objectReference: {fileID: 0}
     - target: {fileID: 6961286565246192699, guid: c4760c00960a8d7408a7561628714ab0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
