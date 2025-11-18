@@ -1481,8 +1481,8 @@ GameObject:
   - component: {fileID: 7839709260095116719}
   - component: {fileID: -7203480982915365540}
   - component: {fileID: -294164076719901094}
-  - component: {fileID: 2593437910564063128}
   - component: {fileID: 3455029593844443672}
+  - component: {fileID: 2054137512461273016}
   m_Layer: 6
   m_Name: Bot_Player
   m_TagString: Player
@@ -1645,6 +1645,41 @@ MonoBehaviour:
   jumpBuffLoopEffect: {fileID: 0}
   speedBuffLoopEffect: {fileID: 0}
   invincibleBuffLoopEffect: {fileID: 0}
+  footstepAudioSource: {fileID: 0}
+  footstepClip: {fileID: 0}
+  footstepVolume: 0.5
+  footstepInterval: 0.4
+  jumpAudioSource: {fileID: 0}
+  jumpVoiceClip: {fileID: 0}
+  jumpEffectClip: {fileID: 0}
+  jumpVoiceVolume: 0.7
+  jumpEffectVolume: 0.5
+  diveAudioSource: {fileID: 0}
+  diveStartClip: {fileID: 0}
+  diveLandVoiceClip: {fileID: 0}
+  diveLandImpactClip: {fileID: 0}
+  diveStartVolume: 0.6
+  diveLandVoiceVolume: 0.7
+  diveLandImpactVolume: 0.8
+  buffAudioSource: {fileID: 0}
+  buffPickupClip: {fileID: 0}
+  buffPickupVolume: 0.7
+  buffLoopAudioSource: {fileID: 0}
+  buffLoopClip: {fileID: 0}
+  invincibleBuffLoopClip: {fileID: 0}
+  buffLoopVolume: 0.5
+  respawnAudioSource: {fileID: 0}
+  respawnClip: {fileID: 0}
+  respawnVolume: 0.7
+  deathAudioSource: {fileID: 0}
+  deathVoiceClip: {fileID: 0}
+  deathSpikeClip: {fileID: 0}
+  deathOceanClip: {fileID: 0}
+  deathVolume: 0.7
+  hitAudioSource: {fileID: 0}
+  hitVoiceClip: {fileID: 0}
+  hitImpactClip: {fileID: 0}
+  hitVolume: 0.7
   inputSendInterval: 0.05
   inputDeltaThreshold: 0.1
   speedThreshold: 0.5
@@ -1661,20 +1696,6 @@ MonoBehaviour:
   rotateIntervalMax: 1.5
   jumpIntervalMin: 3
   jumpIntervalMax: 5
---- !u!114 &2593437910564063128
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5785324236016558479}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d155f2bba9968f14080ed38b22627aaf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  nameText: {fileID: 6703521566072824062}
 --- !u!114 &3455029593844443672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1691,6 +1712,23 @@ MonoBehaviour:
   visibleRange: 20
   hysteresisDistance: 5
   updateInterval: 0.5
+--- !u!114 &2054137512461273016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5785324236016558479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bcbd9fbc272eaa4f9ae02df86e0a6cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  nameText: {fileID: 6703521566072824062}
+  stickerImage: {fileID: 0}
+  stickerSprites: []
+  stickerDuration: 3
 --- !u!1 &5873298213058847420
 GameObject:
   m_ObjectHideFlags: 0
