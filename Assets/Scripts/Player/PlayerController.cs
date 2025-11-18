@@ -814,12 +814,13 @@ public class PlayerController : NetworkBehaviour
         PlayThrowSound();
 
         // 던지기 방향 계산 (앞쪽 + 약간 위)
-        Vector3 throwDirection = (transform.forward + Vector3.up * 0.5f).normalized;
+        Vector3 throwDirection = Vector3.zero;
 
         // 플레이어를 던지는 경우
         PlayerController targetPlayer = holdingObject.GetComponent<PlayerController>();
         if (targetPlayer != null)
         {
+            throwDirection = (transform.forward + Vector3.up * 0.5f).normalized;
             ThrowPlayer(targetPlayer, throwDirection);
         }
 
@@ -827,6 +828,7 @@ public class PlayerController : NetworkBehaviour
         GrabbableObject grabbable = holdingObject.GetComponent<GrabbableObject>();
         if (grabbable != null)
         {
+            throwDirection = (transform.forward + Vector3.up * 0.2f).normalized;
             ThrowObject(grabbable, throwDirection);
         }
 
@@ -860,14 +862,39 @@ public class PlayerController : NetworkBehaviour
     {
         // NEW: GrabbableObject에 던져졌음을 알림 (NetworkTransform 최적화)
         target.OnThrown();
-        target.Rb.AddForce(throwDirection * throwForce, ForceMode.Impulse);
 
-        // 충돌 재활성화
+        // Rigidbody 물리 활성화
+        target.Rb.WakeUp();
+
+        // 충돌 재활성화 (원래 레이어로 복구)
         target.GameObj.layer = heldObjectOriginLayer;
         SetTriggerClientRpc("Throw");
 
-        //Debug.Log($"[잡기] 오브젝트 레이어 변환: {target.gameObject.layer}");
-        //Debug.Log("[잡기] 오브젝트를 던졌습니다");
+        // 플레이어의 현재 이동 속도 계산
+        Vector3 playerVelocity = Vector3.zero;
+        if (moveDir.magnitude >= 0.1f)
+        {
+            float currentSpeed = walkSpeed * SpeedMul;
+            playerVelocity = new Vector3(moveDir.x, 0, moveDir.y) * currentSpeed;
+        }
+
+        // 던지는 방향 속도 + 플레이어 이동 속도 합산
+        Vector3 throwVelocity = throwDirection * throwForce + playerVelocity;
+
+        // ForceMode.VelocityChange - mass 무시, 즉시 velocity 변경
+        // 다음 물리 업데이트까지 기다림 WaitForFixedUpdate 후 적용 (안정적인 물리 적용)
+        StartCoroutine(ApplyThrowForce(target.Rb, throwVelocity));
+    }
+
+    private System.Collections.IEnumerator ApplyThrowForce(Rigidbody rb, Vector3 velocity)
+    {
+        // 다음 FixedUpdate까지 대기
+        yield return new WaitForFixedUpdate();
+
+        if (rb != null && !rb.isKinematic)
+        {
+            rb.AddForce(velocity, ForceMode.VelocityChange);
+        }
     }
 
     protected void PlayerHeld()
