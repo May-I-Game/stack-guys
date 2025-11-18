@@ -73,10 +73,13 @@ public class PlayerController : NetworkBehaviour
     public AudioClip buffPickupClip; // 버프 아이템 획득 사운드
     [Range(0f, 1f)] public float buffPickupVolume = 0.7f; // 버프 아이템 획득 볼륨
 
-    public AudioSource buffLoopAudioSource; // 버프 루프 오디오 소스
+    public AudioSource buffLoopAudioSource; // 버프 루프 오디오 소스 (속도/점프)
     public AudioClip buffLoopClip; // 버프 루프 사운드 (속도/점프 버프용)
-    public AudioClip invincibleBuffLoopClip; // 무적 버프 루프 사운드
     [Range(0f, 1f)] public float buffLoopVolume = 0.5f; // 버프 루프 볼륨
+
+    public AudioSource invincibleBuffLoopAudioSource; // 무적 버프 루프 오디오 소스
+    public AudioClip invincibleBuffLoopClip; // 무적 버프 루프 사운드
+    [Range(0f, 1f)] public float invincibleBuffLoopVolume = 0.5f; // 무적 버프 루프 볼륨
 
     public AudioSource respawnAudioSource; // 리스폰 오디오 소스
     public AudioClip respawnClip; // 리스폰 효과음
@@ -92,6 +95,10 @@ public class PlayerController : NetworkBehaviour
     public AudioClip hitVoiceClip; // 피격 음성 효과음 (항상 재생)
     public AudioClip hitImpactClip; // 피격 환경 효과음 (충돌음)
     [Range(0f, 1f)] public float hitVolume = 0.7f; // 피격 볼륨
+
+    public AudioSource throwAudioSource; // 던지기 오디오 소스
+    public AudioClip throwClip; // 던지기 효과음
+    [Range(0f, 1f)] public float throwVolume = 0.7f; // 던지기 볼륨
 
     [Header("Network Optimization")]
     [Tooltip("입력 전송 최소 간격 (초). 모바일 조이스틱 떨림 방지. 권장: 0.033~0.05")]
@@ -803,6 +810,9 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
+        // 던지기 효과음 재생
+        PlayThrowSound();
+
         // 던지기 방향 계산 (앞쪽 + 약간 위)
         Vector3 throwDirection = (transform.forward + Vector3.up * 0.5f).normalized;
 
@@ -1352,6 +1362,20 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    private void PlayThrowSound()
+    {
+        PlayThrowSoundClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayThrowSoundClientRpc()
+    {
+        if (throwAudioSource != null && throwClip != null)
+        {
+            throwAudioSource.PlayOneShot(throwClip, throwVolume);
+        }
+    }
+
     //////////////////////////////////////////////////////////////
     // 버프 아이템 이펙트 (1회용, 루프용)
     // 서버 권한 기반으로 제어, 실제 재생은 ClientRpc로 각 클라이언트에서 처리
@@ -1446,26 +1470,33 @@ public class PlayerController : NetworkBehaviour
     // 버프 루프 사운드 토글 함수
     private void ToggleLoopSound(AudioClip clip, bool enabled)
     {
-        if (buffLoopAudioSource == null || clip == null) return;
+        if (clip == null) return;
+
+        // 무적 버프인 경우 별도 오디오 소스 사용
+        bool isInvincibleClip = (clip == invincibleBuffLoopClip);
+        AudioSource targetAudioSource = isInvincibleClip ? invincibleBuffLoopAudioSource : buffLoopAudioSource;
+        float targetVolume = isInvincibleClip ? invincibleBuffLoopVolume : buffLoopVolume;
+
+        if (targetAudioSource == null) return;
 
         if (enabled)
         {
             // 루프 사운드 재생
-            if (!buffLoopAudioSource.isPlaying || buffLoopAudioSource.clip != clip)
+            if (!targetAudioSource.isPlaying || targetAudioSource.clip != clip)
             {
-                buffLoopAudioSource.clip = clip;
-                buffLoopAudioSource.volume = buffLoopVolume;
-                buffLoopAudioSource.loop = true;
-                buffLoopAudioSource.Play();
+                targetAudioSource.clip = clip;
+                targetAudioSource.volume = targetVolume;
+                targetAudioSource.loop = true;
+                targetAudioSource.Play();
             }
         }
         else
         {
             // 루프 사운드 중지
-            if (buffLoopAudioSource.isPlaying && buffLoopAudioSource.clip == clip)
+            if (targetAudioSource.isPlaying && targetAudioSource.clip == clip)
             {
-                buffLoopAudioSource.Stop();
-                buffLoopAudioSource.clip = null;
+                targetAudioSource.Stop();
+                targetAudioSource.clip = null;
             }
         }
     }
@@ -1570,6 +1601,11 @@ public class PlayerController : NetworkBehaviour
                 break;
 
             case "Death":
+                // 무적 버프 중이면 죽지 않음
+                if (buffManager != null && buffManager.IsInvincible)
+                {
+                    break;
+                }
                 // 일반 죽음
                 PlayerDeath(isOceanDeath: false);
                 break;
