@@ -78,6 +78,21 @@ public class PlayerController : NetworkBehaviour
     public AudioClip invincibleBuffLoopClip; // 무적 버프 루프 사운드
     [Range(0f, 1f)] public float buffLoopVolume = 0.5f; // 버프 루프 볼륨
 
+    public AudioSource respawnAudioSource; // 리스폰 오디오 소스
+    public AudioClip respawnClip; // 리스폰 효과음
+    [Range(0f, 1f)] public float respawnVolume = 0.7f; // 리스폰 볼륨
+
+    public AudioSource deathAudioSource; // 죽음 오디오 소스
+    public AudioClip deathVoiceClip; // 죽음 음성 효과음 (항상 재생)
+    public AudioClip deathSpikeClip; // 가시/장애물 죽음 환경음 (Death 태그)
+    public AudioClip deathOceanClip; // 물에 빠진 죽음 환경음 (Ocean 태그)
+    [Range(0f, 1f)] public float deathVolume = 0.7f; // 죽음 볼륨
+
+    public AudioSource hitAudioSource; // 피격 오디오 소스
+    public AudioClip hitVoiceClip; // 피격 음성 효과음 (항상 재생)
+    public AudioClip hitImpactClip; // 피격 환경 효과음 (충돌음)
+    [Range(0f, 1f)] public float hitVolume = 0.7f; // 피격 볼륨
+
     [Header("Network Optimization")]
     [Tooltip("입력 전송 최소 간격 (초). 모바일 조이스틱 떨림 방지. 권장: 0.033~0.05")]
     public float inputSendInterval = 0.05f;  // 50ms = 20Hz
@@ -385,7 +400,7 @@ public class PlayerController : NetworkBehaviour
             {
                 cam.OnTargetObjectWarped(this.transform, delta);
             }
-            
+
             return;
         }
 
@@ -975,7 +990,7 @@ public class PlayerController : NetworkBehaviour
         escapeJumpCount = 0;
     }
 
-    public void PlayerDeath()
+    public void PlayerDeath(bool isOceanDeath = false)
     {
         if (netIsDeath.Value) return;
 
@@ -987,6 +1002,9 @@ public class PlayerController : NetworkBehaviour
         // 인풋벡터 초기화
         moveDir = Vector2.zero;
         ReleaseGrab();
+
+        // 죽음 사운드 재생 (죽음 타입에 따라)
+        PlayDeathSound(isOceanDeath);
 
         SetTriggerClientRpc("Death");
 
@@ -1044,6 +1062,8 @@ public class PlayerController : NetworkBehaviour
 
         // 리스폰 파티클 재생
         PlayRespawnParticle();
+        // 리스폰 사운드 재생
+        PlayRespawnSound();
 
         ResetPlayerState();
     }
@@ -1266,6 +1286,72 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    // 리스폰 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
+    private void PlayRespawnSound()
+    {
+        PlayRespawnSoundClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayRespawnSoundClientRpc()
+    {
+        if (respawnAudioSource != null && respawnClip != null)
+        {
+            respawnAudioSource.PlayOneShot(respawnClip, respawnVolume);
+        }
+    }
+
+    // 죽음 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
+    private void PlayDeathSound(bool isOceanDeath)
+    {
+        PlayDeathSoundClientRpc(isOceanDeath);
+    }
+
+    [ClientRpc]
+    private void PlayDeathSoundClientRpc(bool isOceanDeath)
+    {
+        if (deathAudioSource != null)
+        {
+            // 1. 음성 효과음 재생 (항상)
+            if (deathVoiceClip != null)
+            {
+                deathAudioSource.PlayOneShot(deathVoiceClip, deathVolume);
+            }
+
+            // 2. 환경 효과음 재생 (태그에 따라)
+            AudioClip environmentClip = isOceanDeath ? deathOceanClip : deathSpikeClip;
+            if (environmentClip != null)
+            {
+                deathAudioSource.PlayOneShot(environmentClip, deathVolume);
+            }
+        }
+    }
+
+    // 피격 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
+    private void PlayHitSound()
+    {
+        PlayHitSoundClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayHitSoundClientRpc()
+    {
+        if (hitAudioSource != null)
+        {
+            // 1. 음성 효과음 재생 (항상)
+            if (hitVoiceClip != null)
+            {
+                hitAudioSource.PlayOneShot(hitVoiceClip, hitVolume);
+            }
+
+            // 2. 환경 효과음 재생 (충돌음)
+            if (hitImpactClip != null)
+            {
+                hitAudioSource.PlayOneShot(hitImpactClip, hitVolume);
+            }
+        }
+    }
+
     //////////////////////////////////////////////////////////////
     // 버프 아이템 이펙트 (1회용, 루프용)
     // 서버 권한 기반으로 제어, 실제 재생은 ClientRpc로 각 클라이언트에서 처리
@@ -1479,12 +1565,18 @@ public class PlayerController : NetworkBehaviour
         switch (collision.gameObject.tag)
         {
             case "Ocean":
+                // 물에 빠져서 죽음
+                PlayerDeath(isOceanDeath: true);
+                break;
+
             case "Death":
-                // 캐릭터가 가지고 있는 리스폰 인덱스로 이동
-                PlayerDeath();
+                // 일반 죽음
+                PlayerDeath(isOceanDeath: false);
                 break;
 
             case "weakObstacles":
+                // 피격 사운드 재생
+                PlayHitSound();
                 // 충돌 지점의 평균 법선 벡터 계산
                 Vector3 avgNormal = Vector3.zero;
                 foreach (ContactPoint contact in collision.contacts)
@@ -1496,6 +1588,7 @@ public class PlayerController : NetworkBehaviour
                 // 장애물에 부딪힘
                 PlayHitAnimation("weakHit");
                 BouncePlayer(avgNormal, bounceForce);
+
                 break;
 
             case "StrongObstacles":
