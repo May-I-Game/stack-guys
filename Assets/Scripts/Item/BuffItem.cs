@@ -34,35 +34,9 @@ public abstract class BuffItem : InteractiveItem
         // 플레이어의 버프 픽업 이펙트 재생
         Holder.PlayBuffPickupEffect();
 
-        // 스포너에게 아이템이 소비되었음을 알림
-        NotifySpawnerItemConsumed();
-
         base.ActivateItem();
     }
 
     // 버프를 받을 플레이어
     protected abstract void ApplyBuffToPlayer(PlayerController player);
-
-    // 가장 가까운 ItemSpawner에게 알림
-    private void NotifySpawnerItemConsumed()
-    {
-        ItemSpawner[] spawners = FindObjectsByType<ItemSpawner>(FindObjectsSortMode.None);
-        ItemSpawner closestSpawner = null;
-        float closestDistance = float.MaxValue;
-
-        foreach (var spawner in spawners)
-        {
-            float distance = Vector3.Distance(transform.position, spawner.transform.position);
-            if (distance < closestDistance)
-            {
-                closestDistance = distance;
-                closestSpawner = spawner;
-            }
-        }
-
-        if (closestSpawner != null)
-        {
-            closestSpawner.OnItemConsumed();
-        }
-    }
 }
