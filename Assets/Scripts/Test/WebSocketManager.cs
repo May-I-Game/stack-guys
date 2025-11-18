@@ -198,7 +198,7 @@ public class WebSocketManager : MonoBehaviour
         Vector3 spawnPos = new Vector3(UnityEngine.Random.Range(-545f, -535f), 1f, UnityEngine.Random.Range(10f, 15f));
         GameObject bot = Instantiate(playerPref, spawnPos, Quaternion.identity);
         bot.GetComponent<NetworkObject>().Spawn();
-        PlayerCanvasManager nameSync = bot.GetComponent<PlayerCanvasManager>();
+        PlayerNameSync nameSync = bot.GetComponent<PlayerNameSync>();
         if (nameSync != null)
         {
             nameSync.SetPlayerName("ConsoleBot");

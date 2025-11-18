@@ -194,7 +194,7 @@ public class NetworkGameManager : MonoBehaviour
             networkObject.SpawnAsPlayerObject(clientId, true);
 
             // 이름을 UI text에 설정(스폰 직후)
-            PlayerCanvasManager nameSync = playerInstance.GetComponent<PlayerCanvasManager>();
+            PlayerNameSync nameSync = playerInstance.GetComponent<PlayerNameSync>();
             if (nameSync != null)
             {
                 nameSync.SetPlayerName(playerName);
