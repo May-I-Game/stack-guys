@@ -43,7 +43,9 @@ public class GameManager : NetworkBehaviour
     [Header("Guide Button")]
     [SerializeField] private Button GuideButton;
     [SerializeField] private Button closeGuideButton;
+    [SerializeField] private Button closeItemButton;
     [SerializeField] private GameObject GuidePanel;   // 가이드창 (Panel)
+    [SerializeField] private GameObject ItemPanel;
     [SerializeField] private GameObject Guide;
     [SerializeField] private Button left;
     [SerializeField] private Button right;
@@ -124,6 +126,9 @@ public class GameManager : NetworkBehaviour
 
         if (closeGuideButton != null)
             closeGuideButton.onClick.AddListener(OnClickCloseGuide);
+
+        if (closeItemButton != null)
+            closeItemButton.onClick.AddListener(OnClickCloseItem);
 
         if (left != null)
             left.onClick.AddListener(Left_page);
@@ -589,7 +594,7 @@ public class GameManager : NetworkBehaviour
         }
         if (Options != null)
         {
-            Options.SetActive(true);
+            Options.SetActive(false);
         }
         if (GuidePanel != null)
         {
@@ -597,7 +602,7 @@ public class GameManager : NetworkBehaviour
         }
         if (Guide != null)
         {
-            Guide.SetActive(true);
+            Guide.SetActive(false);
         }
     }
 
@@ -623,6 +628,12 @@ public class GameManager : NetworkBehaviour
     {
         if (GuidePanel != null)
             GuidePanel.SetActive(false);
+    }
+
+    public void OnClickCloseItem()
+    {
+        if (ItemPanel != null)
+            ItemPanel.SetActive(false);
     }
 
     public void Left_page()
