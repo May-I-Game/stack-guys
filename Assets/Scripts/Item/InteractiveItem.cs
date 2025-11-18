@@ -15,9 +15,6 @@ public abstract class InteractiveItem : GrabbableObject
     private bool wasThrown = false;
     protected PlayerController thrower;
 
-    // 아이템을 스폰한 스포너 (스폰 시 설정됨)
-    public ItemSpawner SourceSpawner { get; set; }
-
     public override void OnGrabbed(PlayerController player)
     {
         base.OnGrabbed(player);
@@ -33,13 +30,9 @@ public abstract class InteractiveItem : GrabbableObject
         {
             ActivateItem();
         }
-        else if (triggerType == ItemTriggerType.UseOnImpact)
+        else
         {
-            // UseOnImpact 타입(폭탄)은 잡는 순간 스포너에게 알림
-            if (SourceSpawner != null)
-            {
-                SourceSpawner.OnItemConsumed();
-            }
+            Debug.Log($"[InteractiveItem] UseOnGrab이 아님. triggerType: {triggerType}");
         }
     }
 
@@ -81,12 +74,6 @@ public abstract class InteractiveItem : GrabbableObject
     {
         if (!IsSpawned) return;
         //Debug.Log($"[Item] {gameObject.name} 사용됨!");
-
-        // UseOnGrab 타입(버프 아이템)만 여기서 스포너에게 알림
-        if (triggerType == ItemTriggerType.UseOnGrab && SourceSpawner != null)
-        {
-            SourceSpawner.OnItemConsumed();
-        }
 
         // 플레이어 릴리즈 그랩
         if (Holder != null)
