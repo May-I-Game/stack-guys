@@ -534,7 +534,7 @@ MonoBehaviour:
   groundCheckDist: 0.1
   groundLayerMask:
     serializedVersion: 2
-    m_Bits: 1096
+    m_Bits: 1352
   bounceForce: 5
   animator: {fileID: 2683077748279760156}
   walkParticle: {fileID: 1549851346234078871}
