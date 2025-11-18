@@ -477,8 +477,10 @@ MonoBehaviour:
   buffPickupVolume: 0.7
   buffLoopAudioSource: {fileID: 2230093427692616206}
   buffLoopClip: {fileID: 8300000, guid: cb8efadc31735404990852adee92e9f8, type: 3}
-  invincibleBuffLoopClip: {fileID: 8300000, guid: 47bd1601e60432343bdb3d7421ce26e4, type: 3}
   buffLoopVolume: 0.5
+  invincibleBuffLoopAudioSource: {fileID: 1931534037198876478}
+  invincibleBuffLoopClip: {fileID: 8300000, guid: 47bd1601e60432343bdb3d7421ce26e4, type: 3}
+  invincibleBuffLoopVolume: 0.5
   respawnAudioSource: {fileID: 3230912013547514108}
   respawnClip: {fileID: 8300000, guid: f0275c29b52376a40949f9c19fa4f2af, type: 3}
   respawnVolume: 0.4
@@ -491,6 +493,9 @@ MonoBehaviour:
   hitVoiceClip: {fileID: 8300000, guid: 7f49a3714ef345a4ba50941af49e0163, type: 3}
   hitImpactClip: {fileID: 8300000, guid: e30c384e8591b1b498c383cbae1fd0cf, type: 3}
   hitVolume: 0.7
+  throwAudioSource: {fileID: 3230912013547514108}
+  throwClip: {fileID: 8300000, guid: e03957dfe85ccbd4f917fa1544ae7545, type: 3}
+  throwVolume: 0.7
   inputSendInterval: 0.05
   inputDeltaThreshold: 0.1
   speedThreshold: 0.5
@@ -2276,6 +2281,11 @@ PrefabInstance:
 --- !u!198 &1398758520023285383 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 8790286879126538042, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
+  m_PrefabInstance: {fileID: 7679829378893920701}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &1931534037198876478 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 8095805100435707523, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
   m_PrefabInstance: {fileID: 7679829378893920701}
   m_PrefabAsset: {fileID: 0}
 --- !u!82 &2230093427692616206 stripped
