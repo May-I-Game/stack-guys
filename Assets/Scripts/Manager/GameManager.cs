@@ -67,6 +67,11 @@ public class GameManager : NetworkBehaviour
     [Header("Audio")]
     [SerializeField] private AudioSource lobbyBGM;
     [SerializeField] private AudioSource trackBGM;
+    [SerializeField] private AudioSource countdownAudioSource; // 카운트다운 효과음 소스
+    [SerializeField] private AudioClip lobbyCountdownClip; // 로비 카운트다운 효과음 (5, 4, 3, 2, 1)
+    [SerializeField] private AudioClip gameCountdownClip; // 인게임 카운트다운 효과음 (3, 2, 1)
+    [SerializeField] private AudioClip countdownStartClip; // START 효과음
+    [Range(0f, 1f)][SerializeField] private float countdownVolume = 0.7f;
 
     public bool IsLobby => currentGameState.Value == GameState.Lobby;
     public bool IsGame => currentGameState.Value == GameState.Playing;
@@ -468,6 +473,11 @@ public class GameManager : NetworkBehaviour
             {
                 inGameReadyText.text = "";
             }
+            else
+            {
+                // 카운트다운 활성화 시 초기 텍스트는 빈 문자열
+                inGameReadyText.text = "";
+            }
         }
     }
 
@@ -485,7 +495,7 @@ public class GameManager : NetworkBehaviour
 
         // 2. 인게임 카운트다운 시작 (3, 2, 1)
         isGameReadyCountdownActive.Value = true;
-        remainingTime.Value = 3f; // 3초 설정
+        remainingTime.Value = 3.1f; // 3초 설정 (3.1로 시작해야 3이 표시되며 소리 재생됨)
 
         while (remainingTime.Value > 0)
         {
@@ -701,20 +711,43 @@ public class GameManager : NetworkBehaviour
         // 로비 게임 시작 전 카운트다운
         if (IsLobby && gameStartcountdown != null)
         {
-            gameStartcountdown.text = $"{Mathf.CeilToInt(newValue)}초 후 게임이 시작됩니다!!";
+            int count = Mathf.CeilToInt(newValue);
+            int previousCount = Mathf.CeilToInt(prviousValue);
+
+            gameStartcountdown.text = $"{count}초 후 게임이 시작됩니다!!";
+
+            // 숫자가 바뀔 때마다 로비 카운트다운 효과음 재생
+            if (count != previousCount && count > 0 && countdownAudioSource != null && lobbyCountdownClip != null)
+            {
+                countdownAudioSource.PlayOneShot(lobbyCountdownClip, countdownVolume);
+            }
         }
 
         // 시네마틱 직후 게임 시작 카운트 다운 (3, 2, 1, Start!)
         else if (isGameReadyCountdownActive.Value && inGameReadyText != null)
         {
             int count = Mathf.CeilToInt(newValue);
+            int previousCount = Mathf.CeilToInt(prviousValue);
+
             if (count > 0)
             {
                 inGameReadyText.text = count.ToString();
+
+                // 숫자가 바뀔 때마다 인게임 카운트다운 효과음 재생 (3, 2, 1)
+                if (count != previousCount && countdownAudioSource != null && gameCountdownClip != null)
+                {
+                    countdownAudioSource.PlayOneShot(gameCountdownClip, countdownVolume);
+                }
             }
             else
             {
                 inGameReadyText.text = "START!!";
+
+                // START 효과음 재생 (한 번만)
+                if (previousCount > 0 && countdownAudioSource != null && countdownStartClip != null)
+                {
+                    countdownAudioSource.PlayOneShot(countdownStartClip, countdownVolume);
+                }
             }
         }
 
@@ -805,8 +838,10 @@ public class GameManager : NetworkBehaviour
         if (FPSCount != null) FPSCount.SetActive(isActive);
         if (PingCount != null) PingCount.SetActive(isActive);
         if (gameUI != null) gameUI.SetActive(isActive);
-        if (Options != null) Options.SetActive(isActive);
-        if (Guide != null) Guide.SetActive(isActive);
+
+        // 게임 시작 후에는 Options와 Guide를 끔
+        if (Options != null) Options.SetActive(false);
+        if (Guide != null) Guide.SetActive(false);
 
     }
 
