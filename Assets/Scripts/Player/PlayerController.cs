@@ -596,7 +596,7 @@ public class PlayerController : NetworkBehaviour
                 if (this is BotController bot)
                 {
                     rb.AddForce(Vector3.up * currentJumpForce, ForceMode.Impulse);
-                    rb.AddForce(Vector3.forward * 3f, ForceMode.Impulse);
+                    rb.AddForce(Vector3.forward * 5f, ForceMode.Impulse);
                 }
                 else
                 {
