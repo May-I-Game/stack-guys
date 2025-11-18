@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 5599063504657195560}
   - component: {fileID: 1553652940607405943}
   - component: {fileID: -5471212520354648784}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: BombItemSpawner
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -106,7 +106,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
@@ -152,7 +152,7 @@ MonoBehaviour:
   spawnableItems:
   - itemPrefab: {fileID: 8508335998800669964, guid: e656360f249397748b69c001cb39ea43, type: 3}
     spawnWeight: 1
-  spawnHeightOffset: 1
+  spawnHeightOffset: 0.3
   spawnInterval: 5
   spawnPoint: {fileID: 0}
   enableDebugLog: 1
