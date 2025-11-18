@@ -16,8 +16,12 @@ public class PlayerInputHandler : NetworkBehaviour
     private Vector2 camFwdCache;
     private Vector2 camRightCache;
 
+    private PlayerCanvasManager canvasManager;  // 캔버스 관리자
+
     private void Start()
     {
+        canvasManager = GetComponent<PlayerCanvasManager>();
+
         if (!IsOwner) return;
 
         //생성될 때 MobileInputManager에서 참조 가져오기
@@ -28,6 +32,13 @@ public class PlayerInputHandler : NetworkBehaviour
             //버튼 이벤트 연결 - PointerDown으로 즉시 반응
             SetupButtonPointerDown(MobileInputManager.Instance.jumpButton, OnJumpButtonPressed);
             SetupButtonPointerDown(MobileInputManager.Instance.grabButton, OnGrabButtonPressed);
+
+            //스티커 버튼 이벤트 연결
+            for (int i=0; i < 6; i++)
+            {
+                int index = i; // 클로저 문제 해결
+                MobileInputManager.Instance.stickerReqButtons[i].onClick.AddListener(() => canvasManager.RequestStickerServerRpc(index));
+            }
         }
     }
 
@@ -126,6 +137,43 @@ public class PlayerInputHandler : NetworkBehaviour
                 {
                     MobileInputManager.Instance.ToggleCanvas();
                 }
+            }
+
+            // 1번 키를 누르면 0번 이모티콘 요청
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                // 서버에 0번 이모티콘 사용 요청
+                canvasManager.RequestStickerServerRpc(0);
+            }
+
+            // 2번 키를 누르면 1번 이모티콘 요청
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                canvasManager.RequestStickerServerRpc(1);
+            }
+
+            // 3번 키를 누르면 2번 이모티콘 요청
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                canvasManager.RequestStickerServerRpc(2);
+            }
+
+            // 4번 키를 누르면 3번 이모티콘 요청
+            if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                canvasManager.RequestStickerServerRpc(3);
+            }
+
+            // 5번 키를 누르면 4번 이모티콘 요청
+            if (Input.GetKeyDown(KeyCode.Alpha5))
+            {
+                canvasManager.RequestStickerServerRpc(4);
+            }
+
+            // 6번 키를 누르면 5번 이모티콘 요청
+            if (Input.GetKeyDown(KeyCode.Alpha6))
+            {
+                canvasManager.RequestStickerServerRpc(5);
             }
         }
     }
