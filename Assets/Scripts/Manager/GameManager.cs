@@ -67,6 +67,7 @@ public class GameManager : NetworkBehaviour
     [Header("Audio")]
     [SerializeField] private AudioSource lobbyBGM;
     [SerializeField] private AudioSource trackBGM;
+    [SerializeField] private AudioSource victoryBGM;
     [SerializeField] private AudioSource countdownAudioSource; // 카운트다운 효과음 소스
     [SerializeField] private AudioClip lobbyCountdownClip; // 로비 카운트다운 효과음 (5, 4, 3, 2, 1)
     [SerializeField] private AudioClip gameCountdownClip; // 인게임 카운트다운 효과음 (3, 2, 1)
