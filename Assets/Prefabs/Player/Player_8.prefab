@@ -1120,7 +1120,7 @@ MonoBehaviour:
   hitAudioSource: {fileID: 2918145076312315030}
   hitVoiceClip: {fileID: 8300000, guid: 7f49a3714ef345a4ba50941af49e0163, type: 3}
   hitImpactClip: {fileID: 8300000, guid: e30c384e8591b1b498c383cbae1fd0cf, type: 3}
-  hitVolume: 0.7
+  hitVolume: 1
   throwAudioSource: {fileID: 2918145076312315030}
   throwClip: {fileID: 8300000, guid: e03957dfe85ccbd4f917fa1544ae7545, type: 3}
   throwVolume: 0.7
@@ -1131,6 +1131,10 @@ MonoBehaviour:
   lerpSpeed: 15
   smoothTime: 0.1
   bodyPrefab: {fileID: -2869515067810661690, guid: 7d37a12a75157724d9ec53117425c635, type: 3}
+  isDiveGrounded: 0
+  netIsDeath:
+    m_InternalValue: 0
+  isHit: 0
   RespawnId:
     m_InternalValue: 0
   respawnManager: {fileID: 0}
