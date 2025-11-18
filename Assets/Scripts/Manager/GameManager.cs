@@ -6,7 +6,6 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public enum GameState
 {
@@ -22,35 +21,15 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private TMP_Text gameEndcountdown; // 1등이 결정난 이후 10초 카운트
     [SerializeField] private TMP_Text inGameReadyText; // 3..2..1.. 시작 텍스트
     [SerializeField] private TMP_Text NowPlayerCount; // 현재 접속자 수
-    [SerializeField] private GameObject resultPanel; // 하얀 결과 화면
     [SerializeField] private TMP_Text firstPlaceText;
     [SerializeField] private TMP_Text secondPlaceText;
     [SerializeField] private TMP_Text thirdPlaceText;
-    [SerializeField] private Button mainButton;
     [SerializeField] private TMP_Text QualifiedText;
     [SerializeField] private GameObject Mobile;
     [SerializeField] private GameObject FPSCount;
     [SerializeField] private GameObject PingCount;
     [SerializeField] private GameObject LobbyUI;
     [SerializeField] private GameObject gameUI;
-
-    [Header("Options Button")]
-    [SerializeField] private Button optionsButton;
-    [SerializeField] private Button closeOptionsButton;
-    [SerializeField] private GameObject optionsPanel;   // 옵션창 (Panel)
-    [SerializeField] private GameObject Options;
-
-    [Header("Guide Button")]
-    [SerializeField] private Button GuideButton;
-    [SerializeField] private Button closeGuideButton;
-    [SerializeField] private Button closeItemButton;
-    [SerializeField] private GameObject GuidePanel;   // 가이드창 (Panel)
-    [SerializeField] private GameObject ItemPanel;
-    [SerializeField] private GameObject Guide;
-    [SerializeField] private Button left;
-    [SerializeField] private Button right;
-    [SerializeField] private GameObject first;
-    [SerializeField] private GameObject second;
 
     [Header("Settings")]
     [SerializeField] private float startCountdownTime = 5f;
@@ -73,13 +52,6 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private AudioClip countdownStartClip; // START 효과음
     [Range(0f, 1f)][SerializeField] private float countdownVolume = 0.7f;
 
-    [Header("Podium")]
-    [SerializeField] private Transform firstPlacePodium;
-    [SerializeField] private Transform secondPlacePodium;
-    [SerializeField] private Transform thirdPlacePodium;
-    [SerializeField] private PlayableDirector podiumTimeline;
-    [SerializeField] private float podiumTimelineDuration = 12f; // 타임라인 길이 (수동 설정)
-
     public bool IsLobby => currentGameState.Value == GameState.Lobby;
     public bool IsGame => currentGameState.Value == GameState.Playing;
 
@@ -90,13 +62,9 @@ public class GameManager : NetworkBehaviour
     private NetworkVariable<float> remainingTime = new NetworkVariable<float>(0f);
     private NetworkList<FixedString32Bytes> rankings;
 
+    //시네마틱 실행용 동기화 시간 변수
     private NetworkVariable<double> timelineStartTime = new NetworkVariable<double>(0);
     private NetworkVariable<bool> shouldPlayTimeline = new NetworkVariable<bool>(false);
-
-    //시상식 시네마틱 동기화 시간 변수
-    private NetworkVariable<double> podiumTimelineStartTime = new NetworkVariable<double>(0);
-    private NetworkVariable<bool> shouldPlayPodiumTimeline = new NetworkVariable<bool>(false);
-
     private const float SYNC_BUFFER = 0.3f;
 
     //로비 및 게임 종료 시 사용
@@ -104,8 +72,6 @@ public class GameManager : NetworkBehaviour
     private NetworkVariable<bool> isStartCountdownActive = new NetworkVariable<bool>(false);
     private NetworkVariable<bool> isEndCountdownActive = new NetworkVariable<bool>(false);
     private NetworkVariable<bool> isGameReadyCountdownActive = new NetworkVariable<bool>(false);
-
-    private Camera mainCamera;
 
     public static GameManager Instance;
 
@@ -126,40 +92,9 @@ public class GameManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        // UI 초기 숨기기
-        if (resultPanel != null)
-            resultPanel.SetActive(false);
-        // 버튼 이벤트 연결
-        if (mainButton != null)
-            mainButton.onClick.AddListener(GoToMain);
-        //옵션 버튼 연결
-        if (closeOptionsButton != null)
-            closeOptionsButton.onClick.AddListener(OnClickCloseOptions);
-
-        if (optionsButton != null)
-            optionsButton.onClick.AddListener(OnClickOptionsButton);
-
-        if (GuideButton != null)
-            GuideButton.onClick.AddListener(OnClickGuideButton);
-
-        if (closeGuideButton != null)
-            closeGuideButton.onClick.AddListener(OnClickCloseGuide);
-
-        if (closeItemButton != null)
-            closeItemButton.onClick.AddListener(OnClickCloseItem);
-
-        if (left != null)
-            left.onClick.AddListener(Left_page);
-
-        if (right != null)
-            right.onClick.AddListener(Right_page);
         // 커서 관리
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
-
-        mainCamera = Camera.main;
-        if (podiumTimeline != null)
-            podiumTimeline.gameObject.SetActive(false);
 
         if (IsServer)
         {
@@ -173,7 +108,6 @@ public class GameManager : NetworkBehaviour
         {
             remainingTime.OnValueChanged += UpdateCountDownUI;
             shouldPlayTimeline.OnValueChanged += OnTimelineTriggered; // 시네마틱 동기화 변수
-            shouldPlayPodiumTimeline.OnValueChanged += OnPodiumTimelineTriggered; // 시상식 시네마틱 동기화 변수
 
             // 플레이어 수 변경 감지
             currentPlayerCount.OnValueChanged += UpdatePlayerCountUI;
@@ -212,7 +146,6 @@ public class GameManager : NetworkBehaviour
         {
             remainingTime.OnValueChanged -= UpdateCountDownUI;
             shouldPlayTimeline.OnValueChanged -= OnTimelineTriggered; // 시네마틱 동기화 변수
-            shouldPlayPodiumTimeline.OnValueChanged -= OnPodiumTimelineTriggered; // 시상식 시네마틱 동기화 변수
 
             // 플레이어 수 변경 감지
             currentPlayerCount.OnValueChanged -= UpdatePlayerCountUI;
@@ -450,154 +383,20 @@ public class GameManager : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        Debug.Log("[GameManager] EndGame 호출됨");
-
-        Debug.Log("[GameManager] EndGame 호출됨");
-
-
-        // GameState는 시상식 후에 변경
-        // 시상식 코루틴 시작
-        Debug.Log("[GameManager] PodiumCeremony 코루틴 시작");
-        StartCoroutine(PodiumCeremony());
-    }
-
-    private IEnumerator PodiumCeremony()
-    {
-        trackBGM.Stop(); // 트랙브금
-        victoryBGM.Play(); // 시상식브금 시작
-        Debug.Log("[GameManager - SERVER] 시상식 시작");
-        // 1, 2, 3등 플레이어를 시상대로 이동
-        Dictionary<string, ulong> playerNameToClientId = new Dictionary<string, ulong>();
-
-        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
-        {
-            NetworkObject playerObject = client.PlayerObject;
-            if (playerObject == null) continue;
-
-            // 봇은 제외
-            BotController botController = playerObject.GetComponent<BotController>();
-            if (botController != null) continue;
-
-            PlayerController player = playerObject.GetComponent<PlayerController>();
-            if (player == null) continue;
-
-            string playerName = player.GetPlayerName();
-            playerNameToClientId[playerName] = client.ClientId;
-        }
-
-        // 1등 이동
-        if (rankings.Count > 0 && firstPlacePodium != null)
-        {
-            string firstName = rankings[0].ToString();
-            if (playerNameToClientId.ContainsKey(firstName))
-            {
-                MovePlayerToPodiumPosition(playerNameToClientId[firstName], firstPlacePodium);
-                Debug.Log($"[GameManager - SERVER] 1등 {firstName} 시상대로 이동");
-            }
-        }
-
-        // 2등 이동
-        if (rankings.Count > 1 && secondPlacePodium != null)
-        {
-            string secondName = rankings[1].ToString();
-            if (playerNameToClientId.ContainsKey(secondName))
-            {
-                MovePlayerToPodiumPosition(playerNameToClientId[secondName], secondPlacePodium);
-                Debug.Log($"[GameManager - SERVER] 2등 {secondName} 시상대로 이동");
-            }
-        }
-
-        // 3등 이동
-        if (rankings.Count > 2 && thirdPlacePodium != null)
-        {
-            string thirdName = rankings[2].ToString();
-            if (playerNameToClientId.ContainsKey(thirdName))
-            {
-                MovePlayerToPodiumPosition(playerNameToClientId[thirdName], thirdPlacePodium);
-                Debug.Log($"[GameManager - SERVER] 3등 {thirdName} 시상대로 이동");
-            }
-        }
-
-        // 시상식 타임라인 동기화 시작
-        podiumTimelineStartTime.Value = NetworkManager.Singleton.ServerTime.Time + SYNC_BUFFER;
-        shouldPlayPodiumTimeline.Value = true;
-
-        Debug.Log($"[GameManager - SERVER] 시상식 타임라인 시작 신호 전송");
-
-        // 시상식 지속 시간 대기
-        Debug.Log($"[GameManager - SERVER] {podiumTimelineDuration}초 대기 시작");
-        yield return new WaitForSeconds(podiumTimelineDuration);
-
-        Debug.Log("[GameManager - SERVER] 시상식 대기 완료, 결과 화면 표시");
-
-        // 결과 화면 표시
-        ShowResultsClientRpc();
-
-        // 시상식이 완전히 끝난 후 GameState.Ended 설정 (최적화)
         currentGameState.Value = GameState.Ended;
-        Debug.Log("[GameManager - SERVER] GameState를 Ended로 변경 (물리 연산 중단)");
+
+
+        // 매치메이킹 서버에 게임 종료 신호 전송
+        NetworkGameManager networkManager = FindObjectOfType<NetworkGameManager>();
+        if (networkManager != null)
+        {
+            networkManager.NotifyGameEnded();
+        }
+
+        // 클라에 결과 화면 표시
+        ShowResultsClientRpc();
     }
 
-    private void OnPodiumTimelineTriggered(bool previous, bool current)
-    {
-        if (current && !previous)
-        {
-            StartCoroutine(PlayPodiumTimelineAtSyncTime());
-        }
-    }
-
-    private IEnumerator PlayPodiumTimelineAtSyncTime()
-    {
-        Debug.Log("[GameManager] 시상식 타임라인 시작 대기 중...");
-
-        // 네트워크 시간과 동기화
-        while (NetworkManager.Singleton.ServerTime.Time < podiumTimelineStartTime.Value)
-        {
-            yield return null;
-        }
-
-        Debug.Log("[GameManager] 시상식 타임라인 재생 시작");
-
-        // UI 숨기기
-        if (gameEndcountdown != null)
-            gameEndcountdown.gameObject.SetActive(false);
-        if (Mobile != null)
-            Mobile.SetActive(false);
-        if (FPSCount != null)
-            FPSCount.SetActive(false);
-        if (PingCount != null)
-            PingCount.SetActive(false);
-        if (LobbyUI != null)
-            LobbyUI.SetActive(false);
-        if (gameUI != null)
-            gameUI.SetActive(false);
-        if (optionsPanel != null)
-            optionsPanel.SetActive(false);
-        if (Options != null)
-            Options.SetActive(false);
-        if (GuidePanel != null)
-            GuidePanel.SetActive(false);
-        if (Guide != null)
-            Guide.SetActive(false);
-
-        // 시상식 타임라인 활성화 및 재생
-        if (podiumTimeline != null)
-        {
-            podiumTimeline.gameObject.SetActive(true);
-            podiumTimeline.Play();
-            Debug.Log($"[GameManager] 타임라인 재생 중... 길이: {podiumTimeline.duration}초");
-        }
-        else
-        {
-            Debug.LogWarning("[GameManager] podiumTimeline이 null입니다!");
-        }
-
-        // 커서 숨기기 (시상식 중에는)
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-    }
-
-    // 이제 사용하지 않는 ShowPodiumCameraClientRpc 제거됨
 
     private void MovePlayerToPodiumPosition(ulong clientId, Transform podiumTransform)
     {
@@ -615,13 +414,6 @@ public class GameManager : NetworkBehaviour
         }
 
         PlayerController player = playerObject.GetComponent<PlayerController>();
-        if (player != null)
-        {
-            player.inputEnabled.Value = false;
-            player.ReleaseGrab();
-            player.ForceClearInputOnServer();
-            player.DoRespawn(podiumTransform.position, podiumTransform.rotation);
-        }
     }
 
     private void OnGameReadyCountdownChanged(bool previous, bool current)
@@ -631,6 +423,11 @@ public class GameManager : NetworkBehaviour
             inGameReadyText.gameObject.SetActive(current);
             if (!current)
             {
+                inGameReadyText.text = "";
+            }
+            else
+            {
+                // 카운트다운 활성화 시 초기 텍스트는 빈 문자열
                 inGameReadyText.text = "";
             }
         }
@@ -650,7 +447,7 @@ public class GameManager : NetworkBehaviour
 
         // 2. 인게임 카운트다운 시작 (3, 2, 1)
         isGameReadyCountdownActive.Value = true;
-        remainingTime.Value = 3f; // 3초 설정
+        remainingTime.Value = 3.1f; // 3초 설정 (3.1로 시작해야 3이 표시되며 소리 재생됨)
 
         while (remainingTime.Value > 0)
         {
@@ -675,26 +472,8 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void ShowResultsClientRpc()
     {
-        Debug.Log("[GameManager - CLIENT] 결과 화면 표시 ClientRpc 호출됨");
-
-        // 시상식 타임라인 끄기
-        if (podiumTimeline != null)
-        {
-            podiumTimeline.Stop();
-            podiumTimeline.gameObject.SetActive(false);
-            Debug.Log("[GameManager - CLIENT] 타임라인 정지 및 비활성화");
-        }
-
-        // 메인 카메라 복구
-        if (mainCamera != null)
-        {
-            mainCamera.gameObject.SetActive(true);
-            Debug.Log("[GameManager - CLIENT] 메인 카메라 활성화");
-        }
-
         //카운트 다운 내리기
-        if (gameEndcountdown != null)
-            gameEndcountdown.gameObject.SetActive(false);
+        gameEndcountdown.gameObject.SetActive(false);
 
         if (Mobile != null)
         {
@@ -716,26 +495,13 @@ public class GameManager : NetworkBehaviour
         {
             gameUI.SetActive(false);
         }
-        if (optionsPanel != null)
-        {
-            optionsPanel.SetActive(false);
-        }
-        if (Options != null)
-        {
-            Options.SetActive(false);
-        }
-        if (GuidePanel != null)
-        {
-            GuidePanel.SetActive(false);
-        }
-        if (Guide != null)
-        {
-            Guide.SetActive(false);
-        }
-        if (resultPanel != null)
-        {
-            resultPanel.SetActive(true);
-        }
+
+        UIManager.Instance.ToggleOptionPanel(false);
+        UIManager.Instance.ToggleOptionButton(false);
+        UIManager.Instance.ToggleGuidePanel(false);
+        UIManager.Instance.ToggleGuideButton(false);
+
+        UIManager.Instance.ToggleResultPanel(true);
 
         // 커서 보이기
         Cursor.lockState = CursorLockMode.None;
@@ -771,69 +537,13 @@ public class GameManager : NetworkBehaviour
         {
             gameUI.gameObject.SetActive(true);
         }
-        if (optionsPanel != null)
-        {
-            optionsPanel.SetActive(false);
-        }
-        if (Options != null)
-        {
-            Options.SetActive(false);
-        }
-        if (GuidePanel != null)
-        {
-            GuidePanel.SetActive(false);
-        }
-        if (Guide != null)
-        {
-            Guide.SetActive(false);
-        }
+
+        UIManager.Instance.ToggleOptionPanel(false);
+        UIManager.Instance.ToggleOptionButton(false);
+        UIManager.Instance.ToggleGuidePanel(false);
+        UIManager.Instance.ToggleGuideButton(false);
     }
 
-    public void OnClickOptionsButton()
-    {
-        if (optionsPanel != null)
-            optionsPanel.SetActive(true);
-    }
-
-    public void OnClickCloseOptions()
-    {
-        if (optionsPanel != null)
-            optionsPanel.SetActive(false);
-    }
-
-    public void OnClickGuideButton()
-    {
-        if (GuidePanel != null)
-            GuidePanel.SetActive(true);
-    }
-
-    public void OnClickCloseGuide()
-    {
-        if (GuidePanel != null)
-            GuidePanel.SetActive(false);
-    }
-
-    public void OnClickCloseItem()
-    {
-        if (ItemPanel != null)
-            ItemPanel.SetActive(false);
-    }
-
-    public void Left_page()
-    {
-        if (second != null)
-            second.SetActive(false);
-        if (first != null)
-            first.SetActive(true);
-    }
-
-    public void Right_page()
-    {
-        if (first != null)
-            first.SetActive(false);
-        if (second != null)
-            second.SetActive(true);
-    }
     // 서버에서 모든 플레이어의 입력을 차단하고 상태 초기화
     private void DisableAllPlayersInputOnServer()
     {
@@ -884,20 +594,43 @@ public class GameManager : NetworkBehaviour
         // 로비 게임 시작 전 카운트다운
         if (IsLobby && gameStartcountdown != null)
         {
-            gameStartcountdown.text = $"{Mathf.CeilToInt(newValue)}초 후 게임이 시작됩니다!!";
+            int count = Mathf.CeilToInt(newValue);
+            int previousCount = Mathf.CeilToInt(prviousValue);
+
+            gameStartcountdown.text = $"{count}초 후 게임이 시작됩니다!!";
+
+            // 숫자가 바뀔 때마다 로비 카운트다운 효과음 재생
+            if (count != previousCount && count > 0 && countdownAudioSource != null && lobbyCountdownClip != null)
+            {
+                countdownAudioSource.PlayOneShot(lobbyCountdownClip, countdownVolume);
+            }
         }
 
         // 시네마틱 직후 게임 시작 카운트 다운 (3, 2, 1, Start!)
         else if (isGameReadyCountdownActive.Value && inGameReadyText != null)
         {
             int count = Mathf.CeilToInt(newValue);
+            int previousCount = Mathf.CeilToInt(prviousValue);
+
             if (count > 0)
             {
                 inGameReadyText.text = count.ToString();
+
+                // 숫자가 바뀔 때마다 인게임 카운트다운 효과음 재생 (3, 2, 1)
+                if (count != previousCount && countdownAudioSource != null && gameCountdownClip != null)
+                {
+                    countdownAudioSource.PlayOneShot(gameCountdownClip, countdownVolume);
+                }
             }
             else
             {
                 inGameReadyText.text = "START!!";
+
+                // START 효과음 재생 (한 번만)
+                if (previousCount > 0 && countdownAudioSource != null && countdownStartClip != null)
+                {
+                    countdownAudioSource.PlayOneShot(countdownStartClip, countdownVolume);
+                }
             }
         }
 
@@ -936,12 +669,6 @@ public class GameManager : NetworkBehaviour
         {
             thirdPlaceText.text = "-";
         }
-    }
-
-    private void GoToMain()
-    {
-        NetworkManager.Singleton.Shutdown();
-        SceneManager.LoadScene(mainSceneName);
     }
 
     private void OnTimelineTriggered(bool previous, bool current)
@@ -983,14 +710,15 @@ public class GameManager : NetworkBehaviour
 
     private void ToggleGameUI(bool isActive)
     {
+        if (LobbyUI != null) LobbyUI.SetActive(false); // 로비는 항상 끔
         if (Mobile != null) Mobile.SetActive(isActive);
         if (FPSCount != null) FPSCount.SetActive(isActive);
         if (PingCount != null) PingCount.SetActive(isActive);
-        if (LobbyUI != null) LobbyUI.SetActive(false); // 로비는 항상 끔
         if (gameUI != null) gameUI.SetActive(isActive);
-        if (Options != null) Options.SetActive(false);
-        if (Guide != null) Guide.SetActive(false);
 
+        // 게임 시작 후에는 Options와 Guide를 끔
+        UIManager.Instance.ToggleOptionButton(false);
+        UIManager.Instance.ToggleGuideButton(false);
     }
 
     private void OnTimelineFinished(PlayableDirector director)

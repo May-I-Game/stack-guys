@@ -10,18 +10,8 @@ public class Bomb : InteractiveItem
 
     [Header("Audio")]
     public AudioSource bombAudioSource; // 폭탄 오디오 소스
-    public AudioClip throwClip; // 폭탄 던지기 사운드
     public AudioClip explosionClip; // 폭탄 폭발 사운드
-    [Range(0f, 1f)] public float throwVolume = 0.6f; // 던지기 볼륨
     [Range(0f, 1f)] public float explosionVolume = 0.8f; // 폭발 볼륨
-
-    public override void OnThrown()
-    {
-        base.OnThrown();
-
-        // 던지기 사운드 재생
-        PlayThrowSoundClientRpc();
-    }
 
     protected override void OnCollisionEnter(Collision collision)
     {
@@ -35,18 +25,18 @@ public class Bomb : InteractiveItem
     {
         base.OnNetworkSpawn();
 
-        // 서버만 물리 활성화 (던질 수 있게)
+        // 서버만 물리 활성화 (권위 서버 모델)
         if (IsServer)
         {
             if (Rb != null)
             {
-                Rb.isKinematic = false;     // 물리 활성화
-                Rb.useGravity = true;       // 중력 활성화
+                Rb.isKinematic = false;  // 서버: 물리 계산
+                Rb.useGravity = true;
             }
         }
         else
         {
-            // 클라이언트는 Kinematic
+            // 클라이언트는 Kinematic (NetworkTransform으로 위치만 받음)
             if (Rb != null)
             {
                 Rb.isKinematic = true;
@@ -87,15 +77,6 @@ public class Bomb : InteractiveItem
 
         // 3. 부모 클래스의 로직 실행 (Despawn 등)
         base.ActivateItem();
-    }
-
-    [ClientRpc]
-    private void PlayThrowSoundClientRpc()
-    {
-        if (bombAudioSource != null && throwClip != null)
-        {
-            bombAudioSource.PlayOneShot(throwClip, throwVolume);
-        }
     }
 
     [ClientRpc]
