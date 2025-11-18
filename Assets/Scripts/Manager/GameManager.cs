@@ -67,6 +67,7 @@ public class GameManager : NetworkBehaviour
     [Header("Audio")]
     [SerializeField] private AudioSource lobbyBGM;
     [SerializeField] private AudioSource trackBGM;
+    [SerializeField] private AudioSource victoryBGM;
 
     [Header("Podium")]
     [SerializeField] private Transform firstPlacePodium;
@@ -447,24 +448,18 @@ public class GameManager : NetworkBehaviour
 
         Debug.Log("[GameManager] EndGame 호출됨");
 
-        currentGameState.Value = GameState.Ended;
 
-        // 매치메이킹 서버에 게임 종료 신호 전송
-        NetworkGameManager networkManager = FindObjectOfType<NetworkGameManager>();
-        if (networkManager != null)
-        {
-            networkManager.NotifyGameEnded();
-        }
-
-        // 시상식 시네마틱 시작
+        // GameState는 시상식 후에 변경
+        // 시상식 코루틴 시작
         Debug.Log("[GameManager] PodiumCeremony 코루틴 시작");
         StartCoroutine(PodiumCeremony());
     }
 
     private IEnumerator PodiumCeremony()
     {
+        trackBGM.Stop(); // 트랙브금
+        victoryBGM.Play(); // 시상식브금 시작
         Debug.Log("[GameManager - SERVER] 시상식 시작");
-
         // 1, 2, 3등 플레이어를 시상대로 이동
         Dictionary<string, ulong> playerNameToClientId = new Dictionary<string, ulong>();
 
@@ -521,22 +516,20 @@ public class GameManager : NetworkBehaviour
         podiumTimelineStartTime.Value = NetworkManager.Singleton.ServerTime.Time + SYNC_BUFFER;
         shouldPlayPodiumTimeline.Value = true;
 
-        Debug.Log($"[GameManager - SERVER] 시상식 타임라인 시작 신호 전송, {podiumTimelineDuration}초 대기 시작");
+        Debug.Log($"[GameManager - SERVER] 시상식 타임라인 시작 신호 전송");
 
-        // 시상식 지속 시간 대기 (수동 설정된 시간 사용)
-        float elapsedTime = 0f;
-        while (elapsedTime < podiumTimelineDuration)
-        {
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
+        // 시상식 지속 시간 대기
+        Debug.Log($"[GameManager - SERVER] {podiumTimelineDuration}초 대기 시작");
+        yield return new WaitForSeconds(podiumTimelineDuration);
 
-        Debug.Log("[GameManager - SERVER] 시상식 대기 완료, 결과 화면 표시 RPC 호출");
+        Debug.Log("[GameManager - SERVER] 시상식 대기 완료, 결과 화면 표시");
 
         // 결과 화면 표시
         ShowResultsClientRpc();
 
-        Debug.Log("[GameManager - SERVER] ShowResultsClientRpc 호출 완료");
+        // 시상식이 완전히 끝난 후 GameState.Ended 설정 (최적화)
+        currentGameState.Value = GameState.Ended;
+        Debug.Log("[GameManager - SERVER] GameState를 Ended로 변경 (물리 연산 중단)");
     }
 
     private void OnPodiumTimelineTriggered(bool previous, bool current)
