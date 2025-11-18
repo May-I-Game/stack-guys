@@ -12,7 +12,7 @@ public class MobileInputManager : MonoBehaviour
     public GameObject stickerPanel;
     public Button[] stickerReqButtons;
 
-    private Canvas canvas;
+    [SerializeField] private GameObject mobileUI; // 켜고 끌 GameObject
 
     void Awake()
     {
@@ -25,30 +25,29 @@ public class MobileInputManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        canvas = GetComponent<Canvas>();
     }
 
     public void ToggleCanvas()
     {
-        if (canvas != null)
+        if (mobileUI != null)
         {
-            canvas.enabled = !canvas.enabled;
+            mobileUI.SetActive(!mobileUI.activeSelf);
         }
     }
 
     public void ShowCanvas()
     {
-        if (canvas != null)
+        if (mobileUI != null)
         {
-            canvas.enabled = true;
+            mobileUI.SetActive(true);
         }
     }
 
     public void HideCanvas()
     {
-        if (canvas != null)
+        if (mobileUI != null)
         {
-            canvas.enabled = false;
+            mobileUI.SetActive(false);
         }
     }
 
