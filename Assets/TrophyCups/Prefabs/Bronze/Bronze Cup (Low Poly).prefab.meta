@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 9fc0d4010bbf28b4594072e72b8655ab
-DefaultImporter:
+guid: dd48d21eb64dd5e4aa0e07810a66284e
+PrefabImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 
@@ -10,5 +10,5 @@ AssetOrigin:
   productId: 188059
   packageName: Trophy Cups/Challaces FREE
   packageVersion: 1.0
-  assetPath: Assets/Scenes/SampleScene.unity
+  assetPath: Assets/TrophyCups/Prefabs/Bronze/Bronze Cup (Low Poly).prefab
   uploadId: 415770
