@@ -3,6 +3,13 @@ using Unity.Netcode; // 사용하는 네트워크 솔루션의 네임스페이�
 
 public class FireworksTrigger : NetworkBehaviour // NetworkBehaviour 상속 필수
 {
+    // 1. AudioSource 컴포넌트를 연결할 변수
+    [SerializeField] private AudioSource sfxAudioSource;
+
+    // 2. firework 오디오 클립을 연결할 변수
+    // (PlayOneShot을 사용하기 위해 AudioSource가 아닌 AudioClip이 필요합니다.)
+    [SerializeField] private AudioClip fireworkClip;
+
     // 💡 모든 ParticleSystem을 배열로 연결합니다. (이전에 했던 방식)
     public ParticleSystem[] fireworksParticleSystems;
 
@@ -42,5 +49,16 @@ public class FireworksTrigger : NetworkBehaviour // NetworkBehaviour 상속 필�
     {
         // 모든 클라이언트가 이 명령을 받아 각자 불꽃놀이를 재생합니다.
         PlayFireworksLocally();
+        PlayFireworkSound();
     }
+    /// <summary>
+    /// 특정 이벤트 발생 시 불꽃놀이 소리를 재생하는 함수
+    /// </summary>
+    public void PlayFireworkSound()
+    {
+        // PlayOneShot을 사용하면 현재 재생 중인 다른 소리가 있더라도 겹쳐서 재생됩니다.
+        // 불꽃놀이처럼 '이벤트성 짧은 소리'에 적합합니다.
+        sfxAudioSource.PlayOneShot(fireworkClip);
+    }
+
 }
