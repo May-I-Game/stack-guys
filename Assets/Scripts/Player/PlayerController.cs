@@ -1,4 +1,5 @@
 using NUnit.Framework.Internal;
+using System.Collections;
 using Unity.Cinemachine;
 using Unity.Collections;
 using Unity.Netcode;
@@ -374,9 +375,17 @@ public class PlayerController : NetworkBehaviour
         float sqrDist = (transform.position - _targetPos).sqrMagnitude;
         if (sqrDist > 9.0f) // 3 * 3 = 9
         {
+            Vector3 delta = _targetPos - transform.position;
+
             transform.position = _targetPos;
             transform.rotation = Quaternion.Euler(0, _targetRotY, 0);
             _currentVelocity = Vector3.zero;
+
+            if (IsOwner)
+            {
+                cam.OnTargetObjectWarped(this.transform, delta);
+            }
+            
             return;
         }
 
@@ -1052,32 +1061,10 @@ public class PlayerController : NetworkBehaviour
             rb.angularVelocity = Vector3.zero;
         }
 
-        Vector3 delta = pos - transform.position;
-
         transform.position = pos;
         transform.rotation = rot;
 
-        ClientRpcParams clientRpcParams = new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new ulong[] { OwnerClientId }
-            }
-        };
-
-        CamWarpClientRpc(delta, clientRpcParams);
-
         ResetPlayerState();
-    }
-
-    [ClientRpc]
-    private void CamWarpClientRpc(Vector3 delta, ClientRpcParams clientRpcParams = default)
-    {
-        cam.OnTargetObjectWarped(this.transform, delta);
-        cam.ForceCameraPosition(
-            cam.transform.position + delta,
-            cam.transform.rotation
-        );
     }
 
     private void ResetPlayerState()
