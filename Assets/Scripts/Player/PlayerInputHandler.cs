@@ -34,12 +34,11 @@ public class PlayerInputHandler : NetworkBehaviour
             SetupButtonPointerDown(MobileInputManager.Instance.grabButton, OnGrabButtonPressed);
 
             //스티커 버튼 이벤트 연결
-            SetupButtonPointerDown(MobileInputManager.Instance.stickerReqButtons[0], () => canvasManager.RequestStickerServerRpc(0));
-            SetupButtonPointerDown(MobileInputManager.Instance.stickerReqButtons[1], () => canvasManager.RequestStickerServerRpc(1));
-            SetupButtonPointerDown(MobileInputManager.Instance.stickerReqButtons[2], () => canvasManager.RequestStickerServerRpc(2));
-            SetupButtonPointerDown(MobileInputManager.Instance.stickerReqButtons[3], () => canvasManager.RequestStickerServerRpc(3));
-            SetupButtonPointerDown(MobileInputManager.Instance.stickerReqButtons[4], () => canvasManager.RequestStickerServerRpc(4));
-            SetupButtonPointerDown(MobileInputManager.Instance.stickerReqButtons[5], () => canvasManager.RequestStickerServerRpc(5));
+            for (int i=0; i < 6; i++)
+            {
+                int index = i; // 클로저 문제 해결
+                MobileInputManager.Instance.stickerReqButtons[i].onClick.AddListener(() => canvasManager.RequestStickerServerRpc(index));
+            }
         }
     }
 

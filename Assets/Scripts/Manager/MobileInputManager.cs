@@ -27,6 +27,7 @@ public class MobileInputManager : MonoBehaviour
         }
         canvas = GetComponent<Canvas>();
     }
+
     public void ToggleCanvas()
     {
         if (canvas != null)
@@ -34,6 +35,7 @@ public class MobileInputManager : MonoBehaviour
             canvas.enabled = !canvas.enabled;
         }
     }
+
     public void ShowCanvas()
     {
         if (canvas != null)
@@ -41,6 +43,7 @@ public class MobileInputManager : MonoBehaviour
             canvas.enabled = true;
         }
     }
+
     public void HideCanvas()
     {
         if (canvas != null)
@@ -48,6 +51,7 @@ public class MobileInputManager : MonoBehaviour
             canvas.enabled = false;
         }
     }
+
     public void ShowStickerPanel()
     {
         if (stickerPanel != null)
@@ -55,11 +59,12 @@ public class MobileInputManager : MonoBehaviour
             stickerPanel.SetActive(true);
         }
     }
+
     public void HideStickerPanel()
     {
         if (stickerPanel != null)
         {
-            stickerPanel.SetActive(true);
+            stickerPanel.SetActive(false);
         }
     }
 }
