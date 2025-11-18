@@ -141,9 +141,10 @@ public class PlayerController : NetworkBehaviour
     protected NetworkVariable<bool> netIsMove = new NetworkVariable<bool>(false); // 움직이는중인지
     protected NetworkVariable<bool> netIsGrounded = new NetworkVariable<bool>(true); // 땅인지
     protected bool isDiving = false; // 공중 다이브 중인지
-    protected bool isDiveGrounded = false; // 다이브 착지 상태 (이동 불가)
-    protected NetworkVariable<bool> netIsDeath = new NetworkVariable<bool>(false); // 죽었는지
-    protected bool isHit = false; // 충돌 상태 (이동 불가)
+    // 디버그용
+    [SerializeField] protected bool isDiveGrounded = false; // 다이브 착지 상태 (이동 불가)
+    [SerializeField] protected NetworkVariable<bool> netIsDeath = new NetworkVariable<bool>(false); // 죽었는지
+    [SerializeField] protected bool isHit = false; // 충돌 상태 (이동 불가)
     protected bool canDive = false; // 다이브 가능 상태 (점프 중)
 
     // 걷기 파티클 재생 상태 추적
@@ -704,7 +705,7 @@ public class PlayerController : NetworkBehaviour
 
             // 다른 플레이어 체크
             PlayerController otherPlayer = col.GetComponent<PlayerController>();
-            if (otherPlayer != null && !otherPlayer.netIsGrabbed.Value && !otherPlayer.isHolding)
+            if (otherPlayer != null && !otherPlayer.netIsGrabbed.Value && !otherPlayer.isHolding && !otherPlayer.netIsDeath.Value)
             {
                 // 무적 버프가 있으면 잡을 수 없음
                 if (otherPlayer.buffManager != null && otherPlayer.buffManager.IsInvincible)
@@ -1638,6 +1639,11 @@ public class PlayerController : NetworkBehaviour
                 break;
 
             case "weakObstacles":
+                // 무적 버프 중이면 피격되지 않음
+                if (buffManager != null && buffManager.IsInvincible)
+                {
+                    break;
+                }
                 // 피격 사운드 재생
                 PlayHitSound();
                 // 충돌 지점의 평균 법선 벡터 계산
@@ -1651,7 +1657,6 @@ public class PlayerController : NetworkBehaviour
                 // 장애물에 부딪힘
                 PlayHitAnimation("weakHit");
                 BouncePlayer(avgNormal, bounceForce);
-
                 break;
 
             case "StrongObstacles":
@@ -1733,6 +1738,8 @@ public class PlayerController : NetworkBehaviour
         }
 
         // 이동 차단 및 Trigger 실행
+        isDiving = false;
+        isDiveGrounded = false;
         isHit = true;
 
         // 타이머 시작
