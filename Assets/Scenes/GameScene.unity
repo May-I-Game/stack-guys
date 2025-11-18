@@ -9388,10 +9388,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 155067759}
   proximityClip: {fileID: 8300000, guid: 5d16995e2df5a764288ab2c46e5d7fa2, type: 3}
-  maxVolume: 0.503
-  triggerDistance: 20
+  volume: 0.3
+  minDistance: 20
   maxDistance: 30
-  fadeByDistance: 1
+  rolloffMode: 0
 --- !u!1001 &160060515
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -42572,10 +42572,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 714881876}
   proximityClip: {fileID: 8300000, guid: 1ce80d65db68d2741a66a701e3b78f13, type: 3}
-  maxVolume: 0.3
-  triggerDistance: 15
+  volume: 0.3
+  minDistance: 20
   maxDistance: 30
-  fadeByDistance: 1
+  rolloffMode: 1
 --- !u!1001 &716357480
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -72008,10 +72008,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 1242664687}
   proximityClip: {fileID: 8300000, guid: edd189e7c8afdd542b97931bef29587c, type: 3}
-  maxVolume: 0.3
-  triggerDistance: 30
-  maxDistance: 40
-  fadeByDistance: 1
+  volume: 0.3
+  minDistance: 20
+  maxDistance: 30
+  rolloffMode: 1
 --- !u!1001 &1247196487
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -81772,6 +81772,10 @@ PrefabInstance:
     - target: {fileID: 5016356540993047036, guid: 0532dcf951d27f94d872e40787485e03, type: 3}
       propertyPath: m_Name
       value: Plane (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6084232199823650200, guid: 0532dcf951d27f94d872e40787485e03, type: 3}
+      propertyPath: m_Center.y
+      value: -0.18
       objectReference: {fileID: 0}
     - target: {fileID: 6084232199823650200, guid: 0532dcf951d27f94d872e40787485e03, type: 3}
       propertyPath: m_Center.z
@@ -117122,6 +117126,10 @@ PrefabInstance:
       value: Plane (03)
       objectReference: {fileID: 0}
     - target: {fileID: 6084232199823650200, guid: 0532dcf951d27f94d872e40787485e03, type: 3}
+      propertyPath: m_Center.y
+      value: -0.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 6084232199823650200, guid: 0532dcf951d27f94d872e40787485e03, type: 3}
       propertyPath: m_Center.z
       value: 0
       objectReference: {fileID: 0}
@@ -122854,10 +122862,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 0}
   proximityClip: {fileID: 8300000, guid: 5d16995e2df5a764288ab2c46e5d7fa2, type: 3}
-  maxVolume: 0.7
-  triggerDistance: 5
+  volume: 0.7
+  minDistance: 1
   maxDistance: 10
-  fadeByDistance: 1
+  rolloffMode: 1
 --- !u!1001 &2118801901
 PrefabInstance:
   m_ObjectHideFlags: 0
