@@ -130,7 +130,7 @@ MonoBehaviour:
   spawnableItems:
   - itemPrefab: {fileID: 1863145528742717711, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
     spawnWeight: 1
-  spawnHeightOffset: 0.3
+  spawnHeightOffset: 0.2
   spawnInterval: 5
   spawnPoint: {fileID: 0}
   enableDebugLog: 1
