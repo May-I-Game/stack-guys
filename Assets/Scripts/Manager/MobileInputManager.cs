@@ -5,7 +5,7 @@ public class MobileInputManager : MonoBehaviour
 {
     public static MobileInputManager Instance; //싱글톤
 
-    public FixedJoystick joystick;
+    public FloatingJoystick joystick;
     public Button jumpButton;
     public Button grabButton;
     public Button stickerButton;
