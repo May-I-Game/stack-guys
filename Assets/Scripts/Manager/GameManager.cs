@@ -573,12 +573,22 @@ public class GameManager : NetworkBehaviour
             Debug.LogWarning($"[Podium] ClientId {clientId}의 PlayerObject를 찾을 수 없습니다.");
             return;
         }
+
         PlayerController player = playerObject.GetComponent<PlayerController>();
+        if (player == null)
+        {
+            Debug.LogWarning($"[Podium] PlayerController를 찾을 수 없습니다.");
+            return;
+        }
+
+        // 입력 비활성화
         player.inputEnabled.Value = false;
         player.ForceClearInputOnServer();
 
-        // 텔레포트 (시상대 위치로 이동)
+        // 🟩 서버에서 DoRespawn 사용 (서버 권위 방식)
         player.DoRespawn(podiumTransform.position, podiumTransform.rotation);
+
+        Debug.Log($"[Podium] 플레이어 {player.GetPlayerName()}을 시상대로 이동 완료");
     }
 
     private void OnGameReadyCountdownChanged(bool previous, bool current)
