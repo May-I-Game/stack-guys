@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 public class PlayerInputHandler : NetworkBehaviour
 {
     // 모바일 UI 세팅
-    private FixedJoystick joystick;
+    private FloatingJoystick joystick;
 
     // PlayerController가 읽어갈 값
     public Vector2 MoveInput { get; private set; }
@@ -34,7 +34,7 @@ public class PlayerInputHandler : NetworkBehaviour
             SetupButtonPointerDown(MobileInputManager.Instance.grabButton, OnGrabButtonPressed);
 
             //스티커 버튼 이벤트 연결
-            for (int i=0; i < 6; i++)
+            for (int i = 0; i < 6; i++)
             {
                 int index = i; // 클로저 문제 해결
                 MobileInputManager.Instance.stickerReqButtons[i].onClick.AddListener(() => canvasManager.RequestStickerServerRpc(index));
