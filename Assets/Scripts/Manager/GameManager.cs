@@ -327,7 +327,7 @@ public class GameManager : NetworkBehaviour
         isCountingDown = true;
 
         // 게임 종료 카운트다운
-        remainingTime.Value = endCountdownTime+0.1f;
+        remainingTime.Value = endCountdownTime + 0.1f;
         while (remainingTime.Value > 0)
         {
             remainingTime.Value -= Time.deltaTime;
@@ -720,11 +720,11 @@ public class GameManager : NetworkBehaviour
         {
             gameUI.gameObject.SetActive(true);
         }
-
-        UIManager.Instance.ToggleOptionPanel(false);
-        UIManager.Instance.ToggleOptionButton(false);
-        UIManager.Instance.ToggleGuidePanel(false);
-        UIManager.Instance.ToggleGuideButton(false);
+        // 게임이시작 되어도 가이드랑 옵션은 꺼지지 않게
+        // UIManager.Instance.ToggleOptionPanel(false);
+        // UIManager.Instance.ToggleOptionButton(false);
+        // UIManager.Instance.ToggleGuidePanel(false);
+        // UIManager.Instance.ToggleGuideButton(false);
     }
 
     // 서버에서 모든 플레이어의 입력을 차단하고 상태 초기화
