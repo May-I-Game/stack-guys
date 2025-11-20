@@ -149,6 +149,11 @@ public class LoginUIManager : MonoBehaviour
             return;
         }
 
+        if (SystemInfo.operatingSystem.Contains("Android") || SystemInfo.operatingSystem.Contains("iPhone") || SystemInfo.operatingSystem.Contains("iPad"))
+        {
+            Screen.fullScreen = true;
+        }
+
         // 1. 로딩 UI 활성화 (모달 창 띄우기)
         if (loadingPanel != null)
         {
