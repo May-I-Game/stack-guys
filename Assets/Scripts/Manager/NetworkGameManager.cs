@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class NetworkGameManager : MonoBehaviour
 {
-    public static NetworkGameManager instance;
+    public static NetworkGameManager Instance;
     private NetworkManager networkManager;
 
     [Header("Game Settings")]
@@ -40,13 +40,13 @@ public class NetworkGameManager : MonoBehaviour
     private void Awake()
     {
         // 싱글톤 패턴으로 중복 방지
-        if (instance != null && instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
 
-        instance = this;
+        Instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
@@ -96,7 +96,7 @@ public class NetworkGameManager : MonoBehaviour
     private void OnDestroy()
     {
         // instance가 자신일 때만 정리
-        if (instance == this)
+        if (Instance == this)
         {
             if (networkManager != null)
             {
@@ -104,7 +104,7 @@ public class NetworkGameManager : MonoBehaviour
                 networkManager.OnClientDisconnectCallback -= OnClientDisconnected;
                 networkManager.ConnectionApprovalCallback -= ApprovalCheck;
             }
-            instance = null;
+            Instance = null;
         }
     }
 
