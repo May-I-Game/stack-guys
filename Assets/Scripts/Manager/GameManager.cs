@@ -110,6 +110,9 @@ public class GameManager : NetworkBehaviour
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
 
+        // 플랫폼 감지 및 Mobile UI 제어
+        CheckPlatformAndSetMobileUI();
+
         if (IsServer)
         {
             currentGameState.Value = GameState.Lobby;
@@ -722,11 +725,11 @@ public class GameManager : NetworkBehaviour
         {
             gameUI.gameObject.SetActive(true);
         }
-        // 게임이시작 되어도 가이드랑 옵션은 꺼지지 않게
-        // UIManager.Instance.ToggleOptionPanel(false);
-        // UIManager.Instance.ToggleOptionButton(false);
-        // UIManager.Instance.ToggleGuidePanel(false);
-        // UIManager.Instance.ToggleGuideButton(false);
+        // 게임 시작 시 패널은 비활성화하지만 버튼은 활성화
+        UIManager.Instance.ToggleOptionPanel(false);
+        UIManager.Instance.ToggleOptionButton(true);
+        UIManager.Instance.ToggleGuidePanel(false);
+        UIManager.Instance.ToggleGuideButton(true);
     }
 
     // 서버에서 모든 플레이어의 입력을 차단하고 상태 초기화
@@ -923,9 +926,9 @@ public class GameManager : NetworkBehaviour
         if (PingCount != null) PingCount.SetActive(isActive);
         if (gameUI != null) gameUI.SetActive(isActive);
 
-        // 게임 시작 후에는 Options와 Guide를 끔
-        UIManager.Instance.ToggleOptionButton(false);
-        UIManager.Instance.ToggleGuideButton(false);
+        // 게임 시작 후에는 Options와 Guide 버튼은 활성화
+        UIManager.Instance.ToggleOptionButton(isActive);
+        UIManager.Instance.ToggleGuideButton(isActive);
     }
 
     private void OnTimelineFinished(PlayableDirector director)
@@ -987,4 +990,38 @@ public class GameManager : NetworkBehaviour
         }
         return null;
     }
+
+    // 플랫폼 감지 및 Mobile UI 제어
+    private void CheckPlatformAndSetMobileUI()
+    {
+        if (Mobile == null) return;
+
+        // WebGL에서 실행 중인지 확인
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            // User Agent를 통해 모바일 기기인지 확인
+            bool isMobile = IsMobileDevice();
+            Mobile.SetActive(isMobile);
+        }
+        else
+        {
+            // WebGL이 아닌 경우 (에디터 등)
+            Mobile.SetActive(false);
+        }
+    }
+
+    // User Agent를 통해 모바일 기기 감지
+    private bool IsMobileDevice()
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        return IsMobileUserAgent();
+#else
+        // 에디터나 다른 플랫폼에서는 false 반환
+        return false;
+#endif
+    }
+
+    // JavaScript를 통해 User Agent 확인 (WebGL 전용)
+    [System.Runtime.InteropServices.DllImport("__Internal")]
+    private static extern bool IsMobileUserAgent();
 }
