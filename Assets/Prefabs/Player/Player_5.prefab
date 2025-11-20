@@ -456,6 +456,8 @@ MonoBehaviour:
   jumpBuffLoopEffect: {fileID: 3113472008828885736}
   speedBuffLoopEffect: {fileID: 1398758520023285383}
   invincibleBuffLoopEffect: {fileID: 8457493768993515167}
+  localPlayerArrowPrefab: {fileID: 5370047778552153800, guid: 40d2c8ddb7b75db4594c8b7900f0fe64, type: 3}
+  arrowOffset: {x: 0, y: 1, z: 0}
   footstepAudioSource: {fileID: 3230912013547514108}
   footstepClip: {fileID: 8300000, guid: 3bb824bb265c1fc42a7ec2d1050b863e, type: 3}
   footstepVolume: 1
@@ -528,12 +530,12 @@ MonoBehaviour:
   nameText: {fileID: 9128022758857899384}
   stickerImage: {fileID: 753932797642887439}
   stickerSprites:
-  - {fileID: 21300000, guid: 35d2e6d91e788354cb4a941d761bbc11, type: 3}
-  - {fileID: 21300000, guid: 3e9bd29c6a90d2548bdee5200119c714, type: 3}
-  - {fileID: 21300000, guid: 99f857e04beeca344bad328554f4cca7, type: 3}
-  - {fileID: 21300000, guid: e75d2d2f2b25f2b4aa7d83d24b0ae9ba, type: 3}
-  - {fileID: 21300000, guid: 93cc3a4d3f2da1740af9cedc411937af, type: 3}
-  - {fileID: 21300000, guid: b01a14036e0d5f445b6daff5be2e9f97, type: 3}
+  - {fileID: 21300000, guid: ee45bf6fe0a20784b9ef6d470a3b364a, type: 3}
+  - {fileID: 21300000, guid: 2b2cf8b5a4851df498887fb0aa30dd51, type: 3}
+  - {fileID: 21300000, guid: 49b925740b79f0047bbbb5666f9d5b68, type: 3}
+  - {fileID: 21300000, guid: a73eafb83d8f9324293fd5dc42da1a0a, type: 3}
+  - {fileID: 21300000, guid: d6357c272dfa3cc41a19a404d341ee20, type: 3}
+  - {fileID: 21300000, guid: dca84a5d2be8df34ca2d64462c12f5f9, type: 3}
   stickerDuration: 3
 --- !u!1 &948150900087678914
 GameObject:
@@ -1800,8 +1802,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
