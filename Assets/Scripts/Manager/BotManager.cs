@@ -7,8 +7,8 @@ public class BotManager : NetworkBehaviour
 {
     public static BotManager Singleton;                  // 싱글톤 패턴
 
-    [Header("Bot Prefab")]
-    [SerializeField] private NetworkObject botPrefab;
+    [Header("Bot Prefabs")]
+    [SerializeField] private NetworkObject[] botPrefabs = new NetworkObject[12];
 
     [Header("Debug Spawn Points")]
     [SerializeField] private Transform[] debugSpawnPoints;
@@ -23,7 +23,7 @@ public class BotManager : NetworkBehaviour
         }
         else
         {
-            Destroy(gameObject);                // 중복된 Bot 매니저 삭제
+            Destroy(gameObject);                        // 중복된 Bot 매니저 삭제
             return;
         }
     }
@@ -65,9 +65,17 @@ public class BotManager : NetworkBehaviour
         // 90도 회전
         Quaternion spawnRotation = spawnPoint.rotation * Quaternion.Euler(0, 90, 0);
 
+        // 랜덤 봇 프리팹 선택
+        NetworkObject selectedBotPrefab = GetRandomBotPrefab();
+        if (selectedBotPrefab == null)
+        {
+            Debug.LogError("[BotManager] 사용 가능한 봇 프리팹이 없음");
+            return;
+        }
+
         // 봇 인스턴스 생성
         NetworkObject botNetobj = NetworkManager.Singleton.SpawnManager.InstantiateAndSpawn(
-            botPrefab,
+            selectedBotPrefab,
             position: spawnPoint.position,
             rotation: spawnRotation
         );
@@ -116,7 +124,7 @@ public class BotManager : NetworkBehaviour
         if (!IsServer) return;
 
         // 봇 프리팹 확인
-        if (botPrefab == null)
+        if (botPrefabs == null || botPrefabs.Length == 0)
         {
             Debug.LogError("[BotManager] 봇 프리팹이 설정 안됨");
             return;
@@ -134,9 +142,17 @@ public class BotManager : NetworkBehaviour
         // startIndex부터 끝까지 반복하면서 각 스폰 포인트에 봇 배치
         for (int i = startIndex; i < startIndex + botsToSpawn; i++)
         {
+            // 랜덤 봇 프리팹 선택
+            NetworkObject selectedBotPrefab = GetRandomBotPrefab();
+            if (selectedBotPrefab == null)
+            {
+                Debug.LogWarning("[BotManager] 사용 가능한 봇 프리팹이 없어 스킵");
+                continue;
+            }
+
             // 봇 인스턴스 생성
             NetworkObject botNetobj = NetworkManager.Singleton.SpawnManager.InstantiateAndSpawn(
-                botPrefab,
+                selectedBotPrefab,
                 position: transform.position,
                 rotation: transform.rotation
             );
@@ -168,6 +184,28 @@ public class BotManager : NetworkBehaviour
         }
 
         //Debug.Log($"[BotManager] {botsToSpawn}개의 봇을 게임에 배치");
+    }
+
+    // 랜덤한 봇 프리팹 선택
+    private NetworkObject GetRandomBotPrefab()
+    {
+        // null이 아닌 프리팹만 필터링
+        List<NetworkObject> validPrefabs = new List<NetworkObject>();
+        foreach (var prefab in botPrefabs)
+        {
+            if (prefab != null)
+            {
+                validPrefabs.Add(prefab);
+            }
+        }
+
+        if (validPrefabs.Count == 0)
+        {
+            return null;
+        }
+
+        // 랜덤 선택
+        return validPrefabs[Random.Range(0, validPrefabs.Count)];
     }
 
     // 봇을 게임 스폰 포인트로 텔레포트
