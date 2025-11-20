@@ -30,6 +30,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private GameObject PingCount;
     [SerializeField] private GameObject LobbyUI;
     [SerializeField] private GameObject gameUI;
+    [SerializeField] private GameObject Info;
 
     [Header("Settings")]
     [SerializeField] private float startCountdownTime = 5f;
@@ -58,7 +59,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private Transform secondPlacePodium;
     [SerializeField] private Transform thirdPlacePodium;
     [SerializeField] private PlayableDirector podiumTimeline;
-    [SerializeField] private float podiumTimelineDuration = 12f; // 타임라인 길이 (수동 설정)
+    [SerializeField] private float podiumTimelineDuration = 10f; // 타임라인 길이 (수동 설정)
 
     public bool IsLobby => currentGameState.Value == GameState.Lobby;
     public bool IsGame => currentGameState.Value == GameState.Playing;
@@ -228,7 +229,7 @@ public class GameManager : NetworkBehaviour
     {
         if (NowPlayerCount != null)
         {
-            NowPlayerCount.text = $"현재 참가자: {newValue}명";
+            NowPlayerCount.text = $"{newValue}명";
         }
         UpdateQualifiedUI();
     }
@@ -244,7 +245,7 @@ public class GameManager : NetworkBehaviour
     {
         if (QualifiedText != null)
         {
-            QualifiedText.text = $"도착 : {rankings.Count} / {currentPlayerCount.Value}";
+            QualifiedText.text = $"{rankings.Count} / {currentPlayerCount.Value}";
         }
     }
     private void UpdateStartCountdownVisibility(bool previousValue, bool newValue)
@@ -537,6 +538,8 @@ public class GameManager : NetworkBehaviour
             LobbyUI.SetActive(false);
         if (gameUI != null)
             gameUI.SetActive(false);
+        if (Info != null)
+            Info.SetActive(false);
         UIManager.Instance.ToggleOptionPanel(false);
         UIManager.Instance.ToggleOptionButton(false);
         UIManager.Instance.ToggleGuidePanel(false);
@@ -703,14 +706,14 @@ public class GameManager : NetworkBehaviour
         {
             NowPlayerCount.gameObject.SetActive(false);
         }
-        if (FPSCount != null)
-        {
-            FPSCount.gameObject.SetActive(true);
-        }
-        if (PingCount != null)
-        {
-            PingCount.gameObject.SetActive(true);
-        }
+        // if (FPSCount != null)
+        // {
+        //     FPSCount.gameObject.SetActive(true);
+        // }
+        // if (PingCount != null)
+        // {
+        //     PingCount.gameObject.SetActive(true);
+        // }
         if (LobbyUI != null)
         {
             LobbyUI.gameObject.SetActive(false);
@@ -888,6 +891,10 @@ public class GameManager : NetworkBehaviour
 
         ToggleGameUI(false);
 
+        // Info 비활성화
+        if (Info != null)
+            Info.SetActive(false);
+
         //timeline재생
         timeline.Play();
         //트랙 bgm on
@@ -897,6 +904,10 @@ public class GameManager : NetworkBehaviour
         yield return new WaitForSeconds((float)timeline.duration);
 
         ToggleGameUI(true);
+
+        // Info 다시 활성화
+        if (Info != null)
+            Info.SetActive(true);
 
         if (!isGameReadyCountdownActive.Value)
         {
