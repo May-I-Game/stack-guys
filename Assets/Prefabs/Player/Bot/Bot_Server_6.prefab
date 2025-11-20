@@ -479,7 +479,7 @@ MonoBehaviour:
   groundCheckInterval: 2
   lerpSpeed: 15
   smoothTime: 0.1
-  bodyPrefab: {fileID: 0}
+  bodyPrefab: {fileID: 4151685488280018792, guid: 61cf235e095f635408d86e3fde16b296, type: 3}
   isDiveGrounded: 0
   netIsDeath:
     m_InternalValue: 0
