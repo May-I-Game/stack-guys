@@ -1659,20 +1659,16 @@ public class PlayerController : NetworkBehaviour
 
             case "Death":
                 // 무적 버프 중이면 죽지 않음
-                if (buffManager != null && buffManager.IsInvincible)
-                {
-                    break;
-                }
+                if (buffManager != null && buffManager.IsInvincible) break;
                 // 일반 죽음
                 PlayerDeath(isOceanDeath: false);
                 break;
 
             case "weakObstacles":
+                // 죽었으면 영향받지 않음
+                if (netIsDeath.Value) break;
                 // 무적 버프 중이면 피격되지 않음
-                if (buffManager != null && buffManager.IsInvincible)
-                {
-                    break;
-                }
+                if (buffManager != null && buffManager.IsInvincible) break;
                 // 피격 사운드 재생
                 PlayHitSound();
                 // 충돌 지점의 평균 법선 벡터 계산
@@ -1689,6 +1685,8 @@ public class PlayerController : NetworkBehaviour
                 break;
 
             case "StrongObstacles":
+                // 죽었으면 영향받지 않음
+                if (netIsDeath.Value) break;
                 // 가시에 부딪힘
                 PlayHitAnimation("StrongHit");
                 break;
