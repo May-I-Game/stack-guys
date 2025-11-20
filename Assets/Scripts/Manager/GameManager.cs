@@ -397,10 +397,9 @@ public class GameManager : NetworkBehaviour
         if (!IsServer) return;
 
         // 매치메이킹 서버에 게임 종료 신호 전송
-        NetworkGameManager networkManager = FindObjectOfType<NetworkGameManager>();
-        if (networkManager != null)
+        if (NetworkGameManager.Instance != null)
         {
-            networkManager.NotifyGameEnded();
+            NetworkGameManager.Instance.NotifyGameEnded();
         }
 
         // 클라에 결과 화면 표시
