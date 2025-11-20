@@ -530,11 +530,11 @@ GameObject:
   - component: {fileID: 3171814372656086099}
   - component: {fileID: 3291397246197263008}
   - component: {fileID: 737830901978794184}
-  - component: {fileID: 801857031440431279}
-  - component: {fileID: -4259812370723982596}
   - component: {fileID: 5139138323495689757}
-  - component: {fileID: 8815579510727298836}
   - component: {fileID: 1992166760196760152}
+  - component: {fileID: 1134117437668139096}
+  - component: {fileID: 4256676558163723795}
+  - component: {fileID: 7599350578413079933}
   m_Layer: 6
   m_Name: Bot_Server_2
   m_TagString: Player
@@ -647,7 +647,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2692318151
+  GlobalObjectIdHash: 1179560556
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -660,35 +660,6 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &801857031440431279
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2916290867004793234}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de256038f252a2a43a15bfb5e675b3c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
---- !u!114 &-4259812370723982596
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2916290867004793234}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3a3ced9fdcef9846bd110bfa348d2d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  debugSpeedMultiplier: 1
-  debugJumpMultiplier: 1
-  debugIsInvincible: 0
 --- !u!114 &5139138323495689757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -705,101 +676,6 @@ MonoBehaviour:
   visibleRange: 20
   hysteresisDistance: 5
   updateInterval: 0.5
---- !u!114 &8815579510727298836
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2916290867004793234}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41ec7eeb0c0cacf4e885a2d57ca8d28a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  walkSpeed: 4
-  rotationSpeed: 10
-  jumpForce: 3
-  diveForce: 4
-  diveDownForce: 1
-  grabRange: 1
-  holdHeight: 0.5
-  holdDistance: 0.1
-  throwForce: 5
-  escapeRequiredJumps: 5
-  groundCheckDist: 0.1
-  groundLayerMask:
-    serializedVersion: 2
-    m_Bits: 1352
-  bounceForce: 5
-  animator: {fileID: 1205379421244045382}
-  walkParticle: {fileID: 2371273590973666922}
-  jumpParticle: {fileID: 6990768416166058582}
-  diveLandParticle: {fileID: 6974399340102041451}
-  respawnParticle: {fileID: 8173814580002153722}
-  buffPickupEffect: {fileID: 8361433110081629573}
-  jumpBuffLoopEffect: {fileID: 9182424161088986129}
-  speedBuffLoopEffect: {fileID: 5130342295752390782}
-  invincibleBuffLoopEffect: {fileID: 2379252528027164774}
-  localPlayerArrowPrefab: {fileID: 5370047778552153800, guid: 40d2c8ddb7b75db4594c8b7900f0fe64, type: 3}
-  arrowOffset: {x: 0, y: 1, z: 0}
-  footstepAudioSource: {fileID: 8686670792688725509}
-  footstepClip: {fileID: 8300000, guid: 3bb824bb265c1fc42a7ec2d1050b863e, type: 3}
-  footstepVolume: 1
-  footstepInterval: 0.4
-  jumpAudioSource: {fileID: 8686670792688725509}
-  jumpVoiceClip: {fileID: 8300000, guid: 82c9a5c7e1dff9b4aac35c058e4ca25b, type: 3}
-  jumpEffectClip: {fileID: 8300000, guid: 0d05960287b44a246bccf049e2dc8712, type: 3}
-  jumpVoiceVolume: 0.2
-  jumpEffectVolume: 1
-  diveAudioSource: {fileID: 8686670792688725509}
-  diveStartClip: {fileID: 8300000, guid: 1691ee7657f19484982d4c509c5c6603, type: 3}
-  diveLandVoiceClip: {fileID: 8300000, guid: 7f49a3714ef345a4ba50941af49e0163, type: 3}
-  diveLandImpactClip: {fileID: 8300000, guid: 9ad0186fe67999640bc03d6e7579e654, type: 3}
-  diveStartVolume: 0.6
-  diveLandVoiceVolume: 1
-  diveLandImpactVolume: 0.8
-  buffAudioSource: {fileID: 8686670792688725509}
-  buffPickupClip: {fileID: 8300000, guid: d34e5b16e50b694429290677e60465aa, type: 3}
-  buffPickupVolume: 0.7
-  buffLoopAudioSource: {fileID: 5379869147041594615}
-  buffLoopClip: {fileID: 8300000, guid: cb8efadc31735404990852adee92e9f8, type: 3}
-  buffLoopVolume: 0.5
-  invincibleBuffLoopAudioSource: {fileID: 5662695634745092551}
-  invincibleBuffLoopClip: {fileID: 8300000, guid: 47bd1601e60432343bdb3d7421ce26e4, type: 3}
-  invincibleBuffLoopVolume: 0.5
-  respawnAudioSource: {fileID: 8686670792688725509}
-  respawnClip: {fileID: 8300000, guid: f0275c29b52376a40949f9c19fa4f2af, type: 3}
-  respawnVolume: 0.4
-  deathAudioSource: {fileID: 8686670792688725509}
-  deathVoiceClip: {fileID: 8300000, guid: 73db79184b7d80d4392366c2be8fd5a6, type: 3}
-  deathSpikeClip: {fileID: 8300000, guid: 472912c9b3dc34e45b45e4b7b6dbff66, type: 3}
-  deathOceanClip: {fileID: 8300000, guid: a09bd743764efd7409592bf02cc6101e, type: 3}
-  deathVolume: 0.7
-  hitAudioSource: {fileID: 8686670792688725509}
-  hitVoiceClip: {fileID: 8300000, guid: 7f49a3714ef345a4ba50941af49e0163, type: 3}
-  hitImpactClip: {fileID: 8300000, guid: e30c384e8591b1b498c383cbae1fd0cf, type: 3}
-  hitVolume: 1
-  throwAudioSource: {fileID: 8686670792688725509}
-  throwClip: {fileID: 8300000, guid: e03957dfe85ccbd4f917fa1544ae7545, type: 3}
-  throwVolume: 0.7
-  inputSendInterval: 0.05
-  inputDeltaThreshold: 0.1
-  speedThreshold: 0.5
-  groundCheckInterval: 2
-  lerpSpeed: 15
-  smoothTime: 0.1
-  bodyPrefab: {fileID: -8785822263428529945, guid: 8e7223e2b2c12414aa12d7a2a1e9098f, type: 3}
-  isDiveGrounded: 0
-  netIsDeath:
-    m_InternalValue: 0
-  isHit: 0
-  RespawnId:
-    m_InternalValue: 0
-  respawnManager: {fileID: 0}
-  inputEnabled:
-    m_InternalValue: 1
 --- !u!114 &1992166760196760152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -823,6 +699,150 @@ MonoBehaviour:
   - {fileID: 21300000, guid: d6357c272dfa3cc41a19a404d341ee20, type: 3}
   - {fileID: 21300000, guid: dca84a5d2be8df34ca2d64462c12f5f9, type: 3}
   stickerDuration: 3
+--- !u!195 &1134117437668139096
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2916290867004793234}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &4256676558163723795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2916290867004793234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa55f434d378e6d498c4fa771d36400e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  walkSpeed: 4
+  rotationSpeed: 10
+  jumpForce: 3
+  diveForce: 4
+  diveDownForce: 1
+  grabRange: 1
+  holdHeight: 0.6
+  holdDistance: 0.1
+  throwForce: 5
+  escapeRequiredJumps: 5
+  groundCheckDist: 0.1
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  bounceForce: 5
+  animator: {fileID: 0}
+  walkParticle: {fileID: 0}
+  jumpParticle: {fileID: 0}
+  diveLandParticle: {fileID: 0}
+  respawnParticle: {fileID: 0}
+  buffPickupEffect: {fileID: 0}
+  jumpBuffLoopEffect: {fileID: 0}
+  speedBuffLoopEffect: {fileID: 0}
+  invincibleBuffLoopEffect: {fileID: 0}
+  localPlayerArrowPrefab: {fileID: 0}
+  arrowOffset: {x: 0, y: 1, z: 0}
+  footstepAudioSource: {fileID: 0}
+  footstepClip: {fileID: 0}
+  footstepVolume: 0.5
+  footstepInterval: 0.4
+  jumpAudioSource: {fileID: 0}
+  jumpVoiceClip: {fileID: 0}
+  jumpEffectClip: {fileID: 0}
+  jumpVoiceVolume: 0.7
+  jumpEffectVolume: 0.5
+  diveAudioSource: {fileID: 0}
+  diveStartClip: {fileID: 0}
+  diveLandVoiceClip: {fileID: 0}
+  diveLandImpactClip: {fileID: 0}
+  diveStartVolume: 0.6
+  diveLandVoiceVolume: 0.7
+  diveLandImpactVolume: 0.8
+  buffAudioSource: {fileID: 0}
+  buffPickupClip: {fileID: 0}
+  buffPickupVolume: 0.7
+  buffLoopAudioSource: {fileID: 0}
+  buffLoopClip: {fileID: 0}
+  buffLoopVolume: 0.5
+  invincibleBuffLoopAudioSource: {fileID: 0}
+  invincibleBuffLoopClip: {fileID: 0}
+  invincibleBuffLoopVolume: 0.5
+  respawnAudioSource: {fileID: 0}
+  respawnClip: {fileID: 0}
+  respawnVolume: 0.7
+  deathAudioSource: {fileID: 0}
+  deathVoiceClip: {fileID: 0}
+  deathSpikeClip: {fileID: 0}
+  deathOceanClip: {fileID: 0}
+  deathVolume: 0.7
+  hitAudioSource: {fileID: 0}
+  hitVoiceClip: {fileID: 0}
+  hitImpactClip: {fileID: 0}
+  hitVolume: 0.7
+  throwAudioSource: {fileID: 0}
+  throwClip: {fileID: 0}
+  throwVolume: 0.7
+  inputSendInterval: 0.05
+  inputDeltaThreshold: 0.1
+  speedThreshold: 0.5
+  groundCheckInterval: 2
+  lerpSpeed: 15
+  smoothTime: 0.1
+  bodyPrefab: {fileID: 0}
+  isDiveGrounded: 0
+  netIsDeath:
+    m_InternalValue: 0
+  isHit: 0
+  RespawnId:
+    m_InternalValue: 0
+  respawnManager: {fileID: 0}
+  inputEnabled:
+    m_InternalValue: 1
+  minForwardDistance: 1
+  updateNavigationInterval: 0.5
+  updateGoalInterval: 0.5
+  targetSelectionInterval: 0.2
+  useRandomWaypoint: 1
+  waypointReachedDistance: 2
+  waypointLineColor: {r: 0, g: 0, b: 1, a: 1}
+  goalLineColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  selectedColor: {r: 1, g: 0, b: 0, a: 1}
+  requireReachableWaypoint: 1
+  showWaypointInEditor: 0
+  showGoalInEditor: 0
+  enableDebugLogs: 1
+  debugLogInterval: 3
+--- !u!114 &7599350578413079933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2916290867004793234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0fc26f85e8208e4fa1328ff70f7216f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &2937773681608637005
 GameObject:
   m_ObjectHideFlags: 0
@@ -2425,60 +2445,5 @@ PrefabInstance:
 --- !u!4 &2046010137309428985 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2498124589793264573, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 4526113730414968644}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &2371273590973666922 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 2172855640851409198, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 4526113730414968644}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &2379252528027164774 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 2290979693427728162, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 4526113730414968644}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &5130342295752390782 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 8790286879126538042, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 4526113730414968644}
-  m_PrefabAsset: {fileID: 0}
---- !u!82 &5379869147041594615 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 8387635487822152627, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 4526113730414968644}
-  m_PrefabAsset: {fileID: 0}
---- !u!82 &5662695634745092551 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 8095805100435707523, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 4526113730414968644}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &6974399340102041451 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 6775093113509036079, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 4526113730414968644}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &6990768416166058582 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 6902838044273927442, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 4526113730414968644}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &8173814580002153722 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 5737803048190286782, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 4526113730414968644}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &8361433110081629573 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 5388059330547028673, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 4526113730414968644}
-  m_PrefabAsset: {fileID: 0}
---- !u!82 &8686670792688725509 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 5062817266100212033, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 4526113730414968644}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &9182424161088986129 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 4729195682098488149, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
   m_PrefabInstance: {fileID: 4526113730414968644}
   m_PrefabAsset: {fileID: 0}
