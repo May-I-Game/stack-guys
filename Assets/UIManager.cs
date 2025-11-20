@@ -53,13 +53,13 @@ public class UIManager : MonoBehaviour
 
         //옵션 버튼 연결
         if (optionsButton != null)
-            optionsButton.onClick.AddListener(() => { ToggleOptionPanel(true); });
+            optionsButton.onClick.AddListener(OnOptionsButtonClicked);
 
         if (closeOptionsButton != null)
             closeOptionsButton.onClick.AddListener(() => { ToggleOptionPanel(false); });
 
         if (GuideButton != null)
-            GuideButton.onClick.AddListener(() => { ToggleGuidePanel(true); });
+            GuideButton.onClick.AddListener(OnGuideButtonClicked);
 
         if (closeGuideButton != null)
             closeGuideButton.onClick.AddListener(() => { ToggleGuidePanel(false); });
@@ -72,6 +72,42 @@ public class UIManager : MonoBehaviour
 
         if (right != null)
             right.onClick.AddListener(Right_page);
+    }
+
+    // 옵션 버튼 클릭 시 호출
+    private void OnOptionsButtonClicked()
+    {
+        bool isOptionPanelActive = optionsPanel != null && optionsPanel.activeSelf;
+
+        if (isOptionPanelActive)
+        {
+            // 이미 열려있으면 닫기
+            ToggleOptionPanel(false);
+        }
+        else
+        {
+            // 닫혀있으면 열기 (가이드 패널은 닫기)
+            ToggleGuidePanel(false);
+            ToggleOptionPanel(true);
+        }
+    }
+
+    // 가이드 버튼 클릭 시 호출
+    private void OnGuideButtonClicked()
+    {
+        bool isGuidePanelActive = GuidePanel != null && GuidePanel.activeSelf;
+
+        if (isGuidePanelActive)
+        {
+            // 이미 열려있으면 닫기
+            ToggleGuidePanel(false);
+        }
+        else
+        {
+            // 닫혀있으면 열기 (옵션 패널은 닫기)
+            ToggleOptionPanel(false);
+            ToggleGuidePanel(true);
+        }
     }
 
     public void ToggleOptionPanel(bool on)
