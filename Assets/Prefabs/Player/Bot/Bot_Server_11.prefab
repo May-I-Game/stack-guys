@@ -1363,11 +1363,11 @@ GameObject:
   - component: {fileID: 9013269083113614900}
   - component: {fileID: 2479902567835388027}
   - component: {fileID: -2516490683871743645}
+  - component: {fileID: -8318179441568257339}
+  - component: {fileID: 8525527561834766156}
   - component: {fileID: -3220614678576546571}
   - component: {fileID: -7438272633985568390}
-  - component: {fileID: -8318179441568257339}
   - component: {fileID: 4330659005984477901}
-  - component: {fileID: 8525527561834766156}
   m_Layer: 6
   m_Name: Bot_Server_11
   m_TagString: Player
@@ -1492,6 +1492,39 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &-8318179441568257339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5309982938216476723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5cd7f019413a53429138754987568a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  visibleRange: 20
+  hysteresisDistance: 5
+  updateInterval: 0.5
+--- !u!114 &8525527561834766156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5309982938216476723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bcbd9fbc272eaa4f9ae02df86e0a6cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  nameText: {fileID: 5274365751528248162}
+  stickerImage: {fileID: 0}
+  stickerSprites: []
+  stickerDuration: 3
 --- !u!195 &-3220614678576546571
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1551,6 +1584,8 @@ MonoBehaviour:
   jumpBuffLoopEffect: {fileID: 0}
   speedBuffLoopEffect: {fileID: 0}
   invincibleBuffLoopEffect: {fileID: 0}
+  localPlayerArrowPrefab: {fileID: 0}
+  arrowOffset: {x: 0, y: 1, z: 0}
   footstepAudioSource: {fileID: 0}
   footstepClip: {fileID: 0}
   footstepVolume: 0.5
@@ -1621,22 +1656,6 @@ MonoBehaviour:
   showGoalInEditor: 0
   enableDebugLogs: 1
   debugLogInterval: 3
---- !u!114 &-8318179441568257339
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5309982938216476723}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5cd7f019413a53429138754987568a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  visibleRange: 20
-  hysteresisDistance: 5
-  updateInterval: 0.5
 --- !u!114 &4330659005984477901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1650,23 +1669,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
---- !u!114 &8525527561834766156
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5309982938216476723}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3bcbd9fbc272eaa4f9ae02df86e0a6cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  nameText: {fileID: 5274365751528248162}
-  stickerImage: {fileID: 0}
-  stickerSprites: []
-  stickerDuration: 3
 --- !u!1 &5935630077146863053
 GameObject:
   m_ObjectHideFlags: 0
