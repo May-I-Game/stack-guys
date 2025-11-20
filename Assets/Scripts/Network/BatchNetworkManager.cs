@@ -89,7 +89,7 @@ public class BatchNetworkManager : NetworkBehaviour
 
             Debug.Log(
                 $"[BatchNetworkManager] 총 전송 스냅샷: {_totalSnapshotsSentInSecond}개, " +
-                $"총 서버 아웃바운드: {totalKbps:F1}Kbps"
+                $"현재 서버 아웃바운드: {totalKbps:F1}Kbps"
             );
 
             _logTimer -= 1.0f;
