@@ -151,15 +151,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -100.141
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -293.571
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -197,6 +197,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Trampoline_Mesh
       objectReference: {fileID: 0}
+    - target: {fileID: 8367197599926057102, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -213,6 +217,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4072225274833917847}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 86494788171790601}
   m_SourcePrefab: {fileID: 100100000, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
 --- !u!4 &575589770864129878 stripped
 Transform:
@@ -283,8 +290,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  launchForce: 6
+  launchForce: 4
   cooldownTime: 0
   audioSource: {fileID: 8352592628756889952}
-  launchClip: {fileID: 8300000, guid: 7c3c9db167cc9b6469d7216ed58899e1, type: 3}
-  launchVolume: 1
+  jumpClip: {fileID: 8300000, guid: 7c3c9db167cc9b6469d7216ed58899e1, type: 3}
+  windClip: {fileID: 8300000, guid: 472912c9b3dc34e45b45e4b7b6dbff66, type: 3}
+  jumpVolume: 0.7
+  windVolume: 0.7
+--- !u!64 &86494788171790601
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916262021857816044}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -7135292491759130363, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}

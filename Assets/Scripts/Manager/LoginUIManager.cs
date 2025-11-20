@@ -149,6 +149,12 @@ public class LoginUIManager : MonoBehaviour
             return;
         }
 
+        // 모바일 기기 감지 및 전체화면 전환
+        if (IsMobileDevice())
+        {
+            RequestFullScreen();
+        }
+
         // 1. 로딩 UI 활성화 (모달 창 띄우기)
         if (loadingPanel != null)
         {
@@ -365,4 +371,48 @@ public class LoginUIManager : MonoBehaviour
         Debug.LogError("⏰ 매칭 타임아웃");
         OnConnectionFailed("매칭 타임아웃 (60초)");
     }
+
+    // ========================== 모바일 기기 감지 및 전체화면 ==========================
+
+    // 모바일 기기 감지
+    private bool IsMobileDevice()
+    {
+        // WebGL에서 실행 중인지 확인
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            // JavaScript를 통해 User Agent 확인
+            return IsMobileUserAgent();
+#else
+            return false;
+#endif
+        }
+        else
+        {
+            // 네이티브 플랫폼에서는 SystemInfo 사용
+            return SystemInfo.operatingSystem.Contains("Android") ||
+                   SystemInfo.operatingSystem.Contains("iPhone") ||
+                   SystemInfo.operatingSystem.Contains("iPad");
+        }
+    }
+
+    // WebGL에서 전체화면 요청
+    private void RequestFullScreen()
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        // JavaScript를 통해 전체화면 요청
+        RequestWebGLFullScreen();
+#else
+        // 네이티브 플랫폼에서는 Screen API 사용
+        Screen.fullScreen = true;
+#endif
+        Debug.Log("📱 모바일 기기 감지: 전체화면 요청");
+    }
+
+    // JavaScript 함수 선언 (WebGL 전용)
+    [System.Runtime.InteropServices.DllImport("__Internal")]
+    private static extern bool IsMobileUserAgent();
+
+    [System.Runtime.InteropServices.DllImport("__Internal")]
+    private static extern void RequestWebGLFullScreen();
 }

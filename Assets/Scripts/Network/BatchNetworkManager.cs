@@ -89,7 +89,7 @@ public class BatchNetworkManager : NetworkBehaviour
 
             Debug.Log(
                 $"[BatchNetworkManager] 총 전송 스냅샷: {_totalSnapshotsSentInSecond}개, " +
-                $"총 서버 아웃바운드: {totalKbps:F1}Kbps"
+                $"현재 서버 아웃바운드: {totalKbps:F1}Kbps"
             );
 
             _logTimer -= 1.0f;
@@ -174,9 +174,12 @@ public class BatchNetworkManager : NetworkBehaviour
             {
                 if (!_spawnedPlayers.TryGetValue(netId, out PlayerController other)) continue;
 
-                // 관심영역(AOI) 체크 (거리 기반)
-                float sqrDistance = (observer.transform.position - other.transform.position).sqrMagnitude;
-                if (sqrDistance > _sqrSyncDistance) continue;
+                if (!GameManager.Instance.IsEnded)
+                {
+                    // 관심영역(AOI) 체크 (거리 기반)
+                    float sqrDistance = (observer.transform.position - other.transform.position).sqrMagnitude;
+                    if (sqrDistance > _sqrSyncDistance) continue;
+                }
 
                 // other을 스냅샷에 추가해서 동기화
                 _snapshotBuffer.Add(new PlayerSnapshot(

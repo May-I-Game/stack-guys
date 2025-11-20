@@ -34,6 +34,9 @@ public class NetworkVisibilityControl : NetworkBehaviour
 
     private bool CheckVisibility(ulong clientId)
     {
+        // 게임이 종료된 경우 모두에게 보이도록 함
+        if (GameManager.Instance.IsEnded) return true;
+
         // 대상 클라이언트가 존재하는지 확인
         if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client))
             return false;
