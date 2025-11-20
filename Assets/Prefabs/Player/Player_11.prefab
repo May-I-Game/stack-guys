@@ -1395,6 +1395,8 @@ MonoBehaviour:
   jumpBuffLoopEffect: {fileID: 4899199788905809529}
   speedBuffLoopEffect: {fileID: 8908491136934453782}
   invincibleBuffLoopEffect: {fileID: 2132243102642502158}
+  localPlayerArrowPrefab: {fileID: 5370047778552153800, guid: 40d2c8ddb7b75db4594c8b7900f0fe64, type: 3}
+  arrowOffset: {x: 0, y: 1, z: 0}
   footstepAudioSource: {fileID: 4908557801555686509}
   footstepClip: {fileID: 8300000, guid: 3bb824bb265c1fc42a7ec2d1050b863e, type: 3}
   footstepVolume: 1
