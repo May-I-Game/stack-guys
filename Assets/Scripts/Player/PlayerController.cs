@@ -45,6 +45,11 @@ public class PlayerController : NetworkBehaviour
     public ParticleSystem speedBuffLoopEffect;       // 속도 버프 루프
     public ParticleSystem invincibleBuffLoopEffect;  // 무적 버프 루프
 
+    [Header("Local Player Arrow")]
+    [SerializeField] private GameObject localPlayerArrowPrefab; 
+    [SerializeField] private Vector3 arrowOffset = new Vector3(0, 1f, 0);
+    private GameObject localPlayerArrowInstance;
+
     // 버프 적용 배율 (봇이면 1로 처리)
     protected float SpeedMul => buffManager != null ? buffManager.SpeedMultiplier : 1f;
     protected float JumpMul => buffManager != null ? buffManager.JumpMultiplier : 1f;
@@ -219,12 +224,21 @@ public class PlayerController : NetworkBehaviour
             string savedName = PlayerPrefs.GetString("player_name", ""); // 소문자!
             playerName.Value = savedName;
             Debug.Log($"플레이어 이름 설정: {savedName}");
+            
+            SpawnLocalPlayerArrow();
         }
+
     }
 
     // 디스폰 때 등록 해제 (안 하면 에러 남)
     public override void OnNetworkDespawn()
     {
+        // 화살표 정리
+        if (localPlayerArrowInstance != null)
+        {
+            Destroy(localPlayerArrowInstance);
+        }
+
         if (BatchNetworkManager.Instance != null)
         {
             BatchNetworkManager.Instance.UnregisterPlayer(NetworkObjectId);
@@ -383,6 +397,21 @@ public class PlayerController : NetworkBehaviour
             ServerPerformanceProfiler.End("PlayerController.Holding");
         }
         ServerPerformanceProfiler.End("PlayerController.FixedUpdate");
+    }
+
+    // 로컬 플레이어 Arrow 설정
+    private void SpawnLocalPlayerArrow()
+    {
+        if (localPlayerArrowPrefab != null)
+        {
+            localPlayerArrowInstance = Instantiate(
+                localPlayerArrowPrefab,
+                transform.position + arrowOffset,
+                Quaternion.identity,
+                transform // 플레이어의 자식으로 설정
+            );
+            Debug.Log("[LocalPlayer] Arrow spawned above local player");
+        }
     }
 
     // 매니저가 호출해주는 함수 (패킷 도착 시)
