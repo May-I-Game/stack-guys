@@ -201,6 +201,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Trampoline_Mesh
       objectReference: {fileID: 0}
+    - target: {fileID: 8367197599926057102, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -213,10 +217,10 @@ PrefabInstance:
       addedObject: {fileID: 2333019664654375661}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6070894806031775367}
+      addedObject: {fileID: 4072225274833917847}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 9220682879220760621}
+      addedObject: {fileID: 5373232630168986392}
   m_SourcePrefab: {fileID: 100100000, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
 --- !u!4 &575589770864129878 stripped
 Transform:
@@ -253,7 +257,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &6070894806031775367
+--- !u!114 &4072225274833917847
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -267,13 +271,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   launchForce: 4
-  cooldownTime: 0.5
+  cooldownTime: 0
   audioSource: {fileID: 8352592628756889952}
   jumpClip: {fileID: 8300000, guid: 7c3c9db167cc9b6469d7216ed58899e1, type: 3}
   windClip: {fileID: 8300000, guid: 15f9815a30f243a4981b87f77cc8bff9, type: 3}
   jumpVolume: 0.7
   windVolume: 0.7
---- !u!64 &9220682879220760621
+--- !u!64 &5373232630168986392
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -288,7 +292,7 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
