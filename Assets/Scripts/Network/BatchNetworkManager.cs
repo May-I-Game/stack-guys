@@ -174,9 +174,12 @@ public class BatchNetworkManager : NetworkBehaviour
             {
                 if (!_spawnedPlayers.TryGetValue(netId, out PlayerController other)) continue;
 
-                // 관심영역(AOI) 체크 (거리 기반)
-                float sqrDistance = (observer.transform.position - other.transform.position).sqrMagnitude;
-                if (sqrDistance > _sqrSyncDistance) continue;
+                if (!GameManager.Instance.IsEnded)
+                {
+                    // 관심영역(AOI) 체크 (거리 기반)
+                    float sqrDistance = (observer.transform.position - other.transform.position).sqrMagnitude;
+                    if (sqrDistance > _sqrSyncDistance) continue;
+                }
 
                 // other을 스냅샷에 추가해서 동기화
                 _snapshotBuffer.Add(new PlayerSnapshot(
