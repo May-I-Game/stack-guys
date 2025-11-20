@@ -30,6 +30,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private GameObject PingCount;
     [SerializeField] private GameObject LobbyUI;
     [SerializeField] private GameObject gameUI;
+    [SerializeField] private GameObject Info;
 
     [Header("Settings")]
     [SerializeField] private float startCountdownTime = 5f;
@@ -58,7 +59,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private Transform secondPlacePodium;
     [SerializeField] private Transform thirdPlacePodium;
     [SerializeField] private PlayableDirector podiumTimeline;
-    [SerializeField] private float podiumTimelineDuration = 12f; // 타임라인 길이 (수동 설정)
+    [SerializeField] private float podiumTimelineDuration = 10f; // 타임라인 길이 (수동 설정)
 
     public bool IsLobby => currentGameState.Value == GameState.Lobby;
     public bool IsGame => currentGameState.Value == GameState.Playing;
@@ -108,6 +109,9 @@ public class GameManager : NetworkBehaviour
         // 커서 관리
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
+
+        // 플랫폼 감지 및 Mobile UI 제어
+        CheckPlatformAndSetMobileUI();
 
         if (IsServer)
         {
@@ -229,7 +233,7 @@ public class GameManager : NetworkBehaviour
     {
         if (NowPlayerCount != null)
         {
-            NowPlayerCount.text = $"현재 참가자: {newValue}명";
+            NowPlayerCount.text = $"{newValue}명";
         }
         UpdateQualifiedUI();
     }
@@ -245,7 +249,7 @@ public class GameManager : NetworkBehaviour
     {
         if (QualifiedText != null)
         {
-            QualifiedText.text = $"도착 : {rankings.Count} / {currentPlayerCount.Value}";
+            QualifiedText.text = $"{rankings.Count} / {currentPlayerCount.Value}";
         }
     }
     private void UpdateStartCountdownVisibility(bool previousValue, bool newValue)
@@ -328,7 +332,7 @@ public class GameManager : NetworkBehaviour
         isCountingDown = true;
 
         // 게임 종료 카운트다운
-        remainingTime.Value = endCountdownTime+0.1f;
+        remainingTime.Value = endCountdownTime + 0.1f;
         while (remainingTime.Value > 0)
         {
             remainingTime.Value -= Time.deltaTime;
@@ -537,6 +541,8 @@ public class GameManager : NetworkBehaviour
             LobbyUI.SetActive(false);
         if (gameUI != null)
             gameUI.SetActive(false);
+        if (Info != null)
+            Info.SetActive(false);
         UIManager.Instance.ToggleOptionPanel(false);
         UIManager.Instance.ToggleOptionButton(false);
         UIManager.Instance.ToggleGuidePanel(false);
@@ -703,14 +709,14 @@ public class GameManager : NetworkBehaviour
         {
             NowPlayerCount.gameObject.SetActive(false);
         }
-        if (FPSCount != null)
-        {
-            FPSCount.gameObject.SetActive(true);
-        }
-        if (PingCount != null)
-        {
-            PingCount.gameObject.SetActive(true);
-        }
+        // if (FPSCount != null)
+        // {
+        //     FPSCount.gameObject.SetActive(true);
+        // }
+        // if (PingCount != null)
+        // {
+        //     PingCount.gameObject.SetActive(true);
+        // }
         if (LobbyUI != null)
         {
             LobbyUI.gameObject.SetActive(false);
@@ -719,11 +725,11 @@ public class GameManager : NetworkBehaviour
         {
             gameUI.gameObject.SetActive(true);
         }
-
+        // 게임 시작 시 패널은 비활성화하지만 버튼은 활성화
         UIManager.Instance.ToggleOptionPanel(false);
-        UIManager.Instance.ToggleOptionButton(false);
+        UIManager.Instance.ToggleOptionButton(true);
         UIManager.Instance.ToggleGuidePanel(false);
-        UIManager.Instance.ToggleGuideButton(false);
+        UIManager.Instance.ToggleGuideButton(true);
     }
 
     // 서버에서 모든 플레이어의 입력을 차단하고 상태 초기화
@@ -888,6 +894,10 @@ public class GameManager : NetworkBehaviour
 
         ToggleGameUI(false);
 
+        // Info 비활성화
+        if (Info != null)
+            Info.SetActive(false);
+
         //timeline재생
         timeline.Play();
         //트랙 bgm on
@@ -897,6 +907,10 @@ public class GameManager : NetworkBehaviour
         yield return new WaitForSeconds((float)timeline.duration);
 
         ToggleGameUI(true);
+
+        // Info 다시 활성화
+        if (Info != null)
+            Info.SetActive(true);
 
         if (!isGameReadyCountdownActive.Value)
         {
@@ -912,9 +926,9 @@ public class GameManager : NetworkBehaviour
         if (PingCount != null) PingCount.SetActive(isActive);
         if (gameUI != null) gameUI.SetActive(isActive);
 
-        // 게임 시작 후에는 Options와 Guide를 끔
-        UIManager.Instance.ToggleOptionButton(false);
-        UIManager.Instance.ToggleGuideButton(false);
+        // 게임 시작 후에는 Options와 Guide 버튼은 활성화
+        UIManager.Instance.ToggleOptionButton(isActive);
+        UIManager.Instance.ToggleGuideButton(isActive);
     }
 
     private void OnTimelineFinished(PlayableDirector director)
@@ -976,4 +990,38 @@ public class GameManager : NetworkBehaviour
         }
         return null;
     }
+
+    // 플랫폼 감지 및 Mobile UI 제어
+    private void CheckPlatformAndSetMobileUI()
+    {
+        if (Mobile == null) return;
+
+        // WebGL에서 실행 중인지 확인
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            // User Agent를 통해 모바일 기기인지 확인
+            bool isMobile = IsMobileDevice();
+            Mobile.SetActive(isMobile);
+        }
+        else
+        {
+            // WebGL이 아닌 경우 (에디터 등)
+            Mobile.SetActive(false);
+        }
+    }
+
+    // User Agent를 통해 모바일 기기 감지
+    private bool IsMobileDevice()
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        return IsMobileUserAgent();
+#else
+        // 에디터나 다른 플랫폼에서는 false 반환
+        return false;
+#endif
+    }
+
+    // JavaScript를 통해 User Agent 확인 (WebGL 전용)
+    [System.Runtime.InteropServices.DllImport("__Internal")]
+    private static extern bool IsMobileUserAgent();
 }
