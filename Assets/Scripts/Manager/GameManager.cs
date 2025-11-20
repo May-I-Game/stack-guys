@@ -407,8 +407,6 @@ public class GameManager : NetworkBehaviour
             NetworkGameManager.Instance.NotifyGameEnded();
         }
 
-        // 게임 종료
-        currentGameState.Value = GameState.Ended;
 
         // 클라에 결과 화면 표시
         StartCoroutine(PodiumCeremony());
@@ -506,6 +504,9 @@ public class GameManager : NetworkBehaviour
 
         // 결과 화면 표시
         ShowResultsClientRpc();
+
+        // 게임 종료
+        currentGameState.Value = GameState.Ended;
     }
 
     private void OnPodiumTimelineTriggered(bool previous, bool current)
