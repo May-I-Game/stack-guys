@@ -16,7 +16,7 @@ public class ObserverCameraControl : MonoBehaviour
         if (NetworkManager.Singleton.IsClient)
         {
             // LocalClientId에 할당된 PlayerObject가 없으면 옵저버
-            if (NetworkGameManager.instance.isObserver)
+            if (NetworkGameManager.Instance.isObserver)
             {
                 Debug.Log("--- OBSERVER MODE ACTIVATED ---");
 
