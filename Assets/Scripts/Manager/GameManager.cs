@@ -62,6 +62,7 @@ public class GameManager : NetworkBehaviour
 
     public bool IsLobby => currentGameState.Value == GameState.Lobby;
     public bool IsGame => currentGameState.Value == GameState.Playing;
+    public bool IsEnded => currentGameState.Value == GameState.Ended;
 
     private bool isCountingDown = false;
     private Coroutine countdownCoroutine;
@@ -397,11 +398,13 @@ public class GameManager : NetworkBehaviour
         if (!IsServer) return;
 
         // 매치메이킹 서버에 게임 종료 신호 전송
-        NetworkGameManager networkManager = FindObjectOfType<NetworkGameManager>();
-        if (networkManager != null)
+        if (NetworkGameManager.Instance != null)
         {
-            networkManager.NotifyGameEnded();
+            NetworkGameManager.Instance.NotifyGameEnded();
         }
+
+        // 게임 종료
+        currentGameState.Value = GameState.Ended;
 
         // 클라에 결과 화면 표시
         StartCoroutine(PodiumCeremony());
@@ -499,10 +502,6 @@ public class GameManager : NetworkBehaviour
 
         // 결과 화면 표시
         ShowResultsClientRpc();
-
-        // 시상식이 완전히 끝난 후 GameState.Ended 설정 (최적화)
-        currentGameState.Value = GameState.Ended;
-        Debug.Log("[GameManager - SERVER] GameState를 Ended로 변경 (물리 연산 중단)");
     }
 
     private void OnPodiumTimelineTriggered(bool previous, bool current)

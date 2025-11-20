@@ -68,7 +68,7 @@ public class NetworkVisibilityControl : NetworkBehaviour
 
     private void UpdateVisibility(ulong clientId)
     {
-        bool shouldBeVisible = CheckVisibility(clientId);
+        bool shouldBeVisible = CheckVisibility(clientId) || GameManager.Instance.IsEnded;
         bool isCurrentlyVisible = NetworkObject.IsNetworkVisibleTo(clientId);
         if (shouldBeVisible != isCurrentlyVisible)
         {
