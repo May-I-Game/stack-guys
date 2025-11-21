@@ -98165,6 +98165,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -5568371526223589888, guid: 1262d2fe3aca5f641b005020ae90509d, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: -2577548232221058511, guid: 1262d2fe3aca5f641b005020ae90509d, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.7071068
@@ -98212,6 +98216,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 1262d2fe3aca5f641b005020ae90509d, type: 3}
       propertyPath: m_Name
       value: button (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 1262d2fe3aca5f641b005020ae90509d, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8513859187771203891, guid: 1262d2fe3aca5f641b005020ae90509d, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
