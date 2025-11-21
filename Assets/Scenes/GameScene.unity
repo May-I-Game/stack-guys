@@ -42622,6 +42622,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Crossbar_Stairs_01
       objectReference: {fileID: 0}
+    - target: {fileID: 2050398860971190484, guid: cd6e7e90c458a1a41a8a1cf5f42c1bec, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -77680,6 +77684,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Playground_03 1
       objectReference: {fileID: 0}
+    - target: {fileID: 614098452241289388, guid: b78764c848ab04d4b823ec3715620733, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -99789,8 +99797,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.5826219, y: 1, z: 1.7672724}
-  m_Center: {x: 0.013804048, y: 0, z: 0.04360348}
+  m_Size: {x: 1.5826219, y: 1.33, z: 1.7672724}
+  m_Center: {x: 0.013804048, y: 1, z: 0.04360348}
 --- !u!114 &1463159375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112297,6 +112305,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BigTile
       objectReference: {fileID: 0}
+    - target: {fileID: 3363906612709407287, guid: 9d7fef16096773c489601ce71fc88544, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 77bb1f72a05c56a4b8f90712bea99f9f, type: 2}
     - target: {fileID: 9001826822578136554, guid: 9d7fef16096773c489601ce71fc88544, type: 3}
       propertyPath: m_LocalPosition.x
       value: 79.67904
