@@ -48,6 +48,7 @@ public class PlayerController : NetworkBehaviour
     [Header("Local Player Arrow")]
     [SerializeField] private GameObject localPlayerArrowPrefab; 
     [SerializeField] private Vector3 arrowOffset = new Vector3(0, 1f, 0);
+    [SerializeField] private bool enablePlayerArrow = false; // 인스펙터에서 겨고 끄기
     private GameObject localPlayerArrowInstance;
 
     // 버프 적용 배율 (봇이면 1로 처리)
@@ -402,6 +403,8 @@ public class PlayerController : NetworkBehaviour
     // 로컬 플레이어 Arrow 설정
     private void SpawnLocalPlayerArrow()
     {
+        if (!enablePlayerArrow) return;                     // 비활성화 시 생성 X
+
         if (localPlayerArrowPrefab != null)
         {
             localPlayerArrowInstance = Instantiate(
