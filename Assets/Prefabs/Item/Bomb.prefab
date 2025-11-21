@@ -45,7 +45,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.7
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -53,8 +53,8 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 10
+  MaxDistance: 30
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -317,7 +317,7 @@ MonoBehaviour:
   explosionRadius: 3
   explosionForce: 10
   explosionEffectPrefab: {fileID: 4593184484909914552, guid: 2e1e9506f5904a64b81744324fb7cd50, type: 3}
-  bombAudioSource: {fileID: 2876851394908732938}
+  bombAudioSource: {fileID: 3147917433580573609}
   explosionClip: {fileID: 8300000, guid: 94dbf92d2a365c24696db75e78226510, type: 3}
   explosionVolume: 1
 --- !u!54 &-9051378508310791299
