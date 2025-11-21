@@ -49,17 +49,17 @@ public class PressButton : NetworkBehaviour
         }
     }
 
-    private void Start()
+private void Start()
+{
+    // Animator 컴포넌트 가져오기
+    if (wall != null)
     {
-        // Animator 컴포넌트 가져오기
-        if (wall != null)
+        wallAnimator = wall.GetComponent<Animator>();
+        if (wallAnimator == null)
         {
-            wallAnimator = wall.GetComponent<Animator>();
-            if (wallAnimator == null)
-            {
-                Debug.LogError("[PressButton] Wall 오브젝트에 Animator 컴포넌트가 없습니다!");
-            }
+            Debug.LogError("[PressButton] Wall 오브젝트에 Animator 컴포넌트가 없습니다!");
         }
+    }
     }
 
     private void Update()
@@ -156,6 +156,60 @@ public class PressButton : NetworkBehaviour
             }
         }
     }
+
+    //private void OnColliderEnter(Collider other)
+    //{
+    //    // 서버에서만 실행
+    //    if (!IsServer) return;
+
+    //    if (other.GetComponent<Rigidbody>() != null)
+    //    {
+    //        objectsOnPlate++;
+
+    //        if (objectsOnPlate == 1 && !isPressed)
+    //        {
+    //            isPressed = true;
+    //            Debug.Log("버튼 눌림!");
+
+    //            // 버튼을 아래로 내림
+    //            if (buttonTransform != null)
+    //            {
+    //                // 서버에서 목표 위치를 설정 -> 클라이언트 동기화
+    //                networkTargetPosition.Value = originalPosition + Vector3.down * pressDepth;
+    //            }
+
+    //            // NetworkVariable 값 변경 -> 모든 클라이언트에 자동 동기화
+    //            isWallActive.Value = true;
+    //        }
+    //    }
+    //}
+
+    //private void OnColliderExit(Collider other)
+    //{
+    //    // 서버에서만 실행
+    //    if (!IsServer) return;
+
+    //    if (other.GetComponent<Rigidbody>() != null)
+    //    {
+    //        objectsOnPlate--;
+
+    //        if (objectsOnPlate == 0 && isPressed)
+    //        {
+    //            isPressed = false;
+    //            Debug.Log("버튼 해제됨!");
+
+    //            // 버튼을 원래 위치로 올림
+    //            if (buttonTransform != null)
+    //            {
+    //                // 서버에서 목표 위치를 설정 -> 클라이언트 동기화
+    //                networkTargetPosition.Value = originalPosition;
+    //            }
+
+    //            // NetworkVariable 값 변경 -> 모든 클라이언트에 자동 동기화
+    //            isWallActive.Value = false;
+    //        }
+    //    }
+    //}
 
     // NetworkVariable 값이 변경되면 모든 클라이언트에서 호출됨
     private void OnWallStateChanged(bool oldValue, bool newValue)
