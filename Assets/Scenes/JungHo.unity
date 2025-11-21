@@ -3751,68 +3751,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d7990e293a85bec499fdbd563a9ac309, type: 3}
   m_PrefabInstance: {fileID: 76712022}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &76809945
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1464773150}
-    m_Modifications:
-    - target: {fileID: 2459117346753039650, guid: dc3e60fc1082b8741b23782fbfe6ec63, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -75.03
-      objectReference: {fileID: 0}
-    - target: {fileID: 2459117346753039650, guid: dc3e60fc1082b8741b23782fbfe6ec63, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2459117346753039650, guid: dc3e60fc1082b8741b23782fbfe6ec63, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -292.51
-      objectReference: {fileID: 0}
-    - target: {fileID: 2459117346753039650, guid: dc3e60fc1082b8741b23782fbfe6ec63, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 2459117346753039650, guid: dc3e60fc1082b8741b23782fbfe6ec63, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.00000001545431
-      objectReference: {fileID: 0}
-    - target: {fileID: 2459117346753039650, guid: dc3e60fc1082b8741b23782fbfe6ec63, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 2459117346753039650, guid: dc3e60fc1082b8741b23782fbfe6ec63, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.00000001545431
-      objectReference: {fileID: 0}
-    - target: {fileID: 2459117346753039650, guid: dc3e60fc1082b8741b23782fbfe6ec63, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2459117346753039650, guid: dc3e60fc1082b8741b23782fbfe6ec63, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2459117346753039650, guid: dc3e60fc1082b8741b23782fbfe6ec63, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2984578813528577944, guid: dc3e60fc1082b8741b23782fbfe6ec63, type: 3}
-      propertyPath: m_Name
-      value: SM_Sandbox_02
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: dc3e60fc1082b8741b23782fbfe6ec63, type: 3}
---- !u!4 &76809946 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2459117346753039650, guid: dc3e60fc1082b8741b23782fbfe6ec63, type: 3}
-  m_PrefabInstance: {fileID: 76809945}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &77257465
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4794,6 +4732,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 733658881}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -5266,6 +5206,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 186324818}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -5954,6 +5896,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 1865034095}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -11280,6 +11224,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 622534730}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -15145,6 +15091,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 1903463043}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -16032,6 +15980,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 2121328290}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -27993,6 +27943,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 1478498981}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -30319,6 +30271,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 1592700560}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -32497,6 +32451,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 1012402211}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -46912,6 +46868,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 1088647386}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -51584,6 +51542,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 647170592}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -58361,6 +58321,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 1711503538}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -62363,17 +62325,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aaa2c939c0359ac4dbce3f49e8b90252, type: 3}
---- !u!114 &1109821949 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2929252283123773951, guid: aaa2c939c0359ac4dbce3f49e8b90252, type: 3}
-  m_PrefabInstance: {fileID: 1109821948}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45977bbae16431c46a013576a1aea384, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &1109821950 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2929252283123773938, guid: aaa2c939c0359ac4dbce3f49e8b90252, type: 3}
@@ -69691,6 +69642,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 646577959}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -69921,6 +69874,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 649307546}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -74278,7 +74233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7709f5e7575b884d81e1b05ee7cd811, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  joystick: {fileID: 1109821949}
+  joystick: {fileID: 0}
   jumpButton: {fileID: 651195158}
   grabButton: {fileID: 1696346244}
   stickerButton: {fileID: 0}
@@ -75499,6 +75454,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 1007029874}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -77132,6 +77089,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 708187957}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -78419,6 +78378,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 887580863}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -78517,6 +78478,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 489490047}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -81035,7 +80998,6 @@ Transform:
   - {fileID: 470784903}
   - {fileID: 695505077}
   - {fileID: 1507444191}
-  - {fileID: 76809946}
   - {fileID: 1959272669}
   - {fileID: 1749226451}
   - {fileID: 168485703}
@@ -84643,6 +84605,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 416194407}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -97013,6 +96977,7 @@ MonoBehaviour:
   PingCount: {fileID: 1745819891}
   LobbyUI: {fileID: 118828024}
   gameUI: {fileID: 22612624}
+  Info: {fileID: 0}
   startCountdownTime: 10
   endCountdownTime: 10
   mainSceneName: Login
@@ -97136,11 +97101,17 @@ MonoBehaviour:
   timeline: {fileID: 1153312842}
   lobbyBGM: {fileID: 999795626}
   trackBGM: {fileID: 1317285441}
+  victtoryBGM: {fileID: 0}
   countdownAudioSource: {fileID: 0}
   lobbyCountdownClip: {fileID: 0}
   gameCountdownClip: {fileID: 0}
   countdownStartClip: {fileID: 0}
   countdownVolume: 0.7
+  firstPlacePodium: {fileID: 0}
+  secondPlacePodium: {fileID: 0}
+  thirdPlacePodium: {fileID: 0}
+  podiumTimeline: {fileID: 0}
+  podiumTimelineDuration: 10
 --- !u!114 &1737122432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100017,6 +99988,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 392777374}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -100970,6 +100943,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 717900466}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -114150,6 +114125,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 378963920}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
@@ -114442,6 +114419,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 713388316}
+  wallMaterial: {fileID: 0}
+  fadeSpeed: 1
   buttonTransform: {fileID: 0}
   pressDepth: 0.1
   buttonSpeed: 1
