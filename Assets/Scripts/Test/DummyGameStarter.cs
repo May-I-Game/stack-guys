@@ -1,9 +1,7 @@
 using System.Collections;
 using Unity.Netcode;
-using Unity.Netcode.Components;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
-using UnityEngine.Networking;
 
 public class DummyGameStarter : MonoBehaviour
 {
