@@ -4,42 +4,54 @@ using System.Collections;
 
 public class DeletPlate : NetworkBehaviour
 {
-    [Header("Wall Settings")]
-    [SerializeField] private GameObject wall;
+    [Header("Dissolve Settings")]
     [SerializeField] private float dissolveTime = 2.0f;
 
     [Header("Visual Materials")]
-    [SerializeField] private Material triggerVisualMat; // 캐릭터 접촉 시 잠깐 바뀌는 Material
-    [SerializeField] private Material dissolveMat; // 디졸브용 Material (원본을 여기에 할당)
+    [SerializeField] private Material dissolveMat; // 디졸브용 Material (원본 에셋)
 
-    private Material dissolveMatInstance; // 디졸브용 Material의 인스턴스
+    // ⭐ 오디오 변수 추가 ⭐
+    [Header("Audio Settings")]
+    [SerializeField] private AudioSource audioSource; // 오디오 소스 컴포넌트 (씬에서 할당 필요)
+    [SerializeField] private AudioClip dissolveSound; // 재생할 사운드 클립
+    [SerializeField] private float dissolveVolume = 0.7f; // 사운드 볼륨
+
+    private Material dissolveMatInstance; // 이 오브젝트만을 위한 Material 인스턴스 (개별 제어용)
     private bool hasActivated = false;
-    private Renderer wallRenderer;
+    private Renderer selfRenderer; // 자기 자신의 Renderer
 
-    private NetworkVariable<bool> isWallActive = new NetworkVariable<bool>(
+    // 이 오브젝트의 활성화 상태만 네트워크로 동기화합니다.
+    private NetworkVariable<bool> isSelfActive = new NetworkVariable<bool>(
         true,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Server
-    );
-
-    private NetworkVariable<float> wallCutoff = new NetworkVariable<float>(
-        0.02f,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server
     );
 
     private void Start()
     {
-        if (wall != null)
-        {
-            wallRenderer = wall.GetComponent<Renderer>();
+        // 💡 1. 스크립트가 부착된 자기 자신의 Renderer를 참조합니다.
+        selfRenderer = GetComponent<Renderer>();
 
-            if (wallRenderer != null && dissolveMat != null)
-            {
-                // 디졸브용 Material의 인스턴스를 미리 생성
-                dissolveMatInstance = new Material(dissolveMat);
-                dissolveMatInstance.SetFloat("_Hight_Cutoff", 0.02f);
-            }
+        if (selfRenderer != null && dissolveMat != null)
+        {
+            // 2. 디졸브용 Material의 인스턴스를 생성 (개별 제어 확보)
+            dissolveMatInstance = new Material(dissolveMat);
+
+            // 3. 렌더러에 생성된 인스턴스를 즉시 적용 (개별 제어 보장)
+            selfRenderer.material = dissolveMatInstance;
+
+            // 4. 초기 DissolveHeight 값을 설정합니다.
+            dissolveMatInstance.SetFloat("_DissolveHeight", 0.02f);
+        }
+        else
+        {
+            Debug.LogError("DeletPlate: Renderer 또는 Dissolve Material이 없습니다.");
+        }
+
+        // ⭐ AudioSource가 없으면 스크립트가 붙은 곳에서 찾기 (선택적)
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
         }
     }
 
@@ -47,14 +59,12 @@ public class DeletPlate : NetworkBehaviour
     {
         base.OnNetworkSpawn();
 
-        isWallActive.OnValueChanged += OnWallStateChanged;
-        wallCutoff.OnValueChanged += OnWallCutoffChanged;
+        isSelfActive.OnValueChanged += OnSelfStateChanged;
     }
 
     public override void OnNetworkDespawn()
     {
-        isWallActive.OnValueChanged -= OnWallStateChanged;
-        wallCutoff.OnValueChanged -= OnWallCutoffChanged;
+        isSelfActive.OnValueChanged -= OnSelfStateChanged;
 
         // 인스턴스 정리
         if (dissolveMatInstance != null)
@@ -67,6 +77,7 @@ public class DeletPlate : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        // 서버에서만 트리거 처리
         if (!IsServer) return;
 
         if (other.GetComponent<Rigidbody>() != null)
@@ -74,23 +85,42 @@ public class DeletPlate : NetworkBehaviour
             if (hasActivated) return;
             hasActivated = true;
 
-            // 1. 메테리얼을 triggerVisualMat로 변경
-            ChangeMaterialClientRpc(true);
+            // 1. 모든 클라이언트에게 디졸브 애니메이션 시작을 명령하고 사운드를 재생합니다.
+            StartDissolveAndSoundClientRpc(dissolveVolume); // 볼륨 값을 전달합니다.
 
-            // 2. 짧은 딜레이 후 디졸브 시작 (triggerVisualMat을 잠깐 보여주기 위해)
-            StartCoroutine(FadeWallCoroutine());
+            // 2. 서버에서 비활성화 명령을 내릴 타이밍을 코루틴으로 제어합니다.
+            StartCoroutine(FadeSelfCoroutine());
         }
     }
 
-    private IEnumerator FadeWallCoroutine()
+    // 서버에서만 실행: 애니메이션이 끝난 후 비활성화 명령을 내릴 타이밍을 제어
+    private IEnumerator FadeSelfCoroutine()
     {
-        // triggerVisualMat를 잠깐 보여줌 (0.2초 정도)
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(dissolveTime + 0.5f);
 
-        // 디졸브용 Material로 변경
-        ChangeMaterialClientRpc(false);
+        if (IsServer)
+        {
+            isSelfActive.Value = false;
+        }
+    }
 
-        // 잠깐 대기 (Material 교체가 완료되도록)
+    // 모든 클라이언트에서 디졸브 애니메이션과 사운드를 실행
+    [ClientRpc]
+    private void StartDissolveAndSoundClientRpc(float volume)
+    {
+        // 사운드 재생 로직
+        if (audioSource != null && dissolveSound != null)
+        {
+            audioSource.PlayOneShot(dissolveSound, volume);
+        }
+
+        // 디졸브 애니메이션 시작
+        StartCoroutine(DissolveAnimationCoroutine());
+    }
+
+    // 디졸브 애니메이션 로직 (모든 클라이언트에서 실행)
+    private IEnumerator DissolveAnimationCoroutine()
+    {
         yield return new WaitForSeconds(0.05f);
 
         float startTime = Time.time;
@@ -104,55 +134,27 @@ public class DeletPlate : NetworkBehaviour
             float ratio = elapsed / dissolveTime;
             float currentCutoff = Mathf.Lerp(startCutoff, endCutoff, ratio);
 
-            wallCutoff.Value = currentCutoff;
+            if (dissolveMatInstance != null)
+            {
+                dissolveMatInstance.SetFloat("_DissolveHeight", currentCutoff);
+            }
 
             yield return null;
         }
 
-        wallCutoff.Value = endCutoff;
-
-        // 완전히 투명해진 후 비활성화
-        yield return new WaitForSeconds(0.5f);
-        isWallActive.Value = false;
-    }
-
-    private void OnWallStateChanged(bool oldValue, bool newValue)
-    {
-        if (wall != null)
-        {
-            wall.SetActive(newValue);
-        }
-    }
-
-    private void OnWallCutoffChanged(float oldValue, float newValue)
-    {
-        // dissolveMatInstance에 Cutoff 값 적용
+        // 최종 값 설정 (1.0f)
         if (dissolveMatInstance != null)
         {
-            dissolveMatInstance.SetFloat("_Hight_Cutoff", newValue);
+            dissolveMatInstance.SetFloat("_DissolveHeight", endCutoff);
         }
     }
 
-    [ClientRpc]
-    void ChangeMaterialClientRpc(bool triggered)
+    private void OnSelfStateChanged(bool oldValue, bool newValue)
     {
-        if (wallRenderer == null) return;
-
-        if (triggered)
+        // NetworkVariable 값이 변경되면 모든 클라이언트에서 실행: gameObject.SetActive(newValue)
+        if (gameObject != null)
         {
-            // triggerVisualMat로 변경
-            if (triggerVisualMat != null)
-            {
-                wallRenderer.material = triggerVisualMat;
-            }
-        }
-        else
-        {
-            // 디졸브용 Material 인스턴스로 변경
-            if (dissolveMatInstance != null)
-            {
-                wallRenderer.material = dissolveMatInstance;
-            }
+            gameObject.SetActive(newValue);
         }
     }
 }
