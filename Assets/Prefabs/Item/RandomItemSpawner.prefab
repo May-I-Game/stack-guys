@@ -128,13 +128,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   spawnableItems:
-  - itemPrefab: {fileID: -4799041860675748242, guid: d6fb11350ff5c404d900751170df6089, type: 3}
+  - itemPrefab: {fileID: -2747276268632487382, guid: 7d03be33f0536434d905b53c6c5f8d81, type: 3}
     spawnWeight: 1
-  - itemPrefab: {fileID: 5064044707539063021, guid: 8fb1d509b36523f4da50aab4a023f7ed, type: 3}
+  - itemPrefab: {fileID: 8705922117490067660, guid: 638affe0a2bb6d247add84a8103ba1aa, type: 3}
     spawnWeight: 1
-  - itemPrefab: {fileID: 1863145528742717711, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
+  - itemPrefab: {fileID: 1669653447575051294, guid: f89050967eaa8234cbf0107bcaea91d0, type: 3}
     spawnWeight: 1
-  spawnHeightOffset: 0.2
+  - itemPrefab: {fileID: -1210176074181578495, guid: 0bc572b23a33da9468e9ff457aa7a246, type: 3}
+    spawnWeight: 1
+  spawnHeightOffset: 0.5
   spawnInterval: 5
   spawnPoint: {fileID: 0}
   enableDebugLog: 1
