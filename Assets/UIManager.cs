@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour
 {
@@ -25,6 +26,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject third;         // 3페이지
     [SerializeField] private GameObject fourth;        // 4페이지
     [SerializeField] private GameObject fifth;         // 5페이지
+
+    [Header("UI Sound Effects")]
+    [SerializeField] private AudioSource uiAudioSource; // UI 효과음 소스
+    [SerializeField] private AudioClip buttonClickClip; // 버튼 클릭 효과음
+    [Range(0f, 1f)][SerializeField] private float uiVolume = 0.7f; // UI 효과음 볼륨
 
     public static UIManager Instance;
 
@@ -55,19 +61,23 @@ public class UIManager : MonoBehaviour
         if (resultPanel != null)
             resultPanel.SetActive(false);
 
-        // 버튼 이벤트 연결
+        // 버튼 이벤트 연결 (PointerDown으로 즉시 반응)
         if (mainButton != null)
-            mainButton.onClick.AddListener(GoToMain);
+            SetupButtonPointerDown(mainButton, GoToMain);
 
         //옵션 버튼 연결
         if (optionsButton != null)
-            optionsButton.onClick.AddListener(OnOptionsButtonClicked);
+            SetupButtonPointerDown(optionsButton, OnOptionsButtonClicked);
 
         if (closeOptionsButton != null)
-            closeOptionsButton.onClick.AddListener(() => { ToggleOptionPanel(false); });
+            SetupButtonPointerDown(closeOptionsButton, () =>
+            {
+                PlayButtonClickSound(); // 효과음 재생
+                ToggleOptionPanel(false);
+            });
 
         if (GuideButton != null)
-            GuideButton.onClick.AddListener(OnGuideButtonClicked);
+            SetupButtonPointerDown(GuideButton, OnGuideButtonClicked);
 
         // 각 페이지의 네비게이션 버튼 및 닫기 버튼 이벤트 연결
         SetupPageNavigationButtons();
@@ -79,6 +89,8 @@ public class UIManager : MonoBehaviour
     // 옵션 버튼 클릭 시 호출
     private void OnOptionsButtonClicked()
     {
+        PlayButtonClickSound(); // 효과음 재생
+
         bool isOptionPanelActive = optionsPanel != null && optionsPanel.activeSelf;
 
         if (isOptionPanelActive)
@@ -97,6 +109,8 @@ public class UIManager : MonoBehaviour
     // 가이드 버튼 클릭 시 호출
     private void OnGuideButtonClicked()
     {
+        PlayButtonClickSound(); // 효과음 재생
+
         bool isGuidePanelActive = GuidePanel != null && GuidePanel.activeSelf;
 
         if (isGuidePanelActive)
@@ -134,6 +148,8 @@ public class UIManager : MonoBehaviour
     // 닫기 버튼 클릭 시 호출
     private void OnCloseGuideButtonClicked()
     {
+        PlayButtonClickSound(); // 효과음 재생
+
         hasClosedGuideOnce = true;  // 닫기 버튼 클릭 이력 저장
         CloseGuidePanel();
     }
@@ -172,6 +188,8 @@ public class UIManager : MonoBehaviour
     // 이전 페이지로 이동
     private void PreviousPage()
     {
+        PlayButtonClickSound(); // 효과음 재생
+
         if (currentGuidePage > 1)
         {
             currentGuidePage--;
@@ -182,6 +200,8 @@ public class UIManager : MonoBehaviour
     // 다음 페이지로 이동
     private void NextPage()
     {
+        PlayButtonClickSound(); // 효과음 재생
+
         if (currentGuidePage < 5)
         {
             currentGuidePage++;
@@ -256,18 +276,15 @@ public class UIManager : MonoBehaviour
             // 버튼 이름으로 구분
             if (btn.name == "Left")
             {
-                btn.onClick.RemoveAllListeners();
-                btn.onClick.AddListener(PreviousPage);
+                SetupButtonPointerDown(btn, PreviousPage);
             }
             else if (btn.name == "Right")
             {
-                btn.onClick.RemoveAllListeners();
-                btn.onClick.AddListener(NextPage);
+                SetupButtonPointerDown(btn, NextPage);
             }
             else if (btn.name == "close")
             {
-                btn.onClick.RemoveAllListeners();
-                btn.onClick.AddListener(OnCloseGuideButtonClicked);
+                SetupButtonPointerDown(btn, OnCloseGuideButtonClicked);
             }
         }
     }
@@ -351,4 +368,32 @@ public class UIManager : MonoBehaviour
     // JavaScript 함수 선언 (WebGL 전용)
     [System.Runtime.InteropServices.DllImport("__Internal")]
     private static extern bool IsMobileUserAgent();
+
+    // ========================== UI 효과음 ==========================
+
+    // UI 버튼 클릭 효과음 재생
+    public void PlayButtonClickSound()
+    {
+        if (uiAudioSource != null && buttonClickClip != null)
+        {
+            uiAudioSource.PlayOneShot(buttonClickClip, uiVolume);
+        }
+    }
+
+    // PointerDown 이벤트 설정 (버튼을 누르는 순간 즉시 반응)
+    private void SetupButtonPointerDown(Button button, UnityEngine.Events.UnityAction callback)
+    {
+        if (button == null) return;
+
+        EventTrigger trigger = button.gameObject.GetComponent<EventTrigger>();
+        if (trigger == null)
+        {
+            trigger = button.gameObject.AddComponent<EventTrigger>();
+        }
+
+        EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = EventTriggerType.PointerDown;
+        entry.callback.AddListener((data) => { callback(); });
+        trigger.triggers.Add(entry);
+    }
 }
