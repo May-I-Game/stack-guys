@@ -1203,21 +1203,13 @@ public class PlayerController : NetworkBehaviour
             SetLayerRecursively(child.gameObject, layer);
         }
     }
+
     // 점프 파티클 재생 (서버에서 호출, 모든 클라이언트에서 재생)
     private void PlayJumpParticle()
     {
         if (jumpParticle != null)
         {
             PlayJumpParticleClientRpc();
-        }
-    }
-
-    [ClientRpc]
-    private void PlayJumpParticleClientRpc()
-    {
-        if (jumpParticle != null)
-        {
-            jumpParticle.Play();
         }
     }
 
@@ -1246,28 +1238,6 @@ public class PlayerController : NetworkBehaviour
         PlayJumpSoundClientRpc();
     }
 
-    [ClientRpc]
-    private void PlayJumpSoundClientRpc()
-    {
-        // Owner는 이미 로컬에서 재생했으므로 스킵
-        if (IsOwner) return;
-
-        if (jumpAudioSource != null)
-        {
-            // 캐릭터 보이스 재생
-            if (jumpVoiceClip != null)
-            {
-                jumpAudioSource.PlayOneShot(jumpVoiceClip, jumpVoiceVolume);
-            }
-
-            // 효과음 재생
-            if (jumpEffectClip != null)
-            {
-                jumpAudioSource.PlayOneShot(jumpEffectClip, jumpEffectVolume);
-            }
-        }
-    }
-
     // 다이브 시작 사운드 로컬 재생 (Owner 전용, 즉시 재생)
     private void PlayDiveStartSoundLocal()
     {
@@ -1283,41 +1253,10 @@ public class PlayerController : NetworkBehaviour
         PlayDiveStartSoundClientRpc();
     }
 
-    [ClientRpc]
-    private void PlayDiveStartSoundClientRpc()
-    {
-        // Owner는 이미 로컬에서 재생했으므로 스킵
-        if (IsOwner) return;
-
-        if (diveAudioSource != null && diveStartClip != null)
-        {
-            diveAudioSource.PlayOneShot(diveStartClip, diveStartVolume);
-        }
-    }
-
     // 다이브 착지 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
     private void PlayDiveLandSound()
     {
         PlayDiveLandSoundClientRpc();
-    }
-
-    [ClientRpc]
-    private void PlayDiveLandSoundClientRpc()
-    {
-        if (diveAudioSource != null)
-        {
-            // 캐릭터 보이스 재생
-            if (diveLandVoiceClip != null)
-            {
-                diveAudioSource.PlayOneShot(diveLandVoiceClip, diveLandVoiceVolume);
-            }
-
-            // 바닥 충돌음 재생
-            if (diveLandImpactClip != null)
-            {
-                diveAudioSource.PlayOneShot(diveLandImpactClip, diveLandImpactVolume);
-            }
-        }
     }
 
     // 다이브 착지 파티클 재생 (서버에서 호출, 모든 클라이언트에서 재생)
@@ -1326,15 +1265,6 @@ public class PlayerController : NetworkBehaviour
         if (diveLandParticle != null)
         {
             PlayDiveLandParticleClientRpc();
-        }
-    }
-
-    [ClientRpc]
-    private void PlayDiveLandParticleClientRpc()
-    {
-        if (diveLandParticle != null)
-        {
-            diveLandParticle.Play();
         }
     }
 
@@ -1347,54 +1277,10 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    private void PlayRespawnParticleClientRpc()
-    {
-        if (respawnParticle != null)
-        {
-            respawnParticle.Play();
-        }
-    }
-
     // 리스폰 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
     private void PlayRespawnSound()
     {
         PlayRespawnSoundClientRpc();
-    }
-
-    [ClientRpc]
-    private void PlayRespawnSoundClientRpc()
-    {
-        if (respawnAudioSource != null && respawnClip != null)
-        {
-            respawnAudioSource.PlayOneShot(respawnClip, respawnVolume);
-        }
-    }
-
-    // 죽음 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
-    private void PlayDeathSound(bool isOceanDeath)
-    {
-        PlayDeathSoundClientRpc(isOceanDeath);
-    }
-
-    [ClientRpc]
-    private void PlayDeathSoundClientRpc(bool isOceanDeath)
-    {
-        if (deathAudioSource != null)
-        {
-            // 1. 음성 효과음 재생 (항상)
-            if (deathVoiceClip != null)
-            {
-                deathAudioSource.PlayOneShot(deathVoiceClip, deathVolume);
-            }
-
-            // 2. 환경 효과음 재생 (태그에 따라)
-            AudioClip environmentClip = isOceanDeath ? deathOceanClip : deathSpikeClip;
-            if (environmentClip != null)
-            {
-                deathAudioSource.PlayOneShot(environmentClip, deathVolume);
-            }
-        }
     }
 
     // 피격 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
@@ -1403,37 +1289,9 @@ public class PlayerController : NetworkBehaviour
         PlayHitSoundClientRpc();
     }
 
-    [ClientRpc]
-    private void PlayHitSoundClientRpc()
-    {
-        if (hitAudioSource != null)
-        {
-            // 1. 음성 효과음 재생 (항상)
-            if (hitVoiceClip != null)
-            {
-                hitAudioSource.PlayOneShot(hitVoiceClip, hitVolume);
-            }
-
-            // 2. 환경 효과음 재생 (충돌음)
-            if (hitImpactClip != null)
-            {
-                hitAudioSource.PlayOneShot(hitImpactClip, hitVolume);
-            }
-        }
-    }
-
     private void PlayThrowSound()
     {
         PlayThrowSoundClientRpc();
-    }
-
-    [ClientRpc]
-    private void PlayThrowSoundClientRpc()
-    {
-        if (throwAudioSource != null && throwClip != null)
-        {
-            throwAudioSource.PlayOneShot(throwClip, throwVolume);
-        }
     }
 
     //////////////////////////////////////////////////////////////
@@ -1450,22 +1308,6 @@ public class PlayerController : NetworkBehaviour
         if (buffPickupEffect != null)
         {
             PlayBuffPickupEffectClientRpc();
-        }
-    }
-
-    [ClientRpc]
-    private void PlayBuffPickupEffectClientRpc()
-    {
-        // 파티클 재생
-        if (buffPickupEffect != null)
-        {
-            buffPickupEffect.Play();
-        }
-
-        // 사운드 재생
-        if (buffAudioSource != null && buffPickupClip != null)
-        {
-            buffAudioSource.PlayOneShot(buffPickupClip, buffPickupVolume);
         }
     }
 
@@ -1488,27 +1330,6 @@ public class PlayerController : NetworkBehaviour
                 SetInvincibleBuffEffectClientRpc(enabled);
                 break;
         }
-    }
-
-    [ClientRpc]
-    private void SetSpeedBuffEffectClientRpc(bool enabled)
-    {
-        ToggleLoopEffect(speedBuffLoopEffect, enabled);
-        ToggleLoopSound(buffLoopClip, enabled);
-    }
-
-    [ClientRpc]
-    private void SetJumpBuffEffectClientRpc(bool enabled)
-    {
-        ToggleLoopEffect(jumpBuffLoopEffect, enabled);
-        ToggleLoopSound(buffLoopClip, enabled);
-    }
-
-    [ClientRpc]
-    private void SetInvincibleBuffEffectClientRpc(bool enabled)
-    {
-        ToggleLoopEffect(invincibleBuffLoopEffect, enabled);
-        ToggleLoopSound(invincibleBuffLoopClip, enabled);
     }
 
     // 버프 시스템 공통 토글 함수
@@ -1583,6 +1404,14 @@ public class PlayerController : NetworkBehaviour
             // 걷지 않으면 타이머 리셋
             footstepTimer = 0.3f;
         }
+    }
+
+    public void OnGoaled()
+    {
+        inputEnabled.Value = false;
+        ReleaseGrab();
+        ForceClearInputOnServer();
+        SetTriggerClientRpc("Win");
     }
     #endregion
 
@@ -1732,6 +1561,186 @@ public class PlayerController : NetworkBehaviour
         if (animator == null) return;
 
         animator.Rebind();                                  // 바인딩 초기화
+    }
+
+    [ClientRpc]
+    private void SetSpeedBuffEffectClientRpc(bool enabled)
+    {
+        ToggleLoopEffect(speedBuffLoopEffect, enabled);
+        ToggleLoopSound(buffLoopClip, enabled);
+    }
+
+    [ClientRpc]
+    private void SetJumpBuffEffectClientRpc(bool enabled)
+    {
+        ToggleLoopEffect(jumpBuffLoopEffect, enabled);
+        ToggleLoopSound(buffLoopClip, enabled);
+    }
+
+    [ClientRpc]
+    private void SetInvincibleBuffEffectClientRpc(bool enabled)
+    {
+        ToggleLoopEffect(invincibleBuffLoopEffect, enabled);
+        ToggleLoopSound(invincibleBuffLoopClip, enabled);
+    }
+
+    [ClientRpc]
+    private void PlayBuffPickupEffectClientRpc()
+    {
+        // 파티클 재생
+        if (buffPickupEffect != null)
+        {
+            buffPickupEffect.Play();
+        }
+
+        // 사운드 재생
+        if (buffAudioSource != null && buffPickupClip != null)
+        {
+            buffAudioSource.PlayOneShot(buffPickupClip, buffPickupVolume);
+        }
+    }
+
+    [ClientRpc]
+    private void PlayJumpParticleClientRpc()
+    {
+        if (jumpParticle != null)
+        {
+            jumpParticle.Play();
+        }
+    }
+
+    [ClientRpc]
+    private void PlayJumpSoundClientRpc()
+    {
+        // Owner는 이미 로컬에서 재생했으므로 스킵
+        if (IsOwner) return;
+
+        if (jumpAudioSource != null)
+        {
+            // 캐릭터 보이스 재생
+            if (jumpVoiceClip != null)
+            {
+                jumpAudioSource.PlayOneShot(jumpVoiceClip, jumpVoiceVolume);
+            }
+
+            // 효과음 재생
+            if (jumpEffectClip != null)
+            {
+                jumpAudioSource.PlayOneShot(jumpEffectClip, jumpEffectVolume);
+            }
+        }
+    }
+
+    [ClientRpc]
+    private void PlayDiveStartSoundClientRpc()
+    {
+        // Owner는 이미 로컬에서 재생했으므로 스킵
+        if (IsOwner) return;
+
+        if (diveAudioSource != null && diveStartClip != null)
+        {
+            diveAudioSource.PlayOneShot(diveStartClip, diveStartVolume);
+        }
+    }
+
+    [ClientRpc]
+    private void PlayDiveLandSoundClientRpc()
+    {
+        if (diveAudioSource != null)
+        {
+            // 캐릭터 보이스 재생
+            if (diveLandVoiceClip != null)
+            {
+                diveAudioSource.PlayOneShot(diveLandVoiceClip, diveLandVoiceVolume);
+            }
+
+            // 바닥 충돌음 재생
+            if (diveLandImpactClip != null)
+            {
+                diveAudioSource.PlayOneShot(diveLandImpactClip, diveLandImpactVolume);
+            }
+        }
+    }
+
+    [ClientRpc]
+    private void PlayDiveLandParticleClientRpc()
+    {
+        if (diveLandParticle != null)
+        {
+            diveLandParticle.Play();
+        }
+    }
+
+    [ClientRpc]
+    private void PlayRespawnParticleClientRpc()
+    {
+        if (respawnParticle != null)
+        {
+            respawnParticle.Play();
+        }
+    }
+
+    [ClientRpc]
+    private void PlayRespawnSoundClientRpc()
+    {
+        if (respawnAudioSource != null && respawnClip != null)
+        {
+            respawnAudioSource.PlayOneShot(respawnClip, respawnVolume);
+        }
+    }
+
+    // 죽음 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
+    private void PlayDeathSound(bool isOceanDeath)
+    {
+        PlayDeathSoundClientRpc(isOceanDeath);
+    }
+
+    [ClientRpc]
+    private void PlayDeathSoundClientRpc(bool isOceanDeath)
+    {
+        if (deathAudioSource != null)
+        {
+            // 1. 음성 효과음 재생 (항상)
+            if (deathVoiceClip != null)
+            {
+                deathAudioSource.PlayOneShot(deathVoiceClip, deathVolume);
+            }
+
+            // 2. 환경 효과음 재생 (태그에 따라)
+            AudioClip environmentClip = isOceanDeath ? deathOceanClip : deathSpikeClip;
+            if (environmentClip != null)
+            {
+                deathAudioSource.PlayOneShot(environmentClip, deathVolume);
+            }
+        }
+    }
+
+    [ClientRpc]
+    private void PlayHitSoundClientRpc()
+    {
+        if (hitAudioSource != null)
+        {
+            // 1. 음성 효과음 재생 (항상)
+            if (hitVoiceClip != null)
+            {
+                hitAudioSource.PlayOneShot(hitVoiceClip, hitVolume);
+            }
+
+            // 2. 환경 효과음 재생 (충돌음)
+            if (hitImpactClip != null)
+            {
+                hitAudioSource.PlayOneShot(hitImpactClip, hitVolume);
+            }
+        }
+    }
+
+    [ClientRpc]
+    private void PlayThrowSoundClientRpc()
+    {
+        if (throwAudioSource != null && throwClip != null)
+        {
+            throwAudioSource.PlayOneShot(throwClip, throwVolume);
+        }
     }
     #endregion
 
