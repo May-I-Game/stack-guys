@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -5471212520354648784}
   - component: {fileID: 7968179138576094134}
   m_Layer: 3
-  m_Name: SodaItemSpawner
+  m_Name: PowerItemSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -128,9 +128,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   spawnableItems:
-  - itemPrefab: {fileID: 5064044707539063021, guid: 8fb1d509b36523f4da50aab4a023f7ed, type: 3}
+  - itemPrefab: {fileID: 8705922117490067660, guid: 638affe0a2bb6d247add84a8103ba1aa, type: 3}
     spawnWeight: 1
-  spawnHeightOffset: 0.2
+  spawnHeightOffset: 0.4
   spawnInterval: 5
   spawnPoint: {fileID: 0}
   enableDebugLog: 1
