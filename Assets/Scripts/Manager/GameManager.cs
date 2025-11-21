@@ -52,6 +52,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private AudioClip countdownStartClip; // START 효과음
     [SerializeField] private AudioClip crowdCheerClip; // 군중 환호성 효과음
     [Range(0f, 1f)][SerializeField] private float countdownVolume = 0.7f;
+    private float sfxVolume = 1f;  // 효과음 전역 볼륨
 
     [Header("Podium")]
     [SerializeField] private Transform firstPlacePodium;
@@ -1025,9 +1026,15 @@ public class GameManager : NetworkBehaviour
 
     public void SetSFXVolume(float volume)
     {
+        sfxVolume = volume;
         if (countdownAudioSource != null)
         {
             countdownVolume = volume;
         }
+    }
+
+    public float GetSFXVolume()
+    {
+        return sfxVolume;
     }
 }

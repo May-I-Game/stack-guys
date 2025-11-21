@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9504211e458b8d746b87b7f9d9b49cfd
+guid: d6c7de81b7685464c884e104988dfe74
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,23 +110,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: OnButton_0
+      name: realfillbar_0
       rect:
         serializedVersion: 2
-        x: 7
-        y: 38
-        width: 731
-        height: 320
+        x: 0
+        y: 57
+        width: 820
+        height: 148
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 46, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 36e4c157b1992d54d9f19b98533fccb6
-      internalID: 1867025416
+      spriteID: c009dc9290d1eba4aa215c37b366229f
+      internalID: 883371972
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 0c3573bb978b7b8479f69ac71f3758bf
+    spriteID: 84b4279d6e39faa4d8588c888992d779
     internalID: 0
     vertices: []
     indices: 
@@ -145,7 +145,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      OnButton_0: 1867025416
+      realfillbar_0: 883371972
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

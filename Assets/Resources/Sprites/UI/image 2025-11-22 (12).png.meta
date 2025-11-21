@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9504211e458b8d746b87b7f9d9b49cfd
+guid: 33b96b7a931a7204b88b413979a43ff6
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,23 +110,67 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: OnButton_0
+      name: image 2025-11-22 (12)_0
       rect:
         serializedVersion: 2
-        x: 7
-        y: 38
-        width: 731
-        height: 320
+        x: 68
+        y: 79
+        width: 64
+        height: 147
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 36e4c157b1992d54d9f19b98533fccb6
-      internalID: 1867025416
+      spriteID: e17e84d024be24d48b13fd7fbf9aad56
+      internalID: -1090739161
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: image 2025-11-22 (12)_1
+      rect:
+        serializedVersion: 2
+        x: 254
+        y: 168
+        width: 525
+        height: 97
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 46, y: 0, z: 46, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 800c7903440ab054fb8558bf18cdc4e7
+      internalID: 1100177318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: image 2025-11-22 (12)_2
+      rect:
+        serializedVersion: 2
+        x: 254
+        y: 36
+        width: 245
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 91a0a60ae91dcbb4aa83a4cdbddc9dcb
+      internalID: -1754638486
       vertices: []
       indices: 
       edges: []
@@ -135,7 +179,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 0c3573bb978b7b8479f69ac71f3758bf
+    spriteID: a3eb1d926c012cc41be2a9caa129fe82
     internalID: 0
     vertices: []
     indices: 
@@ -145,7 +189,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      OnButton_0: 1867025416
+      image 2025-11-22 (12)_0: -1090739161
+      image 2025-11-22 (12)_1: 1100177318
+      image 2025-11-22 (12)_2: -1754638486
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
