@@ -59,7 +59,6 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private Transform secondPlacePodium;
     [SerializeField] private Transform thirdPlacePodium;
     [SerializeField] private PlayableDirector podiumTimeline;
-    [SerializeField] private float podiumTimelineDuration = 10f; // 타임라인 길이 (수동 설정)
 
     public bool IsLobby => currentGameState.Value == GameState.Lobby;
     public bool IsGame => currentGameState.Value == GameState.Playing;
@@ -106,10 +105,6 @@ public class GameManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        // 커서 관리
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
-
         // 플랫폼 감지 및 Mobile UI 제어
         CheckPlatformAndSetMobileUI();
 
@@ -407,6 +402,8 @@ public class GameManager : NetworkBehaviour
             NetworkGameManager.Instance.NotifyGameEnded();
         }
 
+        // 게임 종료
+        currentGameState.Value = GameState.Ended;
 
         // 클라에 결과 화면 표시
         StartCoroutine(PodiumCeremony());
@@ -497,16 +494,13 @@ public class GameManager : NetworkBehaviour
         Debug.Log($"[GameManager - SERVER] 시상식 타임라인 시작 신호 전송");
 
         // 시상식 지속 시간 대기
-        Debug.Log($"[GameManager - SERVER] {podiumTimelineDuration}초 대기 시작");
-        yield return new WaitForSeconds(podiumTimelineDuration);
+        Debug.Log($"[GameManager - SERVER] {podiumTimeline.duration}초 대기 시작");
+        yield return new WaitForSeconds((float)podiumTimeline.duration);
 
         Debug.Log("[GameManager - SERVER] 시상식 대기 완료, 결과 화면 표시");
 
         // 결과 화면 표시
         ShowResultsClientRpc();
-
-        // 게임 종료
-        currentGameState.Value = GameState.Ended;
     }
 
     private void OnPodiumTimelineTriggered(bool previous, bool current)
@@ -544,10 +538,12 @@ public class GameManager : NetworkBehaviour
             gameUI.SetActive(false);
         if (Info != null)
             Info.SetActive(false);
+
         UIManager.Instance.ToggleOptionPanel(false);
         UIManager.Instance.ToggleOptionButton(false);
         UIManager.Instance.ToggleGuidePanel(false);
         UIManager.Instance.ToggleGuideButton(false);
+
         // 시상식 타임라인 활성화 및 재생
         if (podiumTimeline != null)
         {
@@ -559,10 +555,6 @@ public class GameManager : NetworkBehaviour
         {
             Debug.LogWarning("[GameManager] podiumTimeline이 null입니다!");
         }
-
-        // 커서 숨기기 (시상식 중에는)
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
 
     private void MovePlayerToPodiumPosition(ulong clientId, Transform podiumTransform)
@@ -692,13 +684,10 @@ public class GameManager : NetworkBehaviour
 
         UIManager.Instance.ToggleResultPanel(true);
 
-        // 커서 보이기
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-
         // 순위 표시
         UpdateRankingUI();
     }
+
     [ClientRpc]
     private void HideLobbyUIShowGameUIClientRpc()
     {
@@ -930,13 +919,6 @@ public class GameManager : NetworkBehaviour
         // 게임 시작 후에는 Options와 Guide 버튼은 활성화
         UIManager.Instance.ToggleOptionButton(isActive);
         UIManager.Instance.ToggleGuideButton(isActive);
-    }
-
-    private void OnTimelineFinished(PlayableDirector director)
-    {
-        director.stopped -= OnTimelineFinished;
-
-        Debug.Log("Timeline 종료, 게임 플레이 시작");
     }
 
     // 캐릭터의 입력 온 오프는 서버에서만 가능
