@@ -92,9 +92,6 @@ PrefabInstance:
       addedObject: {fileID: 3578062188674375478}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 102121fdac6ce26448a342d003132dfd, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5539018301800847131}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 102121fdac6ce26448a342d003132dfd, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 7644117823275045194}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 102121fdac6ce26448a342d003132dfd, type: 3}
       insertIndex: -1
@@ -102,6 +99,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 102121fdac6ce26448a342d003132dfd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3762680760419944021}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 102121fdac6ce26448a342d003132dfd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5539018301800847131}
   m_SourcePrefab: {fileID: 100100000, guid: 102121fdac6ce26448a342d003132dfd, type: 3}
 --- !u!1 &2527268471706312746 stripped
 GameObject:
@@ -179,22 +179,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &5539018301800847131
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2527268471706312746}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c03b19c5b36993642a8b8955c4cc5eb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  triggerType: 0
-  buffDuration: 5
-  buffValue: 2
 --- !u!65 &7644117823275045194
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -259,3 +243,19 @@ MonoBehaviour:
   floatSpeed: 1
   enableRotation: 1
   rotationSpeed: 30
+--- !u!114 &5539018301800847131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2527268471706312746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03b19c5b36993642a8b8955c4cc5eb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  triggerType: 0
+  buffDuration: 5
+  buffValue: 1.5
