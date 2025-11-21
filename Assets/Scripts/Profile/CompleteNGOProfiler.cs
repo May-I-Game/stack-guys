@@ -6,6 +6,8 @@ using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 public class CompleteNGOProfiler : NetworkBehaviour
 {
+    public static CompleteNGOProfiler Instance;
+
     [Header("추적 항목")]
     [Tooltip("네트워크 송신량, 핑 추적")]
 
@@ -37,6 +39,21 @@ public class CompleteNGOProfiler : NetworkBehaviour
 
     private System.Collections.Generic.List<float> pingHistory = new System.Collections.Generic.List<float>(30);
     private const int PING_HISTORY_COUNT = 30; // 30 프레임(또는 0.5초) 평균
+
+    private bool isVisible = false;
+
+    private void Awake()
+    {
+        // 싱글톤 패턴
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     // Unity 생명주기 - 초기화
     /// <summary>
@@ -81,6 +98,25 @@ public class CompleteNGOProfiler : NetworkBehaviour
                 UnityEngine.Debug.LogError($"[CompleteNGOProfiler] UTP 리플렉션 오류: {e.Message}");
             }
         }
+
+        // PlayerPrefs에서 설정 불러오기
+        isVisible = PlayerPrefs.GetInt("ShowPerformance", 0) == 1;
+
+        // 시작할 때 무조건 꺼진 상태로
+        if (Fps != null)
+        {
+            Fps.gameObject.SetActive(false);
+        }
+        if (Ping != null)
+        {
+            Ping.gameObject.SetActive(false);
+        }
+
+        // 설정에 따라 가시성 업데이트
+        if (isVisible)
+        {
+            UpdateVisibility();
+        }
     }
 
     // Unity 생명주기 - 업데이트
@@ -95,6 +131,8 @@ public class CompleteNGOProfiler : NetworkBehaviour
         // NetworkManager가 없거나 네트워크가 시작 안 됐으면 리턴
         if (nm == null || !nm.IsListening) return;
 
+        // 보이지 않으면 리턴 (성능 절약)
+        if (!isVisible) return;
 
         // 통계 업데이트
         UpdateStats();
@@ -176,7 +214,44 @@ public class CompleteNGOProfiler : NetworkBehaviour
     /// </summary>
     private void ShowUI()
     {
-        Ping.text = $"Ping: {ping:F0} ms";
-        Fps.text = $"FPS: {fps:F1}";
+        if (Ping != null)
+        {
+            Ping.text = $"Ping: {ping:F0} ms";
+        }
+
+        if (Fps != null)
+        {
+            Fps.text = $"FPS: {fps:F1}";
+        }
+    }
+
+    public void ToggleVisibility(bool show)
+    {
+        isVisible = show;
+        UpdateVisibility();
+
+        // 설정 저장
+        PlayerPrefs.SetInt("ShowPerformance", isVisible ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    private void UpdateVisibility()
+    {
+        // FPS 텍스트 활성화/비활성화
+        if (Fps != null)
+        {
+            Fps.gameObject.SetActive(isVisible);
+        }
+
+        // Ping 텍스트 활성화/비활성화
+        if (Ping != null)
+        {
+            Ping.gameObject.SetActive(isVisible);
+        }
+    }
+
+    public bool IsVisible()
+    {
+        return isVisible;
     }
 }
