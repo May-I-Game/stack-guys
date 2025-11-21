@@ -209,10 +209,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fullButton: {fileID: 1353037467}
-  muteButton: {fileID: 1790037727}
-  minusButton: {fileID: 1007983328}
-  plusButton: {fileID: 1691757243}
-  volumeSlider: {fileID: 581689421}
+  performanceToggle: {fileID: 0}
+  effectsToggle: {fileID: 0}
+  masterVolumeSlider: {fileID: 0}
+  masterMuteButton: {fileID: 0}
+  bgmVolumeSlider: {fileID: 0}
+  bgmMuteButton: {fileID: 0}
+  sfxVolumeSlider: {fileID: 0}
+  sfxMuteButton: {fileID: 0}
 --- !u!114 &3498788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16029,11 +16033,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 1662465707}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &237263205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17768,11 +17770,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 336796232}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &272828814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18884,7 +18884,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2484921068739079471, guid: 1262d2fe3aca5f641b005020ae90509d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.2
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: -2484921068739079471, guid: 1262d2fe3aca5f641b005020ae90509d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -19097,7 +19097,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1.5826219, y: 1, z: 1.7672724}
-  m_Center: {x: 0.013804048, y: 0, z: 0.04360348}
+  m_Center: {x: 0.013804048, y: 0.79, z: 0.04360348}
 --- !u!114 &309337241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26923,11 +26923,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 1183636695}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &425429214
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27039,11 +27037,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 386895661}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &426139353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29182,8 +29178,6 @@ MonoBehaviour:
   thirdPlaceText: {fileID: 1184804246}
   QualifiedText: {fileID: 1405331159}
   Mobile: {fileID: 335052679}
-  FPSCount: {fileID: 677981507}
-  PingCount: {fileID: 267694142}
   LobbyUI: {fileID: 1607405221}
   gameUI: {fileID: 1405331157}
   Info: {fileID: 419898381}
@@ -29315,12 +29309,12 @@ MonoBehaviour:
   lobbyCountdownClip: {fileID: 8300000, guid: be5d3cf469fcada4b8460c4c824d3d2e, type: 3}
   gameCountdownClip: {fileID: 8300000, guid: 03c5aa7a8ef7d414ba057c180562cf91, type: 3}
   countdownStartClip: {fileID: 8300000, guid: 5c8a58b39037fce40a4c43c460c38c07, type: 3}
+  crowdCheerClip: {fileID: 0}
   countdownVolume: 0.7
   firstPlacePodium: {fileID: 1481258383}
   secondPlacePodium: {fileID: 1917562155}
   thirdPlacePodium: {fileID: 1663078121}
   podiumTimeline: {fileID: 1333363584}
-  podiumTimelineDuration: 10
 --- !u!114 &460543611
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29640,11 +29634,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 1989579516}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &463398763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37757,11 +37749,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 1528483921}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &604079067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45341,11 +45331,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 636963006}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &724117027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50438,11 +50426,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 487272617}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &807765828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56286,6 +56272,9 @@ MonoBehaviour:
   - {fileID: 1455900896}
   - {fileID: 1654106555}
   mobileUI: {fileID: 335052679}
+  uiAudioSource: {fileID: 0}
+  buttonClickClip: {fileID: 0}
+  uiVolume: 0.7
 --- !u!114 &910137247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56312,6 +56301,10 @@ MonoBehaviour:
   second: {fileID: 1405236914}
   third: {fileID: 474585894}
   fourth: {fileID: 1500813246}
+  fifth: {fileID: 0}
+  uiAudioSource: {fileID: 0}
+  buttonClickClip: {fileID: 0}
+  uiVolume: 0.7
 --- !u!114 &910137248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59253,11 +59246,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 419834243}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &955525756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68092,11 +68083,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 1658425878}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &1104763727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85762,11 +85751,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 36059897}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &1381911246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95357,11 +95344,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 22224517}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &1518434192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97829,11 +97814,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 705402616}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &1561434950
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100307,11 +100290,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 1457296011}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &1590075802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103559,11 +103540,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 559182141}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &1651326872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107484,11 +107463,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 1366141082}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &1703248678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111177,11 +111154,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 644216526}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &1753626673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112176,11 +112151,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 3708933}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &1771572692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117568,11 +117541,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 1136141907}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &1856269640
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121152,11 +121123,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 235375010}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &1907914931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122031,11 +122000,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 749541493}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &1916223272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128512,11 +128479,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 46822158}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &2034184271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133900,11 +133865,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   wall: {fileID: 1704917801}
-  wallMaterial: {fileID: 0}
-  fadeSpeed: 1
-  buttonTransform: {fileID: 0}
-  pressDepth: 0.1
-  buttonSpeed: 1
+  dissolveTime: 2
+  triggerVisualMat: {fileID: 0}
+  dissolveMat: {fileID: 0}
 --- !u!114 &2121185442
 MonoBehaviour:
   m_ObjectHideFlags: 0
