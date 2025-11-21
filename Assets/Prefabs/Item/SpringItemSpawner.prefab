@@ -128,7 +128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   spawnableItems:
-  - itemPrefab: {fileID: 1863145528742717711, guid: fcadca4b97f7f7d43ab08cf46739d920, type: 3}
+  - itemPrefab: {fileID: 1669653447575051294, guid: f89050967eaa8234cbf0107bcaea91d0, type: 3}
     spawnWeight: 1
   spawnHeightOffset: 0.2
   spawnInterval: 5
