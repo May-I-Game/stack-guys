@@ -194,7 +194,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   triggerType: 0
   buffDuration: 5
-  buffValue: 2
+  buffValue: 1.5
 --- !u!65 &7644117823275045194
 BoxCollider:
   m_ObjectHideFlags: 0
