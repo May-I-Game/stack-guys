@@ -1245,21 +1245,29 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    // SFX 볼륨 적용 헬퍼 함수
+    private float GetSFXVolume()
+    {
+        return GameManager.Instance != null ? GameManager.Instance.GetSFXVolume() : 1f;
+    }
+
     // 점프 사운드 로컬 재생 (Owner 전용, 즉시 재생)
     private void PlayJumpSoundLocal()
     {
         if (jumpAudioSource != null)
         {
+            float sfxVol = GetSFXVolume();
+
             // 캐릭터 보이스 재생
             if (jumpVoiceClip != null)
             {
-                jumpAudioSource.PlayOneShot(jumpVoiceClip, jumpVoiceVolume);
+                jumpAudioSource.PlayOneShot(jumpVoiceClip, jumpVoiceVolume * sfxVol);
             }
 
             // 효과음 재생
             if (jumpEffectClip != null)
             {
-                jumpAudioSource.PlayOneShot(jumpEffectClip, jumpEffectVolume);
+                jumpAudioSource.PlayOneShot(jumpEffectClip, jumpEffectVolume * sfxVol);
             }
         }
     }
@@ -1275,7 +1283,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (diveAudioSource != null && diveStartClip != null)
         {
-            diveAudioSource.PlayOneShot(diveStartClip, diveStartVolume);
+            diveAudioSource.PlayOneShot(diveStartClip, diveStartVolume * GetSFXVolume());
         }
     }
 
@@ -1427,7 +1435,7 @@ public class PlayerController : NetworkBehaviour
             // 타이머가 간격을 넘으면 발걸음 소리 재생
             if (footstepTimer >= footstepInterval)
             {
-                footstepAudioSource.PlayOneShot(footstepClip, footstepVolume);
+                footstepAudioSource.PlayOneShot(footstepClip, footstepVolume * GetSFXVolume());
                 footstepTimer = 0f; // 타이머 리셋
             }
         }
@@ -1640,7 +1648,7 @@ public class PlayerController : NetworkBehaviour
         // 사운드 재생
         if (buffAudioSource != null && buffPickupClip != null)
         {
-            buffAudioSource.PlayOneShot(buffPickupClip, buffPickupVolume);
+            buffAudioSource.PlayOneShot(buffPickupClip, buffPickupVolume * GetSFXVolume());
         }
     }
 
@@ -1664,16 +1672,18 @@ public class PlayerController : NetworkBehaviour
 
         if (jumpAudioSource != null)
         {
+            float sfxVol = GetSFXVolume();
+
             // 캐릭터 보이스 재생
             if (jumpVoiceClip != null)
             {
-                jumpAudioSource.PlayOneShot(jumpVoiceClip, jumpVoiceVolume);
+                jumpAudioSource.PlayOneShot(jumpVoiceClip, jumpVoiceVolume * sfxVol);
             }
 
             // 효과음 재생
             if (jumpEffectClip != null)
             {
-                jumpAudioSource.PlayOneShot(jumpEffectClip, jumpEffectVolume);
+                jumpAudioSource.PlayOneShot(jumpEffectClip, jumpEffectVolume * sfxVol);
             }
         }
     }
@@ -1686,7 +1696,7 @@ public class PlayerController : NetworkBehaviour
 
         if (diveAudioSource != null && diveStartClip != null)
         {
-            diveAudioSource.PlayOneShot(diveStartClip, diveStartVolume);
+            diveAudioSource.PlayOneShot(diveStartClip, diveStartVolume * GetSFXVolume());
         }
     }
 
@@ -1695,16 +1705,18 @@ public class PlayerController : NetworkBehaviour
     {
         if (diveAudioSource != null)
         {
+            float sfxVol = GetSFXVolume();
+
             // 캐릭터 보이스 재생
             if (diveLandVoiceClip != null)
             {
-                diveAudioSource.PlayOneShot(diveLandVoiceClip, diveLandVoiceVolume);
+                diveAudioSource.PlayOneShot(diveLandVoiceClip, diveLandVoiceVolume * sfxVol);
             }
 
             // 바닥 충돌음 재생
             if (diveLandImpactClip != null)
             {
-                diveAudioSource.PlayOneShot(diveLandImpactClip, diveLandImpactVolume);
+                diveAudioSource.PlayOneShot(diveLandImpactClip, diveLandImpactVolume * sfxVol);
             }
         }
     }
@@ -1738,7 +1750,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (respawnAudioSource != null && respawnClip != null)
         {
-            respawnAudioSource.PlayOneShot(respawnClip, respawnVolume);
+            respawnAudioSource.PlayOneShot(respawnClip, respawnVolume * GetSFXVolume());
         }
     }
 
@@ -1753,17 +1765,19 @@ public class PlayerController : NetworkBehaviour
     {
         if (deathAudioSource != null)
         {
+            float sfxVol = GetSFXVolume();
+
             // 1. 음성 효과음 재생 (항상)
             if (deathVoiceClip != null)
             {
-                deathAudioSource.PlayOneShot(deathVoiceClip, deathVolume);
+                deathAudioSource.PlayOneShot(deathVoiceClip, deathVolume * sfxVol);
             }
 
             // 2. 환경 효과음 재생 (태그에 따라)
             AudioClip environmentClip = isOceanDeath ? deathOceanClip : deathSpikeClip;
             if (environmentClip != null)
             {
-                deathAudioSource.PlayOneShot(environmentClip, deathVolume);
+                deathAudioSource.PlayOneShot(environmentClip, deathVolume * sfxVol);
             }
         }
     }
@@ -1773,16 +1787,18 @@ public class PlayerController : NetworkBehaviour
     {
         if (hitAudioSource != null)
         {
+            float sfxVol = GetSFXVolume();
+
             // 1. 음성 효과음 재생 (항상)
             if (hitVoiceClip != null)
             {
-                hitAudioSource.PlayOneShot(hitVoiceClip, hitVolume);
+                hitAudioSource.PlayOneShot(hitVoiceClip, hitVolume * sfxVol);
             }
 
             // 2. 환경 효과음 재생 (충돌음)
             if (hitImpactClip != null)
             {
-                hitAudioSource.PlayOneShot(hitImpactClip, hitVolume);
+                hitAudioSource.PlayOneShot(hitImpactClip, hitVolume * sfxVol);
             }
         }
     }
@@ -1792,7 +1808,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (throwAudioSource != null && throwClip != null)
         {
-            throwAudioSource.PlayOneShot(throwClip, throwVolume);
+            throwAudioSource.PlayOneShot(throwClip, throwVolume * GetSFXVolume());
         }
     }
     #endregion
