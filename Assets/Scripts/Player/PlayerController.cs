@@ -247,6 +247,12 @@ public class PlayerController : NetworkBehaviour
         {
             BatchNetworkManager.Instance.UnregisterPlayer(NetworkObjectId);
         }
+
+        if (IsServer)
+        {
+            // 잡기 해제하고 가기
+            ReleaseGrab();
+        }
     }
 
     public void EnablePhysics(bool on)
