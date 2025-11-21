@@ -1007,4 +1007,26 @@ public class GameManager : NetworkBehaviour
     // JavaScript를 통해 User Agent 확인 (WebGL 전용)
     [System.Runtime.InteropServices.DllImport("__Internal")]
     private static extern bool IsMobileUserAgent();
+
+    // ========================== 오디오 볼륨 제어 ==========================
+
+    public void SetBGMVolume(float volume)
+    {
+        if (lobbyBGM != null)
+            lobbyBGM.volume = volume;
+
+        if (trackBGM != null)
+            trackBGM.volume = volume;
+
+        if (victtoryBGM != null)
+            victtoryBGM.volume = volume;
+    }
+
+    public void SetSFXVolume(float volume)
+    {
+        if (countdownAudioSource != null)
+        {
+            countdownVolume = volume;
+        }
+    }
 }
