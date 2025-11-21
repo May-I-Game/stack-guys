@@ -97,10 +97,10 @@ GameObject:
   - component: {fileID: 7158978870636924268}
   - component: {fileID: -2747276268632487382}
   - component: {fileID: 623632957017967555}
-  - component: {fileID: -5841799901629487149}
   - component: {fileID: 4862068218493714578}
   - component: {fileID: 6346012149474079479}
   - component: {fileID: 9200728001863407591}
+  - component: {fileID: -5841799901629487149}
   m_Layer: 0
   m_Name: WingedShoes
   m_TagString: Untagged
@@ -198,22 +198,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &-5841799901629487149
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1541222911446507202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c03b19c5b36993642a8b8955c4cc5eb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  triggerType: 0
-  buffDuration: 5
-  buffValue: 1.5
 --- !u!65 &4862068218493714578
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -278,6 +262,22 @@ MonoBehaviour:
   floatSpeed: 1
   enableRotation: 1
   rotationSpeed: 30
+--- !u!114 &-5841799901629487149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541222911446507202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03b19c5b36993642a8b8955c4cc5eb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  triggerType: 0
+  buffDuration: 5
+  buffValue: 1.5
 --- !u!1 &5984442993619490783
 GameObject:
   m_ObjectHideFlags: 0
