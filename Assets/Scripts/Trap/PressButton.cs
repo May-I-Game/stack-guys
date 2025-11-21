@@ -7,6 +7,8 @@ public class PressButton : NetworkBehaviour
     [Header("Wall Settings")]
     [SerializeField] private GameObject wall;
 
+    private Animator wallAnimator;
+
     [Header("Button Visual")]
     [SerializeField] private Transform buttonTransform; // 눌릴 버튼 오브젝트
     [SerializeField] private float pressDepth = 0.1f;   // 버튼이 눌리는 깊이
@@ -21,8 +23,6 @@ public class PressButton : NetworkBehaviour
     private int objectsOnPlate = 0;
     private bool isPressed = false;
 
-    private Animator wallAnimator;
-
     private Vector3 originalPosition;  // 버튼의 원래 위치
     private Vector3 targetPosition;    // 버튼의 목표 위치
 
@@ -33,16 +33,25 @@ public class PressButton : NetworkBehaviour
         NetworkVariableWritePermission.Server
     );
 
-    private void Start()
+    // [추가] 버튼의 목표 위치를 네트워크로 동기화 (버튼 애니메이션 제어용)
+    private NetworkVariable<Vector3> networkTargetPosition = new NetworkVariable<Vector3>(
+        default,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
+
+    private void Awake()
     {
-        // 버튼의 원래 위치 저장
+        // 버튼의 원래 위치 저장 (OnNetworkSpawn보다 먼저 실행됨)
         if (buttonTransform != null)
         {
             originalPosition = buttonTransform.localPosition;
-            targetPosition = originalPosition;
         }
+    }
 
-        // 2. Start에서 Animator 컴포넌트 가져오기
+    private void Start()
+    {
+        // Animator 컴포넌트 가져오기
         if (wall != null)
         {
             wallAnimator = wall.GetComponent<Animator>();
@@ -55,12 +64,12 @@ public class PressButton : NetworkBehaviour
 
     private void Update()
     {
-        // 버튼을 부드럽게 목표 위치로 이동
+        // 버튼을 동기화된 목표 위치로 부드럽게 이동
         if (buttonTransform != null)
         {
             buttonTransform.localPosition = Vector3.Lerp(
                 buttonTransform.localPosition,
-                targetPosition,
+                networkTargetPosition.Value, // 동기화된 목표 위치 사용
                 Time.deltaTime * buttonSpeed
             );
         }
@@ -69,6 +78,16 @@ public class PressButton : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+
+        if (IsServer)
+        {
+            // Start()에서 찾은 '올려져 있는' 버튼의 원래 위치로 초기화합니다.
+            // 이 값이 모든 클라이언트에게 동기화되어, 버튼이 내려가 있지 않게 됩니다.
+            networkTargetPosition.Value = originalPosition;
+
+            // isWallActive도 초기화 (벽이 내려가 있어야 하므로 false)
+            isWallActive.Value = false;
+        }
 
         // 초기 벽 상태 적용
         UpdateWallState(isWallActive.Value);
@@ -101,7 +120,8 @@ public class PressButton : NetworkBehaviour
                 // 버튼을 아래로 내림
                 if (buttonTransform != null)
                 {
-                    targetPosition = originalPosition + Vector3.down * pressDepth;
+                    // 서버에서 목표 위치를 설정 -> 클라이언트 동기화
+                    networkTargetPosition.Value = originalPosition + Vector3.down * pressDepth;
                 }
 
                 // NetworkVariable 값 변경 -> 모든 클라이언트에 자동 동기화
@@ -127,7 +147,8 @@ public class PressButton : NetworkBehaviour
                 // 버튼을 원래 위치로 올림
                 if (buttonTransform != null)
                 {
-                    targetPosition = originalPosition;
+                    // 서버에서 목표 위치를 설정 -> 클라이언트 동기화
+                    networkTargetPosition.Value = originalPosition;
                 }
 
                 // NetworkVariable 값 변경 -> 모든 클라이언트에 자동 동기화
