@@ -26,7 +26,7 @@ public class PlayerCanvasManager : NetworkBehaviour
     private NetworkVariable<FixedString64Bytes> playerName =
         new NetworkVariable<FixedString64Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private NetworkVariable<bool> arrowActivated =
-        new NetworkVariable<bool>(false, NetworkVariableReadPermission.Owner, NetworkVariableWritePermission.Server);
+        new NetworkVariable<bool>(true, NetworkVariableReadPermission.Owner, NetworkVariableWritePermission.Server);
 
     public override void OnNetworkSpawn()
     {
