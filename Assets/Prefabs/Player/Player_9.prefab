@@ -545,9 +545,6 @@ MonoBehaviour:
   jumpBuffLoopEffect: {fileID: 5333633381846301932}
   speedBuffLoopEffect: {fileID: 8239610877616773251}
   invincibleBuffLoopEffect: {fileID: 1472277695343820955}
-  localPlayerArrowPrefab: {fileID: 5370047778552153800, guid: 40d2c8ddb7b75db4594c8b7900f0fe64, type: 3}
-  arrowOffset: {x: 0, y: 1, z: 0}
-  enablePlayerArrow: 0
   footstepAudioSource: {fileID: 5613482248977878776}
   footstepClip: {fileID: 8300000, guid: 3bb824bb265c1fc42a7ec2d1050b863e, type: 3}
   footstepVolume: 1
@@ -2059,6 +2056,10 @@ PrefabInstance:
     - target: {fileID: 3175956618274751429, guid: f505d98bf19022f458be3e8892cc9ae0, type: 3}
       propertyPath: m_Name
       value: PlayerArrow2D
+      objectReference: {fileID: 0}
+    - target: {fileID: 3175956618274751429, guid: f505d98bf19022f458be3e8892cc9ae0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6506783659103798452, guid: f505d98bf19022f458be3e8892cc9ae0, type: 3}
       propertyPath: m_Pivot.x

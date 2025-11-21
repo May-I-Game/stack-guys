@@ -742,9 +742,6 @@ MonoBehaviour:
   jumpBuffLoopEffect: {fileID: 9182424161088986129}
   speedBuffLoopEffect: {fileID: 5130342295752390782}
   invincibleBuffLoopEffect: {fileID: 2379252528027164774}
-  localPlayerArrowPrefab: {fileID: 5370047778552153800, guid: 40d2c8ddb7b75db4594c8b7900f0fe64, type: 3}
-  arrowOffset: {x: 0, y: 1, z: 0}
-  enablePlayerArrow: 0
   footstepAudioSource: {fileID: 8686670792688725509}
   footstepClip: {fileID: 8300000, guid: 3bb824bb265c1fc42a7ec2d1050b863e, type: 3}
   footstepVolume: 1
@@ -827,6 +824,7 @@ MonoBehaviour:
   stickerAudioSource: {fileID: 5986190706451943071}
   stickerSoundClip: {fileID: 8300000, guid: 10c3bf8e387e1fb4cb0a498b342f5352, type: 3}
   stickerVolume: 0.7
+  playerArrow: {fileID: 7195492065293324427}
 --- !u!1 &2937773681608637005
 GameObject:
   m_ObjectHideFlags: 0
@@ -2504,6 +2502,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerArrow2D
       objectReference: {fileID: 0}
+    - target: {fileID: 3175956618274751429, guid: f505d98bf19022f458be3e8892cc9ae0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6506783659103798452, guid: f505d98bf19022f458be3e8892cc9ae0, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2592,5 +2594,10 @@ PrefabInstance:
 --- !u!224 &1550499532558620666 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6506783659103798452, guid: f505d98bf19022f458be3e8892cc9ae0, type: 3}
+  m_PrefabInstance: {fileID: 5749063037032207182}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7195492065293324427 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3175956618274751429, guid: f505d98bf19022f458be3e8892cc9ae0, type: 3}
   m_PrefabInstance: {fileID: 5749063037032207182}
   m_PrefabAsset: {fileID: 0}
