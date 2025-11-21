@@ -1566,29 +1566,41 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     private void SetSpeedBuffEffectClientRpc(bool enabled)
     {
-        ToggleLoopEffect(speedBuffLoopEffect, enabled);
+        // 로컬 플레이어가 아니고 이펙트 설정이 꺼져있으면 이펙트 비활성화
+        bool shouldShowEffect = IsOwner || PlayerPrefs.GetInt("ShowEffects", 1) == 1;
+
+        ToggleLoopEffect(speedBuffLoopEffect, enabled && shouldShowEffect);
         ToggleLoopSound(buffLoopClip, enabled);
     }
 
     [ClientRpc]
     private void SetJumpBuffEffectClientRpc(bool enabled)
     {
-        ToggleLoopEffect(jumpBuffLoopEffect, enabled);
+        // 로컬 플레이어가 아니고 이펙트 설정이 꺼져있으면 이펙트 비활성화
+        bool shouldShowEffect = IsOwner || PlayerPrefs.GetInt("ShowEffects", 1) == 1;
+
+        ToggleLoopEffect(jumpBuffLoopEffect, enabled && shouldShowEffect);
         ToggleLoopSound(buffLoopClip, enabled);
     }
 
     [ClientRpc]
     private void SetInvincibleBuffEffectClientRpc(bool enabled)
     {
-        ToggleLoopEffect(invincibleBuffLoopEffect, enabled);
+        // 로컬 플레이어가 아니고 이펙트 설정이 꺼져있으면 이펙트 비활성화
+        bool shouldShowEffect = IsOwner || PlayerPrefs.GetInt("ShowEffects", 1) == 1;
+
+        ToggleLoopEffect(invincibleBuffLoopEffect, enabled && shouldShowEffect);
         ToggleLoopSound(invincibleBuffLoopClip, enabled);
     }
 
     [ClientRpc]
     private void PlayBuffPickupEffectClientRpc()
     {
+        // 로컬 플레이어가 아니고 이펙트 설정이 꺼져있으면 재생하지 않음
+        bool showEffects = IsOwner || PlayerPrefs.GetInt("ShowEffects", 1) == 1;
+
         // 파티클 재생
-        if (buffPickupEffect != null)
+        if (showEffects && buffPickupEffect != null)
         {
             buffPickupEffect.Play();
         }
@@ -1603,6 +1615,9 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     private void PlayJumpParticleClientRpc()
     {
+        // 로컬 플레이어가 아니고 이펙트 설정이 꺼져있으면 재생하지 않음
+        if (!IsOwner && PlayerPrefs.GetInt("ShowEffects", 1) == 0) return;
+
         if (jumpParticle != null)
         {
             jumpParticle.Play();
@@ -1665,6 +1680,9 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     private void PlayDiveLandParticleClientRpc()
     {
+        // 로컬 플레이어가 아니고 이펙트 설정이 꺼져있으면 재생하지 않음
+        if (!IsOwner && PlayerPrefs.GetInt("ShowEffects", 1) == 0) return;
+
         if (diveLandParticle != null)
         {
             diveLandParticle.Play();
@@ -1674,6 +1692,9 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     private void PlayRespawnParticleClientRpc()
     {
+        // 로컬 플레이어가 아니고 이펙트 설정이 꺼져있으면 재생하지 않음
+        if (!IsOwner && PlayerPrefs.GetInt("ShowEffects", 1) == 0) return;
+
         if (respawnParticle != null)
         {
             respawnParticle.Play();
@@ -1802,7 +1823,9 @@ public class PlayerController : NetworkBehaviour
         // 파티클 제어: 땅에서 걷고 있을 때만 재생
         if (walkParticle != null)
         {
-            bool shouldPlayParticle = netIsMove.Value && netIsGrounded.Value && !netIsDeath.Value && !isDiveGrounded;
+            // 로컬 플레이어가 아니고 이펙트 설정이 꺼져있으면 파티클 재생하지 않음
+            bool showEffects = IsOwner || PlayerPrefs.GetInt("ShowEffects", 1) == 1;
+            bool shouldPlayParticle = showEffects && netIsMove.Value && netIsGrounded.Value && !netIsDeath.Value && !isDiveGrounded;
 
             if (shouldPlayParticle && !isWalkParticlePlaying)
             {

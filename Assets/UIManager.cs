@@ -396,4 +396,5 @@ public class UIManager : MonoBehaviour
         entry.callback.AddListener((data) => { callback(); });
         trigger.triggers.Add(entry);
     }
+
 }
