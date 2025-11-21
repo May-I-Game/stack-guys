@@ -14,6 +14,9 @@ public class PlayerCanvasManager : NetworkBehaviour
     [SerializeField] private Image stickerImage; // 스티커 UI
     [SerializeField] private Sprite[] stickerSprites; // 스티커 Sprite 배열
     [SerializeField] private float stickerDuration = 3.0f; // 스티커 표시 시간
+    [SerializeField] private AudioSource stickerAudioSource; // 이모티콘 효과음 소스
+    [SerializeField] private AudioClip stickerSoundClip; // 이모티콘 효과음
+    [Range(0f, 1f)][SerializeField] private float stickerVolume = 0.7f; // 이모티콘 효과음 볼륨
 
     private Coroutine runningStickerCoroutine = null;
 
@@ -43,6 +46,12 @@ public class PlayerCanvasManager : NetworkBehaviour
     [ClientRpc]
     private void ShowStickerClientRpc(int index)
     {
+        // 이모티콘 효과음 먼저 재생 (즉시 반응)
+        if (stickerAudioSource != null && stickerSoundClip != null)
+        {
+            stickerAudioSource.PlayOneShot(stickerSoundClip, stickerVolume);
+        }
+
         // 예전 코루틴이 있으면 중지
         if (runningStickerCoroutine != null)
         {
