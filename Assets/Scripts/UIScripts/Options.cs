@@ -125,9 +125,9 @@ public class Options : MonoBehaviour
         PlayerPrefs.SetInt(PERFORMANCE_KEY, isOn ? 1 : 0);
         PlayerPrefs.Save();
 
-        if (PerformanceMonitor.Instance != null)
+        if (CompleteNGOProfiler.Instance != null)
         {
-            PerformanceMonitor.Instance.ToggleVisibility(isOn);
+            CompleteNGOProfiler.Instance.ToggleVisibility(isOn);
         }
     }
 

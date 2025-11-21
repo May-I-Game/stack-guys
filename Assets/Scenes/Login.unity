@@ -3426,10 +3426,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b522d4141e049314d95fde2aaf4eddc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clientCharIndex: 12
-  clientName: BotClient
-  useMatchmaking: 1
-  matchmakingUrl: http://matchmaking-alb-1609632759.ap-northeast-2.elb.amazonaws.com
   isLocalMod: 0
   serverAddress: 3.37.88.2
   serverPort: 7779
