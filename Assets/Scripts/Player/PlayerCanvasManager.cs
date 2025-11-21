@@ -18,6 +18,8 @@ public class PlayerCanvasManager : NetworkBehaviour
     [SerializeField] private AudioClip stickerSoundClip; // 이모티콘 효과음
     [Range(0f, 1f)][SerializeField] private float stickerVolume = 0.7f; // 이모티콘 효과음 볼륨
 
+    [SerializeField] private GameObject playerArrow; // 플레이어를 가르키는 화살표
+
     private Coroutine runningStickerCoroutine = null;
 
     //자동 동기화
@@ -27,6 +29,15 @@ public class PlayerCanvasManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+
+        // 플레이어를 가르키는 화살표 활성화
+        if (IsOwner)
+        {
+            if (playerArrow != null)
+            {
+                playerArrow.SetActive(true);
+            }
+        }
 
         Debug.Log($"[PlayerNameSync] OnNetworkSpawn - Name: {playerName.Value}");
 
