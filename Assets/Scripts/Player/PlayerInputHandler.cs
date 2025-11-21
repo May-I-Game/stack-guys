@@ -37,7 +37,11 @@ public class PlayerInputHandler : NetworkBehaviour
             for (int i = 0; i < 6; i++)
             {
                 int index = i; // 클로저 문제 해결
-                MobileInputManager.Instance.stickerReqButtons[i].onClick.AddListener(() => canvasManager.RequestStickerServerRpc(index));
+                MobileInputManager.Instance.stickerReqButtons[i].onClick.AddListener(() =>
+                {
+                    MobileInputManager.Instance.PlayButtonClickSound(); // 효과음 재생
+                    canvasManager.RequestStickerServerRpc(index);
+                });
             }
         }
     }

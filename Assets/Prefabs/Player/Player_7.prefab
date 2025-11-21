@@ -497,6 +497,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: d6357c272dfa3cc41a19a404d341ee20, type: 3}
   - {fileID: 21300000, guid: dca84a5d2be8df34ca2d64462c12f5f9, type: 3}
   stickerDuration: 3
+  stickerAudioSource: {fileID: 4856006342527201894}
+  stickerSoundClip: {fileID: 8300000, guid: 10c3bf8e387e1fb4cb0a498b342f5352, type: 3}
+  stickerVolume: 0.7
 --- !u!1 &1603252422376430676
 GameObject:
   m_ObjectHideFlags: 0
@@ -2304,6 +2307,11 @@ ParticleSystem:
 --- !u!198 &3563461251771325599 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 2290979693427728162, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
+  m_PrefabInstance: {fileID: 3366657069646496701}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &4856006342527201894 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 7916418634819760603, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
   m_PrefabInstance: {fileID: 3366657069646496701}
   m_PrefabAsset: {fileID: 0}
 --- !u!198 &6288603512583160967 stripped
