@@ -269,15 +269,11 @@ public class GameManager : NetworkBehaviour
         var playerObj = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
         if (playerObj == null) return;
 
-
         var player = playerObj.GetComponent<PlayerController>();
         if (player != null)
         {
-            player.inputEnabled.Value = false;
-            player.ReleaseGrab();
-            player.ForceClearInputOnServer();
+            player.OnGoaled();
         }
-
 
         rankings.Add(playerName);              // NetworkList는 서버에서만 쓰기
 
@@ -494,8 +490,8 @@ public class GameManager : NetworkBehaviour
         Debug.Log($"[GameManager - SERVER] 시상식 타임라인 시작 신호 전송");
 
         // 시상식 지속 시간 대기
-        Debug.Log($"[GameManager - SERVER] {podiumTimeline.duration}초 대기 시작");
-        yield return new WaitForSeconds((float)podiumTimeline.duration);
+        Debug.Log($"[GameManager - SERVER] {podiumTimeline.duration + 1f}초 대기 시작");
+        yield return new WaitForSeconds((float)podiumTimeline.duration + 1f);
 
         Debug.Log("[GameManager - SERVER] 시상식 대기 완료, 결과 화면 표시");
 
@@ -579,12 +575,9 @@ public class GameManager : NetworkBehaviour
             return;
         }
 
-        // 입력 비활성화
-        player.inputEnabled.Value = false;
-        player.ForceClearInputOnServer();
-
         // 🟩 서버에서 DoRespawn 사용 (서버 권위 방식)
         player.DoRespawn(podiumTransform.position, podiumTransform.rotation);
+        player.OnGoaled();
 
         Debug.Log($"[Podium] 플레이어 {player.GetPlayerName()}을 시상대로 이동 완료");
     }
