@@ -26,8 +26,6 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private TMP_Text thirdPlaceText;
     [SerializeField] private TMP_Text QualifiedText;
     [SerializeField] private GameObject Mobile;
-    [SerializeField] private GameObject FPSCount;
-    [SerializeField] private GameObject PingCount;
     [SerializeField] private GameObject LobbyUI;
     [SerializeField] private GameObject gameUI;
     [SerializeField] private GameObject Info;
@@ -525,10 +523,11 @@ public class GameManager : NetworkBehaviour
             gameEndcountdown.gameObject.SetActive(false);
         if (Mobile != null)
             Mobile.SetActive(false);
-        if (FPSCount != null)
-            FPSCount.SetActive(false);
-        if (PingCount != null)
-            PingCount.SetActive(false);
+        // FPSCount와 PingCount는 CompleteNGOProfiler가 관리하므로 여기서 제어하지 않음
+        // if (FPSCount != null)
+        //     FPSCount.SetActive(false);
+        // if (PingCount != null)
+        //     PingCount.SetActive(false);
         if (LobbyUI != null)
             LobbyUI.SetActive(false);
         if (gameUI != null)
@@ -654,14 +653,15 @@ public class GameManager : NetworkBehaviour
         {
             Mobile.SetActive(false);
         }
-        if (FPSCount != null)
-        {
-            FPSCount.SetActive(false);
-        }
-        if (PingCount != null)
-        {
-            PingCount.SetActive(false);
-        }
+        // FPSCount와 PingCount는 CompleteNGOProfiler가 관리하므로 여기서 제어하지 않음
+        // if (FPSCount != null)
+        // {
+        //     FPSCount.SetActive(false);
+        // }
+        // if (PingCount != null)
+        // {
+        //     PingCount.SetActive(false);
+        // }
         if (LobbyUI != null)
         {
             LobbyUI.SetActive(false);
@@ -912,8 +912,9 @@ public class GameManager : NetworkBehaviour
     {
         if (LobbyUI != null) LobbyUI.SetActive(false); // 로비는 항상 끔
         if (Mobile != null) Mobile.SetActive(isActive);
-        if (FPSCount != null) FPSCount.SetActive(isActive);
-        if (PingCount != null) PingCount.SetActive(isActive);
+        // FPSCount와 PingCount는 CompleteNGOProfiler가 관리하므로 여기서 제어하지 않음
+        // if (FPSCount != null) FPSCount.SetActive(isActive);
+        // if (PingCount != null) PingCount.SetActive(isActive);
         if (gameUI != null) gameUI.SetActive(isActive);
 
         // 게임 시작 후에는 Options와 Guide 버튼은 활성화
@@ -1007,4 +1008,26 @@ public class GameManager : NetworkBehaviour
     // JavaScript를 통해 User Agent 확인 (WebGL 전용)
     [System.Runtime.InteropServices.DllImport("__Internal")]
     private static extern bool IsMobileUserAgent();
+
+    // ========================== 오디오 볼륨 제어 ==========================
+
+    public void SetBGMVolume(float volume)
+    {
+        if (lobbyBGM != null)
+            lobbyBGM.volume = volume;
+
+        if (trackBGM != null)
+            trackBGM.volume = volume;
+
+        if (victtoryBGM != null)
+            victtoryBGM.volume = volume;
+    }
+
+    public void SetSFXVolume(float volume)
+    {
+        if (countdownAudioSource != null)
+        {
+            countdownVolume = volume;
+        }
+    }
 }
