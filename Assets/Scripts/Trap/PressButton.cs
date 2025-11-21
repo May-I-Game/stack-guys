@@ -21,6 +21,8 @@ public class PressButton : NetworkBehaviour
     private int objectsOnPlate = 0;
     private bool isPressed = false;
 
+    private Animator wallAnimator;
+
     private Vector3 originalPosition;  // 버튼의 원래 위치
     private Vector3 targetPosition;    // 버튼의 목표 위치
 
@@ -38,6 +40,16 @@ public class PressButton : NetworkBehaviour
         {
             originalPosition = buttonTransform.localPosition;
             targetPosition = originalPosition;
+        }
+
+        // 2. Start에서 Animator 컴포넌트 가져오기
+        if (wall != null)
+        {
+            wallAnimator = wall.GetComponent<Animator>();
+            if (wallAnimator == null)
+            {
+                Debug.LogError("[PressButton] Wall 오브젝트에 Animator 컴포넌트가 없습니다!");
+            }
         }
     }
 
@@ -147,17 +159,30 @@ public class PressButton : NetworkBehaviour
         }
     }
 
-    // 벽의 활성화 상태 업데이트
+    // 벽의 활성화 상태 업데이트 (NetworkVariable 값이 변경될 때 모든 클라이언트에서 호출됨)
     private void UpdateWallState(bool active)
     {
-        if (wall != null)
+        // 1. 벽 게임 오브젝트가 할당되었는지 확인 (Active/Deactive 로직은 제거)
+        if (wall == null)
         {
-            wall.SetActive(active);
-            Debug.Log($"[PressButton] 벽 {(active ? "활성화" : "비활성화")}");
+            Debug.LogWarning("[PressButton] Wall GameObject가 할당되지 않았습니다!");
+            return;
+        }
+
+        // 2. Animator 컴포넌트가 할당되었는지 확인
+        if (wallAnimator != null)
+        {
+            // active 값이 곧 Animator의 "Button" Bool 파라미터의 상태가 됩니다.
+            // true일 때 Wall_up 방향으로, false일 때 Wall_down 방향으로 전환됩니다.
+            wallAnimator.SetBool("Button", active);
+
+            Debug.Log($"[PressButton] Animator Bool 'Button'을 {(active ? "True" : "False")}로 설정. 벽 애니메이션 시작.");
         }
         else
         {
-            Debug.LogWarning("[PressButton] Wall GameObject가 할당되지 않았습니다!");
+            // 애니메이터가 없으면 이전처럼 GameObject 활성화/비활성화를 대신 사용 (선택 사항)
+            // wall.SetActive(active); 
+            Debug.LogWarning("[PressButton] Wall Animator가 할당되지 않았습니다! (애니메이션이 재생되지 않습니다)");
         }
     }
 }
