@@ -25,6 +25,8 @@ public class PlayerCanvasManager : NetworkBehaviour
     //자동 동기화
     private NetworkVariable<FixedString64Bytes> playerName =
         new NetworkVariable<FixedString64Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private NetworkVariable<bool> arrowActivated =
+        new NetworkVariable<bool>(false, NetworkVariableReadPermission.Owner, NetworkVariableWritePermission.Server);
 
     public override void OnNetworkSpawn()
     {
@@ -45,6 +47,14 @@ public class PlayerCanvasManager : NetworkBehaviour
 
         //값 변경 감지
         playerName.OnValueChanged += OnNameChanged;
+        arrowActivated.OnValueChanged += OnArrowActivatedChanged;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        playerName.OnValueChanged -= OnNameChanged;
+        arrowActivated.OnValueChanged -= OnArrowActivatedChanged;
+        base.OnNetworkDespawn();
     }
 
     [ServerRpc]
@@ -111,15 +121,20 @@ public class PlayerCanvasManager : NetworkBehaviour
         }
     }
 
-    public override void OnNetworkDespawn()
+    public void ToggleArrow(bool activate)
     {
-        playerName.OnValueChanged -= OnNameChanged;
-        base.OnNetworkDespawn();
+        arrowActivated.Value = activate;
     }
 
     private void OnNameChanged(FixedString64Bytes oldName, FixedString64Bytes newName)
     {
         Debug.Log($"[Client] name changed: {oldName} -> {newName}");
         UpdateNameDisplay(newName.ToString());
+    }
+
+    private void OnArrowActivatedChanged(bool oldValue, bool newValue)
+    {
+        if (!IsClient || !IsOwner) return;
+        playerArrow.SetActive(newValue);
     }
 }
