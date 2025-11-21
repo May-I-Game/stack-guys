@@ -11,6 +11,9 @@ public class NetworkBotIdentity : NetworkBehaviour
     // 모든 인스턴스가 공유하는 카운터
     private static int botCounter = 0;
 
+    // 사용 가능한 이름 인덱스 풀
+    private static System.Collections.Generic.List<int> availableNameIndices = null;
+
     // 봇 이름 생성
     public static string GenerateBotName()
     {
@@ -38,10 +41,29 @@ public class NetworkBotIdentity : NetworkBehaviour
         "한수민","한하윤","한민서","한예린",
         };
 
-        int nameIndex = botCounter % botNames.Length;
+        //int nameIndex = botCounter % botNames.Length;
         botCounter++;
 
         // return $"{botNames[nameIndex]}_{botCounter:D2}";
+
+        // 랜덤하게 봇 이름 리턴
+        //int nameIndex = Random.Range(0, botNames.Length);
+
+        // 이름을 다 한번씩 사용했으면 풀 재초기화
+        if (availableNameIndices == null || availableNameIndices.Count == 0)
+        {
+            availableNameIndices = new System.Collections.Generic.List<int>();
+            for (int i = 0; i < botNames.Length; i++)
+            {
+                availableNameIndices.Add(i);
+            }
+        }
+
+        int randomIndex = Random.Range(0, availableNameIndices.Count);
+        int nameIndex = availableNameIndices[randomIndex];
+
+        availableNameIndices.RemoveAt(randomIndex);
+
         return $"{botNames[nameIndex]}";
     }
 
