@@ -23,6 +23,9 @@ public class PlayerController : NetworkBehaviour
     public float throwForce = 5f; // 던지기 힘
     public int escapeRequiredJumps = 5; // 탈출에 필요한 점프 횟수
 
+    private Vector3 grabbedColliderCenter;  // 잡은 콜라이더의 월드 센터
+    private Vector3 grabbedColliderSize;    // 잡은 콜라이더의 크기
+
     [Header("Collision")]
     public float groundCheckDist = 0.1f;
     private RaycastHit[] groundHits = new RaycastHit[3];
@@ -798,6 +801,13 @@ public class PlayerController : NetworkBehaviour
         isHolding = true;
         holdingTargetId = otherPlayer.NetworkObjectId;
 
+        Collider targetCollider = otherPlayer.GetComponent<Collider>();
+        if (targetCollider != null)
+        {
+            grabbedColliderCenter = targetCollider.bounds.center;
+            grabbedColliderSize = targetCollider.bounds.size;
+        }
+
         // 상대방 상태 변경
         otherPlayer.netIsGrabbed.Value = true;
         otherPlayer.grabberId = this.NetworkObjectId;
@@ -812,9 +822,6 @@ public class PlayerController : NetworkBehaviour
         // 레이어 저장 및 비활성화 (충돌 무시용)
         heldObjectOriginLayer = otherPlayer.gameObject.layer;
         otherPlayer.gameObject.layer = LayerMask.NameToLayer("HeldObject");
-
-        //Debug.Log($"[잡기] 오브젝트 레이어 변환: {otherPlayer.gameObject.layer}");
-        //Debug.Log($"[잡기] 플레이어를 잡았습니다: {otherPlayer.gameObject.name}");
     }
 
     private void GrabObject(IGrabbable grabbable)
@@ -823,15 +830,20 @@ public class PlayerController : NetworkBehaviour
         isHolding = true;
         holdingTargetId = grabbable.NetId;
 
+        // 콜라이더 정보 저장
+        Collider targetCollider = grabbable.GameObj.GetComponent<Collider>();
+        if (targetCollider != null)
+        {
+            grabbedColliderCenter = targetCollider.bounds.center;
+            grabbedColliderSize = targetCollider.bounds.size;
+        }
+
         // NEW: GrabbableObject에 잡혔음을 알림 (NetworkTransform 최적화)
         grabbable.OnGrabbed(this);
 
         // 레이어 저장 및 비활성화 (충돌 무시용)
         heldObjectOriginLayer = grabbable.GameObj.layer;
         grabbable.GameObj.layer = LayerMask.NameToLayer("HeldObject");
-
-        //Debug.Log($"[잡기] 오브젝트 레이어 변환: {grabbable.gameObject.layer}");
-        //Debug.Log($"[잡기] 오브젝트를 잡았습니다: {grabbable.name}");
     }
 
     private void TryThrow()
@@ -869,6 +881,10 @@ public class PlayerController : NetworkBehaviour
         heldPlayerCache = null;  // 캐시 클리어
         isHolding = false;
         holdingTargetId = 0;
+
+        // 콜라이더 정보 초기화
+        grabbedColliderCenter = Vector3.zero;
+        grabbedColliderSize = Vector3.zero;
     }
 
     private void ThrowPlayer(PlayerController target, Vector3 throwDirection)
@@ -932,19 +948,42 @@ public class PlayerController : NetworkBehaviour
 
     protected void PlayerHeld()
     {
-        // 머리 위 위치 계산
-        Vector3 targetPosition = transform.position
+        if (holdingObject == null) return;
+
+        // 현재 콜라이더 정보 가져오기
+        Collider currentCollider = holdingObject.GetComponent<Collider>();
+        if (currentCollider == null) return;
+
+        // 콜라이더의 하단을 기준으로 위치 계산
+        float objectBottomOffset = grabbedColliderSize.y * 0.5f;
+
+        // 목표 위치: 플레이어 머리 위 + 물체의 절반 높이만큼 위
+        // 이 위치는 콜라이더 하단이 놓일 위치
+        Vector3 targetColliderBottom = transform.position
             + transform.forward * holdDistance
             + Vector3.up * holdHeight;
 
-        // 최적화: 위치가 크게 변했을 때만 업데이트 (0.01m = 1cm 이상)
-        float positionDelta = Vector3.Distance(targetPosition, lastHeldObjectPosition);
+        // 콜라이더 하단에서 센터까지의 오프셋
+        Vector3 colliderCenterOffset = Vector3.up * objectBottomOffset;
+
+        // 콜라이더 센터의 목표 위치
+        Vector3 targetColliderCenter = targetColliderBottom + colliderCenterOffset;
+
+        // 현재 콜라이더 센터
+        Vector3 currentColliderCenter = currentCollider.bounds.center;
+
+        // Transform의 위치 = 콜라이더 센터 목표 위치 + (Transform 위치 - 콜라이더 센터)
+        Vector3 transformOffset = holdingObject.transform.position - currentColliderCenter;
+        Vector3 finalPosition = targetColliderCenter + transformOffset;
+
+        // 위치 업데이트 (최적화: 큰 변화가 있을 때만)
+        float positionDelta = Vector3.Distance(finalPosition, lastHeldObjectPosition);
         if (positionDelta >= 0.01f)
         {
-            holdingObject.transform.position = targetPosition;
-            lastHeldObjectPosition = targetPosition;
+            holdingObject.transform.position = finalPosition;
+            lastHeldObjectPosition = finalPosition;
 
-            // 플레이어를 들고 있는 경우 회전도 맞춤 (캐시 사용)
+            // 플레이어를 들고 있는 경우 회전도 맞춤
             if (heldPlayerCache != null)
             {
                 holdingObject.transform.rotation = transform.rotation;
@@ -971,6 +1010,10 @@ public class PlayerController : NetworkBehaviour
         grabbedBy.heldPlayerCache = null;  // 캐시 클리어
         grabbedBy.isHolding = false;
         grabbedBy.holdingTargetId = 0;
+
+        // 콜라이더 정보 초기화
+        grabbedBy.grabbedColliderCenter = Vector3.zero;
+        grabbedBy.grabbedColliderSize = Vector3.zero;
 
         // 내 상태 해제
         netIsGrabbed.Value = false;
@@ -1048,6 +1091,10 @@ public class PlayerController : NetworkBehaviour
                     grabbedBy.heldPlayerCache = null;
                     grabbedBy.isHolding = false;
                     grabbedBy.holdingTargetId = 0;
+
+                    // 콜라이더 정보 초기화
+                    grabbedBy.grabbedColliderCenter = Vector3.zero;
+                    grabbedBy.grabbedColliderSize = Vector3.zero;
                 }
             }
         }
@@ -1058,6 +1105,10 @@ public class PlayerController : NetworkBehaviour
         grabberId = 0;
         heldPlayerCache = null;
         escapeJumpCount = 0;
+
+        // 콜라이더 정보 초기화
+        grabbedColliderCenter = Vector3.zero;
+        grabbedColliderSize = Vector3.zero;
     }
 
     public void PlayerDeath(bool isOceanDeath = false)
