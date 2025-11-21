@@ -3426,7 +3426,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b522d4141e049314d95fde2aaf4eddc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLocalMod: 1
+  clientCharIndex: 12
+  clientName: BotClient
+  useMatchmaking: 1
+  matchmakingUrl: http://matchmaking-alb-1609632759.ap-northeast-2.elb.amazonaws.com
+  isLocalMod: 0
   serverAddress: 3.37.88.2
   serverPort: 7779
 --- !u!4 &1233099839
@@ -5068,7 +5072,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 638df0ef43b343e4cb9eeb8ca8aad2ca, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.1
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 1
   Mute: 0

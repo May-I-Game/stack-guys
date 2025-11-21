@@ -1772,7 +1772,7 @@ MonoBehaviour:
   arrowOffset: {x: 0, y: 1, z: 0}
   enablePlayerArrow: 0
   footstepAudioSource: {fileID: 9315968890515119}
-  footstepClip: {fileID: 8300000, guid: 3bb824bb265c1fc42a7ec2d1050b863e, type: 3}
+  footstepClip: {fileID: 8300000, guid: c671db141b212e543a47c4be215c3f20, type: 3}
   footstepVolume: 1
   footstepInterval: 0.3
   jumpAudioSource: {fileID: 9315968890515119}
@@ -1850,6 +1850,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: d6357c272dfa3cc41a19a404d341ee20, type: 3}
   - {fileID: 21300000, guid: dca84a5d2be8df34ca2d64462c12f5f9, type: 3}
   stickerDuration: 3
+  stickerAudioSource: {fileID: 3152345362973183541}
+  stickerSoundClip: {fileID: 8300000, guid: 10c3bf8e387e1fb4cb0a498b342f5352, type: 3}
+  stickerVolume: 0.7
 --- !u!114 &-9054018348559208295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2836,6 +2839,11 @@ ParticleSystem:
 --- !u!198 &1848845334207585020 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 6902838044273927442, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
+  m_PrefabInstance: {fileID: 5072079754055335918}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &3152345362973183541 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 7916418634819760603, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
   m_PrefabInstance: {fileID: 5072079754055335918}
   m_PrefabAsset: {fileID: 0}
 --- !u!82 &3604423006353538141 stripped

@@ -210,9 +210,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2211676255034382544}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 2333019664654375661}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
       insertIndex: -1
@@ -231,27 +228,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
   m_PrefabInstance: {fileID: 33318112867193021}
   m_PrefabAsset: {fileID: 0}
---- !u!65 &2211676255034382544
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 916262021857816044}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 7.3454027, y: 0.9999999, z: 7.7331543}
-  m_Center: {x: -0.017560322, y: 3.4, z: 0.02746582}
 --- !u!114 &2333019664654375661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -293,8 +269,8 @@ MonoBehaviour:
   launchForce: 4
   cooldownTime: 0
   audioSource: {fileID: 8352592628756889952}
-  jumpClip: {fileID: 8300000, guid: 7c3c9db167cc9b6469d7216ed58899e1, type: 3}
-  windClip: {fileID: 8300000, guid: 472912c9b3dc34e45b45e4b7b6dbff66, type: 3}
+  jumpClip: {fileID: 8300000, guid: befd18f60d87c0543adc29eed31b1f15, type: 3}
+  windClip: {fileID: 0}
   jumpVolume: 0.7
   windVolume: 0.7
 --- !u!64 &86494788171790601
@@ -312,10 +288,10 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -7135292491759130363, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
