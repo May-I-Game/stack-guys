@@ -25,7 +25,9 @@ Material:
   m_Parent: {fileID: -876546973899608171, guid: 94d17e7249e1d4e4dbbeb87ab462596b, type: 3}
   m_ModifiedSerializedProperties: 2
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _ALPHAPREMULTIPLY_ON
+  - _SURFACE_TYPE_TRANSPARENT
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -33,12 +35,15 @@ Material:
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
-  m_LockedProperties: 
+  m_LockedProperties: _NoiseScale
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
+    - _DissolveHeight: 0
+    - _DstBlend: 10
+    - _DstBlendAlpha: 10
     - _QueueControl: 0
     m_Colors: []
   m_BuildTextureStacks: []
