@@ -127,6 +127,7 @@ public class PlayerController : NetworkBehaviour
     private CapsuleCollider col;
     private PlayerInputHandler inputHandler;
     protected PlayerBuffManager buffManager;    // 버프 관리자
+    private PlayerCanvasManager canvasManager;     // 캔버스 관리자
 
     protected Vector2 moveDir = Vector2.zero;
     private Vector2 lastSentInput = Vector2.zero;  // 실제로 서버에 전송한 마지막 입력
@@ -268,6 +269,7 @@ public class PlayerController : NetworkBehaviour
         respawnManager = FindFirstObjectByType<RespawnManager>();
 
         buffManager = GetComponent<PlayerBuffManager>();
+        canvasManager = GetComponent<PlayerCanvasManager>();
 
         // GC 최적화: WaitForSeconds 사전 생성
         botRespawnWait = new WaitForSeconds(2.267f);
@@ -775,6 +777,7 @@ public class PlayerController : NetworkBehaviour
         heldPlayerCache = otherPlayer;  // 캐싱 (GetComponent 방지)
         isHolding = true;
         holdingTargetId = otherPlayer.NetworkObjectId;
+        canvasManager.ToggleArrow(false); // 화살표 끄기
 
         Collider targetCollider = otherPlayer.GetComponent<Collider>();
         if (targetCollider != null)
@@ -804,6 +807,7 @@ public class PlayerController : NetworkBehaviour
         holdingObject = grabbable.GameObj;
         isHolding = true;
         holdingTargetId = grabbable.NetId;
+        canvasManager.ToggleArrow(false); // 화살표 끄기
 
         // 콜라이더 정보 저장
         Collider targetCollider = grabbable.GameObj.GetComponent<Collider>();
@@ -856,6 +860,7 @@ public class PlayerController : NetworkBehaviour
         heldPlayerCache = null;  // 캐시 클리어
         isHolding = false;
         holdingTargetId = 0;
+        canvasManager.ToggleArrow(true); // 화살표 켜기
 
         // 콜라이더 정보 초기화
         grabbedColliderCenter = Vector3.zero;
@@ -1080,6 +1085,7 @@ public class PlayerController : NetworkBehaviour
         grabberId = 0;
         heldPlayerCache = null;
         escapeJumpCount = 0;
+        canvasManager.ToggleArrow(true); // 화살표 켜기
 
         // 콜라이더 정보 초기화
         grabbedColliderCenter = Vector3.zero;
