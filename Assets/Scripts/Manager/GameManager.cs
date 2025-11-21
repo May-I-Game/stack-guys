@@ -52,6 +52,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private AudioClip lobbyCountdownClip; // 로비 카운트다운 효과음 (5, 4, 3, 2, 1)
     [SerializeField] private AudioClip gameCountdownClip; // 인게임 카운트다운 효과음 (3, 2, 1)
     [SerializeField] private AudioClip countdownStartClip; // START 효과음
+    [SerializeField] private AudioClip crowdCheerClip; // 군중 환호성 효과음
     [Range(0f, 1f)][SerializeField] private float countdownVolume = 0.7f;
 
     [Header("Podium")]
@@ -604,8 +605,8 @@ public class GameManager : NetworkBehaviour
         // 클라이언트면 종료
         if (!IsServer) yield break;
 
-        // 타임라인 종료 시각 = 시작 시각 + 재생 길이
-        double target = timelineStartTime.Value + timeline.duration;
+        // 타임라인 종료 시각 = 시작 시각 + 재생 길이 + 추가 대기 시간
+        double target = timelineStartTime.Value + timeline.duration + 0.3f;
 
         // 한 프레임씩 대기
         while (NetworkManager.Singleton.ServerTime.Time < target)
@@ -801,6 +802,12 @@ public class GameManager : NetworkBehaviour
                 if (previousCount > 0 && countdownAudioSource != null && countdownStartClip != null)
                 {
                     countdownAudioSource.PlayOneShot(countdownStartClip, countdownVolume);
+
+                    // 군중 환호성도 함께 재생
+                    if (crowdCheerClip != null)
+                    {
+                        countdownAudioSource.PlayOneShot(crowdCheerClip, countdownVolume);
+                    }
                 }
             }
         }
