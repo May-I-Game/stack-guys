@@ -2,6 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIManager : MonoBehaviour
 {
@@ -23,11 +24,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject second;        // 2페이지
     [SerializeField] private GameObject third;         // 3페이지
     [SerializeField] private GameObject fourth;        // 4페이지
+    [SerializeField] private GameObject fifth;         // 5페이지
 
     public static UIManager Instance;
 
     // 가이드 페이지 관리
-    private int currentGuidePage = 1;                  // 현재 페이지 (1~4)
+    private int currentGuidePage = 1;                  // 현재 페이지 (1~5)
     private bool hasClosedGuideOnce = false;          // 닫기 버튼 클릭 이력
     private bool isMobilePlatform = false;             // 모바일 플랫폼 여부
 
@@ -180,7 +182,7 @@ public class UIManager : MonoBehaviour
     // 다음 페이지로 이동
     private void NextPage()
     {
-        if (currentGuidePage < 4)
+        if (currentGuidePage < 5)
         {
             currentGuidePage++;
             NavigateToPage(currentGuidePage);
@@ -196,6 +198,7 @@ public class UIManager : MonoBehaviour
         if (second != null) second.SetActive(false);
         if (third != null) third.SetActive(false);
         if (fourth != null) fourth.SetActive(false);
+        if (fifth != null) fifth.SetActive(false);
 
         // 해당 페이지 활성화
         switch (pageNumber)
@@ -220,6 +223,9 @@ public class UIManager : MonoBehaviour
             case 4:
                 if (fourth != null) fourth.SetActive(true);
                 break;
+            case 5:
+                if (fifth != null) fifth.SetActive(true);
+                break;
         }
 
         // 닫기 버튼 상태 업데이트
@@ -234,6 +240,7 @@ public class UIManager : MonoBehaviour
         SetupButtonsForPage(second);
         SetupButtonsForPage(third);
         SetupButtonsForPage(fourth);
+        SetupButtonsForPage(fifth);
     }
 
     // 특정 페이지의 버튼들에 이벤트 연결
@@ -268,8 +275,8 @@ public class UIManager : MonoBehaviour
     // 닫기 버튼 상태 업데이트
     private void UpdateCloseButtonState()
     {
-        // 한 번이라도 닫기를 눌렀거나 4페이지인 경우 활성화
-        bool shouldEnable = hasClosedGuideOnce || currentGuidePage == 4;
+        // 한 번이라도 닫기를 눌렀거나 5페이지인 경우 활성화
+        bool shouldEnable = hasClosedGuideOnce || currentGuidePage == 5;
 
         // 모든 페이지의 Close 버튼 찾아서 상태 업데이트
         UpdateCloseButtonForPage(firstPC, shouldEnable);
@@ -277,6 +284,7 @@ public class UIManager : MonoBehaviour
         UpdateCloseButtonForPage(second, shouldEnable);
         UpdateCloseButtonForPage(third, shouldEnable);
         UpdateCloseButtonForPage(fourth, shouldEnable);
+        UpdateCloseButtonForPage(fifth, shouldEnable);
     }
 
     // 특정 페이지의 close 버튼 상태 업데이트
@@ -290,6 +298,21 @@ public class UIManager : MonoBehaviour
             if (btn.name == "close")
             {
                 btn.interactable = shouldEnable;
+
+                // 비활성화 시 이미지 어둡게 처리
+                Image btnImage = btn.GetComponent<Image>();
+                if (btnImage != null)
+                {
+                    btnImage.color = shouldEnable ? Color.white : new Color(0.3f, 0.3f, 0.3f, 0.5f);
+                }
+
+                // 닫기 버튼의 TMP_Text 자식 요소 처리
+                // 한번 읽은 이후(hasClosedGuideOnce == true)에는 텍스트 비활성화
+                TMP_Text textChild = btn.GetComponentInChildren<TMP_Text>();
+                if (textChild != null && hasClosedGuideOnce)
+                {
+                    textChild.gameObject.SetActive(false);
+                }
             }
         }
     }
