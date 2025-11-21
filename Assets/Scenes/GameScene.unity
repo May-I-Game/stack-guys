@@ -101661,7 +101661,6 @@ MonoBehaviour:
   secondPlacePodium: {fileID: 482450524}
   thirdPlacePodium: {fileID: 667406664}
   podiumTimeline: {fileID: 126047991}
-  podiumTimelineDuration: 10
 --- !u!114 &1600138839
 MonoBehaviour:
   m_ObjectHideFlags: 0
