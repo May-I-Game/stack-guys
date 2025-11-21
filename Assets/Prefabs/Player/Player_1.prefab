@@ -1844,7 +1844,7 @@ MonoBehaviour:
   arrowOffset: {x: 0, y: 1, z: 0}
   enablePlayerArrow: 0
   footstepAudioSource: {fileID: 9315968890515119}
-  footstepClip: {fileID: 8300000, guid: 3bb824bb265c1fc42a7ec2d1050b863e, type: 3}
+  footstepClip: {fileID: 8300000, guid: c671db141b212e543a47c4be215c3f20, type: 3}
   footstepVolume: 1
   footstepInterval: 0.3
   jumpAudioSource: {fileID: 9315968890515119}

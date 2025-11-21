@@ -19591,6 +19591,14 @@ PrefabInstance:
       value: 282433546
       objectReference: {fileID: 0}
     - target: {fileID: 4072225274833917847, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
+      propertyPath: windClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 5983f82abe31d484180d409ac7479f2f, type: 3}
+    - target: {fileID: 4072225274833917847, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
+      propertyPath: windVolume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4072225274833917847, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
       propertyPath: launchForce
       value: 14
       objectReference: {fileID: 0}
@@ -20650,6 +20658,14 @@ PrefabInstance:
     - target: {fileID: 2333019664654375661, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 282433546
+      objectReference: {fileID: 0}
+    - target: {fileID: 4072225274833917847, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
+      propertyPath: windClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 5983f82abe31d484180d409ac7479f2f, type: 3}
+    - target: {fileID: 4072225274833917847, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
+      propertyPath: windVolume
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4072225274833917847, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
       propertyPath: launchForce
@@ -40410,7 +40426,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &614424050
 RectTransform:
   m_ObjectHideFlags: 0
@@ -64206,7 +64222,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &942338314
 RectTransform:
   m_ObjectHideFlags: 0
@@ -68548,6 +68564,14 @@ PrefabInstance:
     - target: {fileID: 2333019664654375661, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 282433546
+      objectReference: {fileID: 0}
+    - target: {fileID: 4072225274833917847, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
+      propertyPath: windClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 5983f82abe31d484180d409ac7479f2f, type: 3}
+    - target: {fileID: 4072225274833917847, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
+      propertyPath: windVolume
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4072225274833917847, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
       propertyPath: launchForce
@@ -120462,6 +120486,14 @@ PrefabInstance:
       value: 282433546
       objectReference: {fileID: 0}
     - target: {fileID: 4072225274833917847, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
+      propertyPath: windClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 5983f82abe31d484180d409ac7479f2f, type: 3}
+    - target: {fileID: 4072225274833917847, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
+      propertyPath: windVolume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4072225274833917847, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
       propertyPath: launchForce
       value: 14
       objectReference: {fileID: 0}
@@ -141223,6 +141255,14 @@ PrefabInstance:
     - target: {fileID: 2333019664654375661, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 282433546
+      objectReference: {fileID: 0}
+    - target: {fileID: 4072225274833917847, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
+      propertyPath: windClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 5983f82abe31d484180d409ac7479f2f, type: 3}
+    - target: {fileID: 4072225274833917847, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
+      propertyPath: windVolume
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4072225274833917847, guid: 160d6a682a00beb43846635ec3b4a349, type: 3}
       propertyPath: launchForce
