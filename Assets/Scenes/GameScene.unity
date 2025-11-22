@@ -43331,8 +43331,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 639066639}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.002545812, y: 0.6971204, z: 0.0024754156, w: 0.71694523}
-  m_LocalPosition: {x: -2.263, y: 5.35, z: 196.81993}
+  m_LocalRotation: {x: -0.0066762497, y: 0.0045752013, z: 0.000030546184, w: 0.9999673}
+  m_LocalPosition: {x: 3.8370006, y: 6.16, z: 190.72}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -111124,6 +111124,42 @@ MonoBehaviour:
           y: 0.7071067
           z: 0
           w: -0.7071067
+    - Position:
+        x: -0.5
+        y: 0
+        z: 0
+      TangentIn:
+        x: -0
+        y: -0
+        z: -0.06263187
+      TangentOut:
+        x: 0
+        y: 0
+        z: 0.033309486
+      Rotation:
+        value:
+          x: 0
+          y: 0.19509028
+          z: 0
+          w: 0.98078525
+    - Position:
+        x: -0.3
+        y: 0
+        z: 0
+      TangentIn:
+        x: 0
+        y: 0
+        z: 0
+      TangentOut:
+        x: 0
+        y: 0
+        z: 0
+      Rotation:
+        value:
+          x: 0
+          y: -0.6305045
+          z: -0
+          w: 0.7761857
     m_MetaData:
     - Mode: 4
       Tension: 0.5
@@ -111133,7 +111169,11 @@ MonoBehaviour:
       Tension: 0.5
     - Mode: 4
       Tension: 0.5
-    m_Closed: 1
+    - Mode: 0
+      Tension: 0.5
+    - Mode: 1
+      Tension: 0.5
+    m_Closed: 0
     m_IntData:
       m_Data: []
     m_FloatData:
