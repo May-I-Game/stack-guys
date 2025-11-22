@@ -9,6 +9,8 @@ public class Options : MonoBehaviour
     [Header("Settings")]
     public Toggle performanceToggle;    // FPS/Ping 표시
     public Toggle effectsToggle;        // 다른 플레이어 이펙트
+    public Toggle mobileUIToggle;       // 모바일 UI 표시
+
 
     [Header("Volume Settings")]
     public Slider masterVolumeSlider;   // 마스터 볼륨
@@ -25,9 +27,12 @@ public class Options : MonoBehaviour
 
     private const string PERFORMANCE_KEY = "ShowPerformance";
     private const string EFFECTS_KEY = "ShowEffects";
+    private const string MOBILE_UI_KEY = "ShowMobileUI";
     private const string MASTER_VOLUME_KEY = "MasterVolume";
     private const string BGM_VOLUME_KEY = "BGMVolume";
     private const string SFX_VOLUME_KEY = "SFXVolume";
+
+    private GameObject mobileUICanvas; // UICanvas의 Mobile 자식 오브젝트
 
     void Start()
     {
@@ -66,6 +71,17 @@ public class Options : MonoBehaviour
 
     private void InitializeSettings()
     {
+        // UICanvas의 Mobile 오브젝트 찾기
+        GameObject uiCanvas = GameObject.Find("UICanvas");
+        if (uiCanvas != null)
+        {
+            Transform mobileTransform = uiCanvas.transform.Find("Mobile");
+            if (mobileTransform != null)
+            {
+                mobileUICanvas = mobileTransform.gameObject;
+            }
+        }
+
         // Performance Toggle (기본값: OFF)
         if (performanceToggle != null)
         {
@@ -82,39 +98,48 @@ public class Options : MonoBehaviour
             effectsToggle.onValueChanged.AddListener(OnEffectsToggleChanged);
         }
 
-        // Master Volume Slider
+        // Mobile UI Toggle - 현재 Mobile 오브젝트의 활성화 상태를 읽어서 반영
+        if (mobileUIToggle != null)
+        {
+            // 실제 Mobile GameObject의 현재 상태를 읽음
+            bool currentMobileUIState = mobileUICanvas != null && mobileUICanvas.activeSelf;
+            mobileUIToggle.isOn = currentMobileUIState;
+            mobileUIToggle.onValueChanged.AddListener(OnMobileUIToggleChanged);
+        }
+
+        // Master Volume Slider - PlayerPrefs에서 읽고 실제 오디오에 적용
         if (masterVolumeSlider != null)
         {
             float masterVolume = PlayerPrefs.GetFloat(MASTER_VOLUME_KEY, 1f);
+            AudioListener.volume = masterVolume; // 실제 볼륨 적용
             masterVolumeSlider.value = masterVolume;
-            lastMasterVolume = masterVolume;
-            AudioListener.volume = masterVolume;
+            lastMasterVolume = masterVolume > 0.01f ? masterVolume : 1f;
             masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
         }
 
-        // BGM Volume Slider
+        // BGM Volume Slider - PlayerPrefs에서 읽고 실제 오디오에 적용
         if (bgmVolumeSlider != null)
         {
             float bgmVolume = PlayerPrefs.GetFloat(BGM_VOLUME_KEY, 1f);
-            bgmVolumeSlider.value = bgmVolume;
-            lastBGMVolume = bgmVolume;
             if (GameManager.Instance != null)
             {
-                GameManager.Instance.SetBGMVolume(bgmVolume);
+                GameManager.Instance.SetBGMVolume(bgmVolume); // 실제 볼륨 적용
             }
+            bgmVolumeSlider.value = bgmVolume;
+            lastBGMVolume = bgmVolume > 0.01f ? bgmVolume : 1f;
             bgmVolumeSlider.onValueChanged.AddListener(OnBGMVolumeChanged);
         }
 
-        // SFX Volume Slider
+        // SFX Volume Slider - PlayerPrefs에서 읽고 실제 오디오에 적용
         if (sfxVolumeSlider != null)
         {
             float sfxVolume = PlayerPrefs.GetFloat(SFX_VOLUME_KEY, 1f);
-            sfxVolumeSlider.value = sfxVolume;
-            lastSFXVolume = sfxVolume;
             if (GameManager.Instance != null)
             {
-                GameManager.Instance.SetSFXVolume(sfxVolume);
+                GameManager.Instance.SetSFXVolume(sfxVolume); // 실제 볼륨 적용
             }
+            sfxVolumeSlider.value = sfxVolume;
+            lastSFXVolume = sfxVolume > 0.01f ? sfxVolume : 1f;
             sfxVolumeSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
         }
     }
@@ -138,6 +163,18 @@ public class Options : MonoBehaviour
 
         // 설정이 변경되면 현재 재생 중인 다른 플레이어의 파티클을 즉시 중지/재생
         // PlayerController.cs의 ClientRpc 메서드들이 PlayerPrefs를 확인하여 자동으로 처리
+    }
+
+    private void OnMobileUIToggleChanged(bool isOn)
+    {
+        PlayerPrefs.SetInt(MOBILE_UI_KEY, isOn ? 1 : 0);
+        PlayerPrefs.Save();
+
+        // Mobile UI 활성화/비활성화
+        if (mobileUICanvas != null)
+        {
+            mobileUICanvas.SetActive(isOn);
+        }
     }
 
     // ===================== 볼륨 설정 =====================
