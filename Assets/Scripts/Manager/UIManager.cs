@@ -77,8 +77,7 @@ public class UIManager : MonoBehaviour
         if (resultPanel != null)
             resultPanel.SetActive(false);
 
-        if (arrivalPanel != null)
-            arrivalPanel.SetActive(false);
+        // ArrivalPanel은 에디터에서 비활성화 상태로 설정 (코드에서 건드리지 않음)
 
         // 버튼 이벤트 연결 (PointerDown으로 즉시 반응)
         if (mainButton != null)
