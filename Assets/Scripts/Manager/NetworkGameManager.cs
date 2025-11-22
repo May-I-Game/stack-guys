@@ -52,6 +52,9 @@ public class NetworkGameManager : MonoBehaviour
 
     private void Start()
     {
+        // 백그라운드에서도 게임 실행 유지 (연결 끊김 방지)
+        Application.runInBackground = true;
+
         // 한 번만 초기화
         if (!hasInitialized)
         {
@@ -117,7 +120,15 @@ public class NetworkGameManager : MonoBehaviour
         if (transport != null)
         {
             transport.UseWebSockets = true;
+
+            // 타임아웃 설정 - 렉에 더 관대하게 (서버 측)
+            transport.ConnectTimeoutMS = 10000;      // 연결 타임아웃: 10초
+            transport.MaxConnectAttempts = 10;        // 최대 연결 시도: 10번
+            transport.DisconnectTimeoutMS = 30000;   // 연결 해제 타임아웃: 30초
+            transport.HeartbeatTimeoutMS = 2000;     // 하트비트 타임아웃: 2초
+
             Debug.Log("[Server] WebSocket mode enabled for WebGL clients");
+            Debug.Log("[Server] Timeout settings configured for better lag tolerance");
         }
 
         // 서버 시작
@@ -225,7 +236,12 @@ public class NetworkGameManager : MonoBehaviour
 
             if (currentPlayers > MAX_PLAYERS)
             {
-                Debug.LogWarning($"⚠️ 서버 정원 초과! 현재: {currentPlayers}명 / 최대: {MAX_PLAYERS}명 → 클라이언트 {clientId} 연결 거부");
+                Debug.LogError($"========== 서버 정원 초과로 킥 ==========");
+                Debug.LogError($"[SERVER KICK] Reason: 최대 인원 초과");
+                Debug.LogError($"[SERVER KICK] Client ID: {clientId}");
+                Debug.LogError($"[SERVER KICK] Current Players: {currentPlayers} / Max: {MAX_PLAYERS}");
+                Debug.LogError($"[SERVER KICK] Time: {System.DateTime.Now:HH:mm:ss}");
+                Debug.LogError($"==========================================");
                 networkManager.DisconnectClient(clientId);
                 return;
             }
@@ -257,8 +273,17 @@ public class NetworkGameManager : MonoBehaviour
     {
         if (networkManager.IsServer)
         {
-            Debug.Log($"[Server Log] Client disconnected. Client ID: {clientId}");
-            Debug.Log($"[Server Log] Total players now: {networkManager.ConnectedClients.Count}");
+            // 상세한 킥/연결 해제 로그
+            string playerName = clientPlayerNames.ContainsKey(clientId) ? clientPlayerNames[clientId] : "Unknown";
+            int characterIndex = clientCharacterSelections.ContainsKey(clientId) ? clientCharacterSelections[clientId] : -1;
+
+            Debug.LogWarning($"========== 클라이언트 연결 해제 ==========");
+            Debug.LogWarning($"[SERVER KICK/DISCONNECT] Client ID: {clientId}");
+            Debug.LogWarning($"[SERVER KICK/DISCONNECT] Player Name: {playerName}");
+            Debug.LogWarning($"[SERVER KICK/DISCONNECT] Character Index: {characterIndex}");
+            Debug.LogWarning($"[SERVER KICK/DISCONNECT] Time: {System.DateTime.Now:HH:mm:ss}");
+            Debug.LogWarning($"[SERVER KICK/DISCONNECT] Remaining Players: {networkManager.ConnectedClients.Count - 1}");
+            Debug.LogWarning($"==========================================");
 
             // dictionary 정리
             if (clientCharacterSelections.ContainsKey(clientId))
@@ -275,7 +300,10 @@ public class NetworkGameManager : MonoBehaviour
         // 클라이언트의 경우만 Login으로 이동
         if (networkManager.IsClient && clientId == networkManager.LocalClientId)
         {
-            Debug.Log("Disconnected from server");
+            Debug.LogError($"========== 서버로부터 연결 해제됨 ==========");
+            Debug.LogError($"[CLIENT DISCONNECTED] Client ID: {clientId}");
+            Debug.LogError($"[CLIENT DISCONNECTED] Time: {System.DateTime.Now:HH:mm:ss}");
+            Debug.LogError($"==========================================");
 #if DUMMY_CLIENT
             Application.Quit();
 #else
@@ -293,7 +321,12 @@ public class NetworkGameManager : MonoBehaviour
 
         if (currentPlayers >= MAX_PLAYERS)
         {
-            Debug.LogWarning($"⚠️ 서버 정원 초과! 현재: {currentPlayers}명 / 최대: {MAX_PLAYERS}명 → 클라이언트 {request.ClientNetworkId} 연결 거부");
+            Debug.LogError($"========== 연결 승인 거부 (정원 초과) ==========");
+            Debug.LogError($"[APPROVAL DENIED] Reason: 서버 정원 초과");
+            Debug.LogError($"[APPROVAL DENIED] Client ID: {request.ClientNetworkId}");
+            Debug.LogError($"[APPROVAL DENIED] Current Players: {currentPlayers} / Max: {MAX_PLAYERS}");
+            Debug.LogError($"[APPROVAL DENIED] Time: {System.DateTime.Now:HH:mm:ss}");
+            Debug.LogError($"==========================================");
             response.Approved = false;
             response.Reason = "Server is full";
             return;
