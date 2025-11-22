@@ -10,6 +10,11 @@ public class FadingPlatform : MonoBehaviour
     [Header("Material Settings")]
     [SerializeField] private Material glassMaterial; // Glass 머티리얼
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip breakSound; // 유리 깨지는 소리
+    [Range(0f, 1f)][SerializeField] private float breakVolume = 0.7f;
+
     private bool isFading = false;
     private float currentCutoff = 0.02f; // 초기 Cutoff 값
     private Renderer platformRenderer;
@@ -50,6 +55,12 @@ public class FadingPlatform : MonoBehaviour
     {
         isFading = true;
 
+        // 유리 깨지는 사운드 재생
+        if (audioSource != null && breakSound != null)
+        {
+            audioSource.PlayOneShot(breakSound, breakVolume * GetSFXVolume());
+        }
+
         // Cutoff 값을 증가시켜 투명하게 만듦
         while (currentCutoff < 1f)
         {
@@ -73,5 +84,10 @@ public class FadingPlatform : MonoBehaviour
         currentCutoff = 0.02f;
         glassMaterial.SetFloat("_Hight_Cutoff", currentCutoff);
         gameObject.SetActive(true);
+    }
+
+    private float GetSFXVolume()
+    {
+        return GameManager.Instance != null ? GameManager.Instance.GetSFXVolume() : 1f;
     }
 }

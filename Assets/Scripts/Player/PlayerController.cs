@@ -1434,7 +1434,7 @@ public class PlayerController : NetworkBehaviour
             if (!targetAudioSource.isPlaying || targetAudioSource.clip != clip)
             {
                 targetAudioSource.clip = clip;
-                targetAudioSource.volume = targetVolume;
+                targetAudioSource.volume = targetVolume * GetSFXVolume();
                 targetAudioSource.loop = true;
                 targetAudioSource.Play();
             }
