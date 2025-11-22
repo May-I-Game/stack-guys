@@ -488,8 +488,8 @@ public class UIManager : MonoBehaviour
         // 2. 슬라이드 인 + 페이드 인 (0.5초)
         float slideInDuration = 0.5f;
         float time = 0f;
-        Vector2 startPos = new Vector2(0, 100);  // 위쪽에서 시작
-        Vector2 targetPos = Vector2.zero;        // 중앙으로
+        Vector2 startPos = new Vector2(-500, 0);  // 왼쪽에서 시작
+        Vector2 targetPos = Vector2.zero;         // 중앙으로
 
         while (time < slideInDuration)
         {
