@@ -27,6 +27,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject fourth;        // 4페이지
     [SerializeField] private GameObject fifth;         // 5페이지
 
+    [Header("Escape Button")]
+    [SerializeField] private Button escapeButton;      // 끼임 탈출 버튼
+
     [Header("UI Sound Effects")]
     [SerializeField] private AudioSource uiAudioSource; // UI 효과음 소스
     [SerializeField] private AudioClip buttonClickClip; // 버튼 클릭 효과음
@@ -79,6 +82,10 @@ public class UIManager : MonoBehaviour
         if (GuideButton != null)
             SetupButtonPointerDown(GuideButton, OnGuideButtonClicked);
 
+        // 끼임 탈출 버튼 연결
+        if (escapeButton != null)
+            SetupButtonPointerDown(escapeButton, OnEscapeButtonClicked);
+
         // 각 페이지의 네비게이션 버튼 및 닫기 버튼 이벤트 연결
         SetupPageNavigationButtons();
 
@@ -124,6 +131,38 @@ public class UIManager : MonoBehaviour
             ToggleOptionPanel(false);
             OpenGuidePanel();
         }
+    }
+
+    // 끼임 탈출 버튼 클릭 시 호출
+    private void OnEscapeButtonClicked()
+    {
+        PlayButtonClickSound(); // 효과음 재생
+
+        // 로컬 플레이어 찾기
+        PlayerController localPlayer = GetLocalPlayer();
+        if (localPlayer != null)
+        {
+            // 현재 리스폰 지점에서 다시 리스폰
+            localPlayer.RequestEscapeRespawn();
+        }
+        else
+        {
+            Debug.LogWarning("[UIManager] 로컬 플레이어를 찾을 수 없습니다.");
+        }
+    }
+
+    // 로컬 플레이어 가져오기
+    private PlayerController GetLocalPlayer()
+    {
+        PlayerController[] players = FindObjectsByType<PlayerController>(FindObjectsSortMode.None);
+        foreach (var player in players)
+        {
+            if (player.IsOwner)
+            {
+                return player;
+            }
+        }
+        return null;
     }
 
     // 가이드 패널 열기 (항상 1페이지부터 시작)
