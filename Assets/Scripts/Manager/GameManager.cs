@@ -346,6 +346,13 @@ public class GameManager : NetworkBehaviour
 
         HideLobbyUIShowGameUIClientRpc();
 
+        // 네트워크 부하 분산을 위해 코루틴으로 순차적으로 텔레포트
+        StartCoroutine(TeleportPlayersAndSpawnBots());
+    }
+
+    // 플레이어 텔레포트와 봇 스폰을 시간차를 두고 생성
+    private IEnumerator TeleportPlayersAndSpawnBots()
+    {
         int i = 0;
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
@@ -372,9 +379,12 @@ public class GameManager : NetworkBehaviour
             controller.DoRespawn(spawnPos, Quaternion.identity);
 
             i++;
+
+            // 플레이어 텔레포트 후 1프레임 대기
+            yield return null;
         }
 
-        // 남는 자리 봇으로 스폰
+        // 남는 자리 봇으로 스폰 (시간차 스폰)
         if (BotManager.Singleton != null)
         {
             BotManager.Singleton.SpawnBotsFromIndex(i, gameSpawnPoints);

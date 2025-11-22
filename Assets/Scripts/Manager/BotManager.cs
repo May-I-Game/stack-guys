@@ -118,7 +118,7 @@ public class BotManager : NetworkBehaviour
         }
     }
 
-    // startIndex부터 끝까지 봇 배치
+    // startIndex부터 끝까지 봇 배치 (네트워크 부하 분산을 위해 코루틴 사용)
     public void SpawnBotsFromIndex(int startIndex, Transform[] spawnPoints)
     {
         // 서버에서만 봇 생성 가능
@@ -140,7 +140,13 @@ public class BotManager : NetworkBehaviour
             return;
         }
 
-        // startIndex부터 끝까지 반복하면서 각 스폰 포인트에 봇 배치
+        // 네트워크 부하 분산을 위해 코루틴으로 순차 스폰
+        StartCoroutine(SpawnBotsSequentially(startIndex, botsToSpawn, spawnPoints));
+    }
+
+    // 봇을 시간차로 스폰하여 send queue full 방지
+    private IEnumerator SpawnBotsSequentially(int startIndex, int botsToSpawn, Transform[] spawnPoints)
+    {
         for (int i = startIndex; i < startIndex + botsToSpawn; i++)
         {
             // 랜덤 봇 프리팹 선택
@@ -182,9 +188,11 @@ public class BotManager : NetworkBehaviour
 
             // 활성화된 봇 리스트에 추가
             activeBots.Add(botNetobj.gameObject);
-        }
 
-        //Debug.Log($"[BotManager] {botsToSpawn}개의 봇을 게임에 배치");
+            // 봇 스폰 후 2프레임 대기 (스폰+텔레포트 동기화 시간)
+            yield return null;
+            yield return null;
+        }
     }
 
     // 랜덤한 봇 프리팹 선택
