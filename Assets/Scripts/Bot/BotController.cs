@@ -86,6 +86,9 @@ public class BotController : PlayerController
         navAgent = GetComponent<NavMeshAgent>();
         pathBuffer = new NavMeshPath();
 
+        // 봇은 땅체크 자주안하기
+        groundCheckInterval = 4;
+
         // 서버에서만 AI 설정
         if (!IsServer)
         {
@@ -122,8 +125,6 @@ public class BotController : PlayerController
         if (!IsServer) return;
         if (netIsDeath.Value) return;
 
-        ServerPerformanceProfiler.Start("BotController.FixedUpdate");
-
         // 봇 디버깅
         // DebugBotState();
 
@@ -144,26 +145,19 @@ public class BotController : PlayerController
             // 목표 지점이 없으면 일정 주기로 찾기
             if (goalTransform == null && Time.time > nextGoalUpdateTime)
             {
-                ServerPerformanceProfiler.Start("BotController.FindGoal");
                 FindGoal();
-                ServerPerformanceProfiler.End("BotController.FindGoal");
                 nextGoalUpdateTime = Time.time + updateGoalInterval;  // 스팸 호출 방지
             }
 
             // 목표 지점이 있으면 길찾기 로직 (주기적으로만 실행)
             if (goalTransform != null && Time.time > nextTargetSelectionTime)
             {
-                ServerPerformanceProfiler.Start("BotController.BotUpdate");
                 UpdateBotTarget();
-                ServerPerformanceProfiler.End("BotController.BotUpdate");
-
                 nextTargetSelectionTime = Time.time + targetSelectionInterval;  // 다음 목표 업데이트 시간 설정
             }
 
             // 이동 입력은 매 프레임
-            ServerPerformanceProfiler.Start("BotController.Movement");
             UpdateBotMovement();
-            ServerPerformanceProfiler.End("BotController.Movement");
 
             // NavMeshAgent 위치 동기화 (큰 충돌 후 경로 계산이 망가짐)
             if (navAgent != null && navAgent.isActiveAndEnabled && navAgent.isOnNavMesh)
@@ -172,10 +166,8 @@ public class BotController : PlayerController
             }
         }
 
-        ServerPerformanceProfiler.Start("BotController.Others");
         // 땅 체크
         GroundCheck();
-
         // 이동 처리
         PlayerMove();
 
@@ -184,21 +176,6 @@ public class BotController : PlayerController
         {
             PlayerJump();
         }
-
-        // 잡기 요청이 있으면 잡기 처리
-        if (isGrabQueued)
-        {
-            PlayerGrab();
-        }
-
-        // 잡고 있으면
-        if (isHolding && holdingObject != null)
-        {
-            PlayerHeld();
-        }
-        ServerPerformanceProfiler.End("BotController.Others");
-
-        ServerPerformanceProfiler.End("BotController.FixedUpdate");
     }
 
     // 리스폰 시 NavMeshAgent 재초기화
