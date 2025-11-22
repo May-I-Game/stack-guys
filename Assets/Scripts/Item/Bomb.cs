@@ -92,8 +92,13 @@ public class Bomb : InteractiveItem
         if (explosionClip != null)
         {
             // 3D 공간 사운드로 재생
-            AudioSource.PlayClipAtPoint(explosionClip, pos, explosionVolume);
+            AudioSource.PlayClipAtPoint(explosionClip, pos, explosionVolume * GetSFXVolume());
         }
+    }
+
+    private float GetSFXVolume()
+    {
+        return GameManager.Instance != null ? GameManager.Instance.GetSFXVolume() : 1f;
     }
 
 }
