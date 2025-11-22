@@ -511,6 +511,34 @@ public class PlayerController : NetworkBehaviour
         DoRespawnTeleport();
     }
 
+    // 끼임 탈출용 리스폰 요청 (UIManager에서 호출)
+    public void RequestEscapeRespawn()
+    {
+        if (!IsOwner) return;
+
+        // ServerRpc 호출하여 현재 리스폰 지점으로 이동
+        EscapeRespawnServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void EscapeRespawnServerRpc()
+    {
+        // 리스폰 리스트 가져오기
+        int index = RespawnId.Value;
+        var dest = respawnManager.respawnPoints[index];
+
+        if (!dest)
+        {
+            Debug.LogWarning("[EscapeRespawn] Respawn Transform null");
+            return;
+        }
+
+        // DoRespawn을 사용하여 리스폰
+        DoRespawn(dest.position, dest.rotation);
+
+        Debug.Log($"[EscapeRespawn] 플레이어가 리스폰 지점 {index}로 탈출했습니다.");
+    }
+
     // 애니메이션이 끝날때 호출되는 함수
     [ServerRpc(RequireOwnership = false)]
     public void ResetHitStateServerRpc()
