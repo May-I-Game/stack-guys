@@ -470,6 +470,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner34
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 250029856
@@ -3729,6 +3733,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner4
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 290397450
@@ -4144,6 +4152,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
       propertyPath: m_Name
       value: BombItemSpawner1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4638,6 +4650,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
       propertyPath: m_Name
       value: BombItemSpawner3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6725,6 +6741,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PowerItemSpawner3
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 710eaf9ad1d1e8b4098be52585313b19, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8474,6 +8494,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BombtemSpawner3
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8645,6 +8669,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner30
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -8894,6 +8922,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
       propertyPath: m_Name
       value: BombtemSpawner1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10088,6 +10120,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PowerItemSpawner5
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 710eaf9ad1d1e8b4098be52585313b19, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11086,6 +11122,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -13464,6 +13504,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BombItemSpawner7
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14222,6 +14266,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 18317be0d25c2124b98924adee00c0a1, type: 3}
       propertyPath: m_Name
       value: BootsItemSpawner0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 18317be0d25c2124b98924adee00c0a1, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -16961,6 +17009,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner2
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 2141187073
@@ -18631,6 +18683,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpringItemSpawner3
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: a79759514f563a5428554878a7a38324, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -19763,6 +19819,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner16
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -25640,6 +25700,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BombItemSpawner9
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -27639,6 +27703,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpringItemSpawner0
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: a79759514f563a5428554878a7a38324, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -29379,6 +29447,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
       propertyPath: m_Name
       value: BombtemSpawner0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -31203,6 +31275,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BombItemSpawner0
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -31966,6 +32042,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner12
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3247441026
@@ -32537,6 +32617,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner32
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 327191597
@@ -32782,6 +32866,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner35
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -35463,6 +35551,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BombtemSpawner4
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -36647,6 +36739,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner25
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -39800,6 +39896,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner8
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3684095188
@@ -40251,6 +40351,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner3
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 2769256331
@@ -40670,6 +40774,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -47452,6 +47560,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner3
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 4180761885
@@ -49381,6 +49493,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner21
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -52872,6 +52988,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner5
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 2956532075
@@ -53101,6 +53221,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -55415,6 +55539,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: a79759514f563a5428554878a7a38324, type: 3}
       propertyPath: m_Name
       value: SpringItemSpawner5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: a79759514f563a5428554878a7a38324, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -59528,6 +59656,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 18317be0d25c2124b98924adee00c0a1, type: 3}
       propertyPath: m_Name
       value: BootsItemSpawner3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 18317be0d25c2124b98924adee00c0a1, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -63879,6 +64011,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BombItemSpawner6
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -65563,6 +65699,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner28
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3156820303
@@ -66741,6 +66881,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner24
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -69021,6 +69165,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner38
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3224035394
@@ -69106,6 +69254,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -70426,6 +70578,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PowerItemSpawner0
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 710eaf9ad1d1e8b4098be52585313b19, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -70626,6 +70782,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner13
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -71488,6 +71648,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner14
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -73809,6 +73973,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner37
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3280110834
@@ -75519,6 +75687,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner10
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3240722377
@@ -75744,6 +75916,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
       propertyPath: m_Name
       value: BombItemSpawner8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -76558,6 +76734,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -77930,6 +78110,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner2
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 4149159712
@@ -78319,6 +78503,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BootsItemSpawner1
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 18317be0d25c2124b98924adee00c0a1, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -78625,6 +78813,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
       propertyPath: m_Name
       value: BombtemSpawner5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -79323,6 +79515,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpringItemSpawner4
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: a79759514f563a5428554878a7a38324, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -79532,6 +79728,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner19
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -79860,6 +80060,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: a79759514f563a5428554878a7a38324, type: 3}
       propertyPath: m_Name
       value: SpringItemSpawner1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: a79759514f563a5428554878a7a38324, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -82066,6 +82270,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BombtemSpawner2
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -82354,6 +82562,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner4
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3835190004
@@ -82598,6 +82810,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 710eaf9ad1d1e8b4098be52585313b19, type: 3}
       propertyPath: m_Name
       value: PowerItemSpawner4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 710eaf9ad1d1e8b4098be52585313b19, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -83796,6 +84012,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 1ae2293ec3e80e44a947440daf64af47, type: 3}
       propertyPath: m_Name
       value: SupportAd_MESH (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 1ae2293ec3e80e44a947440daf64af47, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -86234,6 +86454,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner29
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 396710079
@@ -86811,6 +87035,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner0
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 1251298278
@@ -86896,6 +87124,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner17
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -88439,6 +88671,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner36
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -94430,6 +94666,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BombItemSpawner5
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -97988,6 +98228,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -102748,6 +102992,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner31
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 1964212347
@@ -104596,6 +104844,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner33
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 915542643
@@ -105338,6 +105590,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 18317be0d25c2124b98924adee00c0a1, type: 3}
       propertyPath: m_Name
       value: BootsItemSpawner4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 18317be0d25c2124b98924adee00c0a1, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -107901,6 +108157,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PowerItemSpawner1
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 710eaf9ad1d1e8b4098be52585313b19, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -109833,6 +110093,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BootsItemSpawner5
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 18317be0d25c2124b98924adee00c0a1, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -110591,6 +110855,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner39
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -121123,6 +121391,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner40
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 2203500067
@@ -124630,6 +124902,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BombItemSpawner2
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -125393,6 +125669,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
       propertyPath: m_Name
       value: BombItemSpawner4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -129404,6 +129684,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BootsItemSpawner2
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 18317be0d25c2124b98924adee00c0a1, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -130683,6 +130967,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PowerItemSpawner2
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 710eaf9ad1d1e8b4098be52585313b19, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -130756,6 +131044,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner26
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -132273,6 +132565,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner7
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3177201068
@@ -133699,6 +133995,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -137668,6 +137968,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RandomItemSpawner23
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 517608694
@@ -138993,6 +139297,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpringItemSpawner2
       objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: a79759514f563a5428554878a7a38324, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -139320,6 +139628,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner18
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -143556,6 +143868,10 @@ PrefabInstance:
     - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: m_Name
       value: RandomItemSpawner41
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087892205320641011, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6322908236015739414, guid: 3d8094f43e912a34fbcd75fe3f5049a4, type: 3}
       propertyPath: GlobalObjectIdHash
