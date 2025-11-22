@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7697708497147858994}
   - component: {fileID: 5460404867857992908}
   - component: {fileID: 779836432655554802}
-  - component: {fileID: 9145506044655727991}
+  - component: {fileID: 4461191931008169213}
   m_Layer: 3
   m_Name: UpRamp
   m_TagString: Ground
@@ -41,7 +41,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4773982770245446644}
-  m_Mesh: {fileID: 7450741763379908841, guid: 7a9baad27c6be5c4a9229e73e7806876, type: 3}
+  m_Mesh: {fileID: 7450741763379908841, guid: 4bad88ec2d02c42418bce42ed789ee1d, type: 3}
 --- !u!23 &779836432655554802
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d6ce7b3a641ab9d4f992c9eb0eaef0b3, type: 2}
+  - {fileID: 2100000, guid: db8d42886360c9f4e97eb3964076062a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -87,7 +87,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &9145506044655727991
+--- !u!64 &4461191931008169213
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -108,4 +108,4 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 7450741763379908841, guid: 7a9baad27c6be5c4a9229e73e7806876, type: 3}
+  m_Mesh: {fileID: 7450741763379908841, guid: 4bad88ec2d02c42418bce42ed789ee1d, type: 3}
