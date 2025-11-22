@@ -44,6 +44,15 @@ public class DeletPlate : NetworkBehaviour
         {
             audioSource = GetComponent<AudioSource>();
         }
+
+        // 3D 오디오 설정
+        if (audioSource != null)
+        {
+            audioSource.spatialBlend = 1f; // 완전히 3D 사운드
+            audioSource.rolloffMode = AudioRolloffMode.Linear;
+            audioSource.minDistance = 15f;
+            audioSource.maxDistance = 20f;
+        }
     }
 
     public override void OnNetworkSpawn()
