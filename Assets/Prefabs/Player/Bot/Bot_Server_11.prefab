@@ -1451,7 +1451,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5309982938216476723}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7a2b506d90afbb946b3dc405e0d3233d, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1525,6 +1525,10 @@ MonoBehaviour:
   stickerImage: {fileID: 0}
   stickerSprites: []
   stickerDuration: 3
+  stickerAudioSource: {fileID: 0}
+  stickerSoundClip: {fileID: 0}
+  stickerVolume: 0.7
+  playerArrow: {fileID: 0}
 --- !u!195 &-3220614678576546571
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1584,8 +1588,6 @@ MonoBehaviour:
   jumpBuffLoopEffect: {fileID: 0}
   speedBuffLoopEffect: {fileID: 0}
   invincibleBuffLoopEffect: {fileID: 0}
-  localPlayerArrowPrefab: {fileID: 0}
-  arrowOffset: {x: 0, y: 1, z: 0}
   footstepAudioSource: {fileID: 0}
   footstepClip: {fileID: 0}
   footstepVolume: 0.5
