@@ -25,6 +25,11 @@ public class Options : MonoBehaviour
     private float lastBGMVolume = 1f;
     private float lastSFXVolume = 1f;
 
+    // VolumeButton 컴포넌트 참조
+    private VolumeButton masterVolumeButtonComponent;
+    private VolumeButton bgmVolumeButtonComponent;
+    private VolumeButton sfxVolumeButtonComponent;
+
     private const string PERFORMANCE_KEY = "ShowPerformance";
     private const string EFFECTS_KEY = "ShowEffects";
     private const string MOBILE_UI_KEY = "ShowMobileUI";
@@ -39,6 +44,14 @@ public class Options : MonoBehaviour
         // 버튼 이벤트 연결
         if (fullButton != null)
             fullButton.onClick.AddListener(SetFullscreen);
+
+        // VolumeButton 컴포넌트 가져오기
+        if (masterMuteButton != null)
+            masterVolumeButtonComponent = masterMuteButton.GetComponent<VolumeButton>();
+        if (bgmMuteButton != null)
+            bgmVolumeButtonComponent = bgmMuteButton.GetComponent<VolumeButton>();
+        if (sfxMuteButton != null)
+            sfxVolumeButtonComponent = sfxMuteButton.GetComponent<VolumeButton>();
 
         // 뮤트 버튼 이벤트 연결 (PointerDown으로 즉시 반응)
         if (masterMuteButton != null)
@@ -115,6 +128,12 @@ public class Options : MonoBehaviour
             masterVolumeSlider.value = masterVolume;
             lastMasterVolume = masterVolume > 0.01f ? masterVolume : 1f;
             masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
+
+            // 초기 아이콘 상태 설정
+            if (masterVolumeButtonComponent != null)
+            {
+                masterVolumeButtonComponent.UpdateIcon(masterVolume);
+            }
         }
 
         // BGM Volume Slider - PlayerPrefs에서 읽고 실제 오디오에 적용
@@ -128,6 +147,12 @@ public class Options : MonoBehaviour
             bgmVolumeSlider.value = bgmVolume;
             lastBGMVolume = bgmVolume > 0.01f ? bgmVolume : 1f;
             bgmVolumeSlider.onValueChanged.AddListener(OnBGMVolumeChanged);
+
+            // 초기 아이콘 상태 설정
+            if (bgmVolumeButtonComponent != null)
+            {
+                bgmVolumeButtonComponent.UpdateIcon(bgmVolume);
+            }
         }
 
         // SFX Volume Slider - PlayerPrefs에서 읽고 실제 오디오에 적용
@@ -141,6 +166,12 @@ public class Options : MonoBehaviour
             sfxVolumeSlider.value = sfxVolume;
             lastSFXVolume = sfxVolume > 0.01f ? sfxVolume : 1f;
             sfxVolumeSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
+
+            // 초기 아이콘 상태 설정
+            if (sfxVolumeButtonComponent != null)
+            {
+                sfxVolumeButtonComponent.UpdateIcon(sfxVolume);
+            }
         }
     }
 
@@ -189,6 +220,12 @@ public class Options : MonoBehaviour
         AudioListener.volume = value;
         PlayerPrefs.SetFloat(MASTER_VOLUME_KEY, value);
         PlayerPrefs.Save();
+
+        // 버튼 아이콘 업데이트
+        if (masterVolumeButtonComponent != null)
+        {
+            masterVolumeButtonComponent.UpdateIcon(value);
+        }
     }
 
     private void OnBGMVolumeChanged(float value)
@@ -205,6 +242,12 @@ public class Options : MonoBehaviour
         }
         PlayerPrefs.SetFloat(BGM_VOLUME_KEY, value);
         PlayerPrefs.Save();
+
+        // 버튼 아이콘 업데이트
+        if (bgmVolumeButtonComponent != null)
+        {
+            bgmVolumeButtonComponent.UpdateIcon(value);
+        }
     }
 
     private void OnSFXVolumeChanged(float value)
@@ -221,6 +264,12 @@ public class Options : MonoBehaviour
         }
         PlayerPrefs.SetFloat(SFX_VOLUME_KEY, value);
         PlayerPrefs.Save();
+
+        // 버튼 아이콘 업데이트
+        if (sfxVolumeButtonComponent != null)
+        {
+            sfxVolumeButtonComponent.UpdateIcon(value);
+        }
     }
 
     // ===================== 뮤트 토글 =====================

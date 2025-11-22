@@ -905,6 +905,13 @@ public class GameManager : NetworkBehaviour
 
         ToggleGameUI(true);
 
+        // 모바일 UI는 Options 설정에 따라 복구 (기본값: 꺼짐)
+        if (Mobile != null)
+        {
+            bool shouldShowMobileUI = PlayerPrefs.GetInt("ShowMobileUI", 0) == 1;
+            Mobile.SetActive(shouldShowMobileUI);
+        }
+
         // Info 다시 활성화
         if (Info != null)
             Info.SetActive(true);
