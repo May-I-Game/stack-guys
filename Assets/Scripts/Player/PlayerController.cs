@@ -593,7 +593,6 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
-            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
             netIsMove.Value = false;
         }
     }
