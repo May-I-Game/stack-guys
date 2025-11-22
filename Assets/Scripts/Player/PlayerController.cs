@@ -1145,6 +1145,23 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    // 무적 버프 아이템 끝나고 땅이 Death 태그인지 체크
+    public void CheckDeathZoneOnInvincibilityEnd()
+    {
+        if (!IsServer || netIsDeath.Value) return;
+
+        // 현재 위치에서 Death 태그 오브젝트와 겹치는지 체크
+        Collider[] hits = Physics.OverlapSphere(transform.position, 0.5f);
+        foreach (var hit in hits)
+        {
+            if (hit.CompareTag("Death"))
+            {
+                PlayerDeath(isOceanDeath: false);
+                return;
+            }
+        }
+    }
+
     // 봇 전용 리스폰 타이머 (애니메이션 길이 2.3초)
     private System.Collections.IEnumerator BotRespawnDelay()
     {
