@@ -53,7 +53,7 @@ Material:
     m_Floats:
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Sharpness: 10
+    - _Sharpness: 20
     m_Colors:
     - _Dirt: {r: 0.509434, g: 0.29357967, b: 0, a: 0}
     - _Grasss: {r: 0, g: 1, b: 0.6063869, a: 0}

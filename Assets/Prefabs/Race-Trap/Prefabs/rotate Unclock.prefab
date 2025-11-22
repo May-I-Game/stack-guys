@@ -1183,7 +1183,7 @@ PrefabInstance:
     - target: {fileID: 817291641458054420, guid: 70fef91b295ddfc4bb947c41bde989b7, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 3e1f21ddb0628dc4a8b9f19fb8b93890, type: 2}
+      objectReference: {fileID: 2100000, guid: adddaa49ca7d9394da1da323dc974a80, type: 2}
     - target: {fileID: 1177522093088011457, guid: 70fef91b295ddfc4bb947c41bde989b7, type: 3}
       propertyPath: m_Name
       value: broken-bridge
@@ -1495,7 +1495,7 @@ PrefabInstance:
     - target: {fileID: 817291641458054420, guid: 70fef91b295ddfc4bb947c41bde989b7, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 3e1f21ddb0628dc4a8b9f19fb8b93890, type: 2}
+      objectReference: {fileID: 2100000, guid: adddaa49ca7d9394da1da323dc974a80, type: 2}
     - target: {fileID: 1177522093088011457, guid: 70fef91b295ddfc4bb947c41bde989b7, type: 3}
       propertyPath: m_Name
       value: broken-bridge
@@ -1657,7 +1657,7 @@ PrefabInstance:
     - target: {fileID: 817291641458054420, guid: 70fef91b295ddfc4bb947c41bde989b7, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 3e1f21ddb0628dc4a8b9f19fb8b93890, type: 2}
+      objectReference: {fileID: 2100000, guid: adddaa49ca7d9394da1da323dc974a80, type: 2}
     - target: {fileID: 1177522093088011457, guid: 70fef91b295ddfc4bb947c41bde989b7, type: 3}
       propertyPath: m_Name
       value: broken-bridge
@@ -1892,7 +1892,7 @@ PrefabInstance:
     - target: {fileID: 817291641458054420, guid: 70fef91b295ddfc4bb947c41bde989b7, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 3e1f21ddb0628dc4a8b9f19fb8b93890, type: 2}
+      objectReference: {fileID: 2100000, guid: adddaa49ca7d9394da1da323dc974a80, type: 2}
     - target: {fileID: 1177522093088011457, guid: 70fef91b295ddfc4bb947c41bde989b7, type: 3}
       propertyPath: m_Name
       value: broken-bridge
@@ -2054,7 +2054,7 @@ PrefabInstance:
     - target: {fileID: 817291641458054420, guid: 70fef91b295ddfc4bb947c41bde989b7, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 3e1f21ddb0628dc4a8b9f19fb8b93890, type: 2}
+      objectReference: {fileID: 2100000, guid: adddaa49ca7d9394da1da323dc974a80, type: 2}
     - target: {fileID: 1177522093088011457, guid: 70fef91b295ddfc4bb947c41bde989b7, type: 3}
       propertyPath: m_Name
       value: broken-bridge
@@ -2370,7 +2370,7 @@ PrefabInstance:
     - target: {fileID: 817291641458054420, guid: 70fef91b295ddfc4bb947c41bde989b7, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 3e1f21ddb0628dc4a8b9f19fb8b93890, type: 2}
+      objectReference: {fileID: 2100000, guid: adddaa49ca7d9394da1da323dc974a80, type: 2}
     - target: {fileID: 1177522093088011457, guid: 70fef91b295ddfc4bb947c41bde989b7, type: 3}
       propertyPath: m_Name
       value: broken-bridge
