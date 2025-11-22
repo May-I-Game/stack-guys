@@ -45,6 +45,7 @@ public class UIManager : MonoBehaviour
     [Header("UI Sound Effects")]
     [SerializeField] private AudioSource uiAudioSource; // UI 효과음 소스
     [SerializeField] private AudioClip buttonClickClip; // 버튼 클릭 효과음
+    [SerializeField] private AudioClip arrivalClip;     // 도착 효과음
     [Range(0f, 1f)][SerializeField] private float uiVolume = 0.7f; // UI 효과음 볼륨
 
     public static UIManager Instance;
@@ -444,6 +445,17 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    // 도착 효과음 재생
+    private void PlayArrivalSound()
+    {
+        if (uiAudioSource != null && arrivalClip != null)
+        {
+            // SFX 볼륨 적용
+            float sfxVolume = GameManager.Instance != null ? GameManager.Instance.GetSFXVolume() : 1f;
+            uiAudioSource.PlayOneShot(arrivalClip, uiVolume * sfxVolume);
+        }
+    }
+
     // PointerDown 이벤트 설정 (버튼을 누르는 순간 즉시 반응)
     private void SetupButtonPointerDown(Button button, UnityEngine.Events.UnityAction callback)
     {
@@ -490,6 +502,9 @@ public class UIManager : MonoBehaviour
         }
 
         arrivalPanel.SetActive(true);
+
+        // 도착 효과음 재생
+        PlayArrivalSound();
 
         RectTransform rectTransform = arrivalPanel.GetComponent<RectTransform>();
         if (rectTransform == null)
