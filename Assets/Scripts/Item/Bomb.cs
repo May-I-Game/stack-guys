@@ -1,4 +1,5 @@
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 
 public class Bomb : InteractiveItem
@@ -14,6 +15,7 @@ public class Bomb : InteractiveItem
     [Range(0f, 1f)] public float explosionVolume = 0.8f; // 폭발 볼륨
 
     private Floating floatingComponent; // Floating 컴포넌트 참조
+    private NetworkTransform networkTransform; // NetworkTransform 컴포넌트 참조
 
     protected override void OnCollisionEnter(Collision collision)
     {
@@ -29,6 +31,15 @@ public class Bomb : InteractiveItem
 
         // Floating 컴포넌트 가져오기
         floatingComponent = GetComponent<Floating>();
+
+        // NetworkTransform 컴포넌트 가져오기
+        networkTransform = GetComponent<NetworkTransform>();
+
+        // 스포너에 있을 때는 NetworkTransform 비활성화
+        if (networkTransform != null)
+        {
+            networkTransform.enabled = false;
+        }
 
         // 서버만 물리 활성화 (권위 서버 모델)
         if (IsServer)
@@ -54,19 +65,41 @@ public class Bomb : InteractiveItem
 
     public override void OnGrabbed(PlayerController player)
     {
-        // 위치 제약 해제 (던졌을 때 자유롭게 움직일 수 있도록)
-        if (IsServer && Rb != null)
-        {
-            Rb.constraints = RigidbodyConstraints.None;
-        }
-
-        // Floating 효과 중지
+        // Floating 효과 중지 (먼저 실행)
         if (floatingComponent != null)
         {
             floatingComponent.StopFloating();
         }
 
+        // NetworkTransform 먼저 활성화 (로컬에서 즉시)
+        if (networkTransform != null)
+        {
+            networkTransform.enabled = true;
+        }
+
+        // 서버에서 위치 제약 해제 및 동기화
+        if (IsServer)
+        {
+            if (Rb != null)
+            {
+                Rb.constraints = RigidbodyConstraints.None;
+            }
+
+            // 모든 클라이언트에 NetworkTransform 활성화 동기화
+            EnableNetworkTransformClientRpc();
+        }
+
         base.OnGrabbed(player);
+    }
+
+    [ClientRpc]
+    private void EnableNetworkTransformClientRpc()
+    {
+        // 모든 클라이언트에서 NetworkTransform 활성화
+        if (networkTransform != null)
+        {
+            networkTransform.enabled = true;
+        }
     }
 
     protected override void ActivateItem()
@@ -86,6 +119,13 @@ public class Bomb : InteractiveItem
             {
                 // 범위 내에서 던진 사람은 충격파 제외
                 if (thrower != null && pc == thrower)
+                {
+                    continue;
+                }
+
+                // 무적 버프가 있으면 넉백 효과 무시
+                PlayerBuffManager buffManager = pc.GetComponent<PlayerBuffManager>();
+                if (buffManager != null && buffManager.IsInvincible)
                 {
                     continue;
                 }
