@@ -1,5 +1,3 @@
-using NUnit.Framework.Internal;
-using System.Collections;
 using Unity.Cinemachine;
 using Unity.Collections;
 using Unity.Netcode;
@@ -572,8 +570,6 @@ public class PlayerController : NetworkBehaviour
         // 이동 요청이 있으면
         if (moveDir.magnitude >= 0.1f)
         {
-            ServerPerformanceProfiler.Start("PlayerController.Move");
-
             // 이동 버프 적용
             float currentSpeed = walkSpeed * SpeedMul;
 
@@ -587,10 +583,13 @@ public class PlayerController : NetworkBehaviour
 
             // 회전
             Quaternion targetRotation = Quaternion.LookRotation(movement);
-            transform.rotation = targetRotation;
+            // 현재 각도와 차이가 클 때만 회전 적용 (약 0.5도 이상 차이날 때)
+            if (Quaternion.Angle(rb.rotation, targetRotation) > 0.05f)
+            {
+                rb.MoveRotation(targetRotation);
+            }
 
             netIsMove.Value = true;
-            ServerPerformanceProfiler.End("PlayerController.Move");
         }
         else
         {
@@ -1527,10 +1526,9 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        // 프레임 스키핑: Unity 전역 프레임 카운터 사용 (모든 플레이어가 동기화됨)
-        if (Time.frameCount % groundCheckInterval != 0) return;
+        // 타임 슬라이싱: NetworkObjectId에 따라 실행 프레임을 분산시켜 부하를 1/N로 줄임
+        if (Time.frameCount % groundCheckInterval != (int)NetworkObjectId % groundCheckInterval) return;
 
-        ServerPerformanceProfiler.Start("PlayerController.GroundCheck");
         // 캐싱된 계산 (매번 계산하지 않도록)
         float offsetDist = col.height / 2f - col.radius;
         Vector3 bottomSphereCenter = col.center + (Vector3.down * offsetDist);
@@ -1579,7 +1577,6 @@ public class PlayerController : NetworkBehaviour
                 canDive = false;
             }
         }
-        ServerPerformanceProfiler.End("PlayerController.GroundCheck");
     }
 
     // 특정 물체와 충돌할 때
