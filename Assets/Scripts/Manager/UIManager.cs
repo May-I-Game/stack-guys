@@ -241,6 +241,13 @@ public class UIManager : MonoBehaviour
         if (guide != null)
             guide.SetActive(on);
     }
+
+    public void ToggleEscapeButton(bool on)
+    {
+        if (escapeButton != null)
+            escapeButton.gameObject.SetActive(on);
+    }
+
     public void ToggleResultPanel(bool on)
     {
         if (resultPanel != null)

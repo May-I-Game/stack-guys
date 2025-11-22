@@ -1497,7 +1497,7 @@ public class PlayerController : NetworkBehaviour
         ForceClearInputOnServer();
         SetTriggerClientRpc("Win");
 
-        // 본인 클라이언트에게만 도착 UI 애니메이션 표시
+        // 본인 클라이언트에게만 도착 UI 애니메이션 표시 및 탈출 버튼 비활성화
         ShowArrivalUIClientRpc(rank);
     }
 
@@ -1520,6 +1520,7 @@ public class PlayerController : NetworkBehaviour
         if (UIManager.Instance != null)
         {
             UIManager.Instance.ShowArrivalAnimation(rank);
+            UIManager.Instance.ToggleEscapeButton(false); // 도착 시 탈출 버튼 비활성화
             Debug.Log($"[PlayerController] 도착 UI 표시 - {rank}등");
         }
         else
