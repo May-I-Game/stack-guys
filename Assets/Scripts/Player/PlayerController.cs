@@ -574,15 +574,24 @@ public class PlayerController : NetworkBehaviour
             float currentSpeed = walkSpeed * SpeedMul;
 
             // 이동
-            Vector3 movement = new Vector3(
-                moveDir.x,
-                0,
-                moveDir.y
-            ) * currentSpeed * Time.fixedDeltaTime;
-            rb.MovePosition(rb.position + movement);
+            Vector3 targetVelocity = new Vector3(
+                moveDir.x * currentSpeed,
+                rb.linearVelocity.y,
+                moveDir.y * currentSpeed
+            );
+            rb.linearVelocity = targetVelocity;
+
+            //// 이동
+            //Vector3 movement = new Vector3(
+            //    moveDir.x,
+            //    0,
+            //    moveDir.y
+            //) * currentSpeed * Time.fixedDeltaTime;
+            //rb.MovePosition(rb.position + movement);
 
             // 회전
-            Quaternion targetRotation = Quaternion.LookRotation(movement);
+            Vector3 lookDir = new Vector3(moveDir.x, 0, moveDir.y);
+            Quaternion targetRotation = Quaternion.LookRotation(lookDir);
             // 현재 각도와 차이가 클 때만 회전 적용 (약 0.5도 이상 차이날 때)
             if (Quaternion.Angle(rb.rotation, targetRotation) > 0.05f)
             {
@@ -593,6 +602,7 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
+            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
             netIsMove.Value = false;
         }
     }
