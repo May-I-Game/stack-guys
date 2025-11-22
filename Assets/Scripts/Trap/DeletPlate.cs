@@ -94,7 +94,10 @@ public class DeletPlate : NetworkBehaviour
     {
         if (audioSource != null && dissolveSound != null)
         {
-            audioSource.PlayOneShot(dissolveSound, volume * GetSFXVolume());
+            // 3D 오디오 설정을 적용하기 위해 Play() 사용
+            audioSource.clip = dissolveSound;
+            audioSource.volume = volume * GetSFXVolume();
+            audioSource.Play();
         }
 
         StartCoroutine(DissolveAnimationCoroutine());
