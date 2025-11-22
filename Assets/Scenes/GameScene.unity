@@ -51115,7 +51115,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &737157175
 RectTransform:
   m_ObjectHideFlags: 0
@@ -64456,7 +64456,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &942338314
 RectTransform:
   m_ObjectHideFlags: 0
@@ -85800,7 +85800,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1277629975
 RectTransform:
   m_ObjectHideFlags: 0
@@ -90422,10 +90422,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 449881536}
     m_Modifications:
-    - target: {fileID: 230279708280746506, guid: 937b47145be468c448ccf6e306369ab2, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 921439345996096773, guid: b5f3fcf4abfad0643b45fd6a01418c96, type: 3}
       propertyPath: m_Name
       value: bridge (1)
@@ -90492,6 +90488,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2846426733902748712, guid: b5f3fcf4abfad0643b45fd6a01418c96, type: 3}
       propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 230279708280746506, guid: 937b47145be468c448ccf6e306369ab2, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -133500,10 +133500,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 449881536}
     m_Modifications:
-    - target: {fileID: 230279708280746506, guid: 937b47145be468c448ccf6e306369ab2, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 921439345996096773, guid: b5f3fcf4abfad0643b45fd6a01418c96, type: 3}
       propertyPath: m_Name
       value: bridge
@@ -133570,6 +133566,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2846426733902748712, guid: b5f3fcf4abfad0643b45fd6a01418c96, type: 3}
       propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 230279708280746506, guid: 937b47145be468c448ccf6e306369ab2, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
