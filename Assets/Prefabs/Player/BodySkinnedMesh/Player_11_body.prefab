@@ -205,9 +205,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  netIsGrabbed:
-    m_InternalValue: 0
-  holder: {fileID: 0}
 --- !u!114 &-3259748690040939913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,6 +233,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   visibleRange: 60
   hysteresisDistance: 5
+  updateInterval: 0.5
 --- !u!1 &360258816766285357
 GameObject:
   m_ObjectHideFlags: 0

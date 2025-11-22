@@ -1132,7 +1132,7 @@ MonoBehaviour:
   SyncPositionY: 1
   SyncPositionZ: 1
   SyncRotAngleX: 0
-  SyncRotAngleY: 0
+  SyncRotAngleY: 1
   SyncRotAngleZ: 0
   SyncScaleX: 0
   SyncScaleY: 0
@@ -1160,9 +1160,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  netIsGrabbed:
-    m_InternalValue: 0
-  holder: {fileID: 0}
 --- !u!114 &-4976937910412824561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1191,6 +1188,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   visibleRange: 60
   hysteresisDistance: 5
+  updateInterval: 0.5
 --- !u!1 &6045987602649897956
 GameObject:
   m_ObjectHideFlags: 0
