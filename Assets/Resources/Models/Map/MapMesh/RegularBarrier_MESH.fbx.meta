@@ -1,21 +1,18 @@
 fileFormatVersion: 2
-guid: d3f4c79e7645f5a47894002e7513d7bf
+guid: 9565da2457e8f9b43bbd6b8f14eed2d6
+AssetOrigin:
+  serializedVersion: 1
+  productId: 195080
+  packageName: Game show Pack
+  packageVersion: 1.0
+  assetPath: Assets/Puzzle3DassetPack/Meshes/RegularBarrier_MESH.fbx
+  uploadId: 478390
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: NormalTree_Bark
-    second: {fileID: -1444460858095362738, guid: 84c64ec856cfaa047b8648234ed59c21, type: 3}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: NormalTree_Leaves
-    second: {fileID: -7796859627820213912, guid: 54813a6bfdba69a4c9329008a0fc8a44, type: 3}
+  externalObjects: {}
   materials:
-    materialImportMode: 2
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -53,7 +50,7 @@ ModelImporter:
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
-    nodeNameCollisionStrategy: 1
+    nodeNameCollisionStrategy: 0
     fileIdsGeneration: 2
     swapUVChannels: 0
     generateSecondaryUV: 0
@@ -71,7 +68,7 @@ ModelImporter:
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
-    secondaryUVMarginMethod: 1
+    secondaryUVMarginMethod: 0
     secondaryUVMinLightmapResolution: 40
     secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
@@ -108,9 +105,9 @@ ModelImporter:
   animationType: 2
   humanoidOversampling: 1
   avatarSetup: 0
-  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
-  importBlendShapeDeformPercent: 1
-  remapMaterialsIfMaterialImportModeIsNone: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
