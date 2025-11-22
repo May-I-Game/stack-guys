@@ -897,17 +897,10 @@ public class GameManager : NetworkBehaviour
             yield return null;
         }
 
-        // 시네마틱 시작 전에 모바일 UI 상태 저장 및 토글 끄기
-        Options options = FindObjectOfType<Options>();
-        bool wasMobileUIEnabled = false;
-        if (options != null)
+        // 시네마틱 시작 전에 모바일 UI 무조건 끄기 (SetActive)
+        if (Mobile != null)
         {
-            wasMobileUIEnabled = options.IsMobileUIEnabled();
-            if (wasMobileUIEnabled)
-            {
-                // Options 토글을 통해 끄기
-                options.SetMobileUIToggle(false);
-            }
+            Mobile.SetActive(false);
         }
 
         ToggleGameUI(false);
@@ -926,10 +919,20 @@ public class GameManager : NetworkBehaviour
 
         ToggleGameUI(true);
 
-        // 시네마틱 종료 후 모바일인 경우 다시 토글 켜기
-        if (options != null && wasMobileUIEnabled && IsMobileDevice())
+        // 시네마틱 종료 후 모바일 기기면 모바일 UI 다시 켜기
+        if (IsMobileDevice())
         {
-            options.SetMobileUIToggle(true);
+            if (Mobile != null)
+            {
+                Mobile.SetActive(true);
+            }
+
+            // 설정 UI 토글도 최신화
+            Options options = FindObjectOfType<Options>();
+            if (options != null)
+            {
+                options.SetMobileUIToggle(true);
+            }
         }
 
         // Info 다시 활성화
