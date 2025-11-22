@@ -90,7 +90,8 @@ public class BotManager : NetworkBehaviour
                 PlayerCanvasManager nameSync = botNetobj.GetComponent<PlayerCanvasManager>();
                 if (nameSync != null)
                 {
-                    string botName = NetworkBotIdentity.GenerateBotName();
+                    //string botName = NetworkBotIdentity.GenerateBotName();
+                    string botName = ("Bot");
                     nameSync.SetPlayerName(botName);
                 }
 
