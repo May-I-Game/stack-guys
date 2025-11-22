@@ -230,8 +230,13 @@ private void Start()
 
         if (clipToPlay != null)
         {
-            audioSource.PlayOneShot(clipToPlay, volume);
+            audioSource.PlayOneShot(clipToPlay, volume * GetSFXVolume());
         }
+    }
+
+    private float GetSFXVolume()
+    {
+        return GameManager.Instance != null ? GameManager.Instance.GetSFXVolume() : 1f;
     }
 
     // 벽의 활성화 상태 업데이트 (NetworkVariable 값이 변경될 때 모든 클라이언트에서 호출됨)

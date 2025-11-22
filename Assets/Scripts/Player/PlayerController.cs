@@ -1451,7 +1451,7 @@ public class PlayerController : NetworkBehaviour
             if (!targetAudioSource.isPlaying || targetAudioSource.clip != clip)
             {
                 targetAudioSource.clip = clip;
-                targetAudioSource.volume = targetVolume;
+                targetAudioSource.volume = targetVolume * GetSFXVolume();
                 targetAudioSource.loop = true;
                 targetAudioSource.Play();
             }
@@ -1491,12 +1491,33 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    public void OnGoaled()
+    public void OnGoaled(int rank)
     {
         inputEnabled.Value = false;
         ReleaseGrab();
         ForceClearInputOnServer();
         SetTriggerClientRpc("Win");
+
+        // 본인 클라이언트에게만 도착 UI 애니메이션 표시
+        ShowArrivalUIClientRpc(rank);
+    }
+
+    // 도착 UI 애니메이션 표시 (본인만 표시)
+    [ClientRpc]
+    private void ShowArrivalUIClientRpc(int rank)
+    {
+        // 본인만 애니메이션 실행
+        if (!IsOwner) return;
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.ShowArrivalAnimation(rank);
+            Debug.Log($"[PlayerController] 도착 UI 표시 - {rank}등");
+        }
+        else
+        {
+            Debug.LogWarning("[PlayerController] UIManager.Instance가 null입니다.");
+        }
     }
     #endregion
 
