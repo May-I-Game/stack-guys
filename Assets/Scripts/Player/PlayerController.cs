@@ -1502,6 +1502,15 @@ public class PlayerController : NetworkBehaviour
         ShowArrivalUIClientRpc(rank);
     }
 
+    // 시상대로 이동 시 호출 (Win 애니메이션만 재생, UI는 표시하지 않음)
+    public void OnPodium()
+    {
+        inputEnabled.Value = false;
+        ReleaseGrab();
+        ForceClearInputOnServer();
+        SetTriggerClientRpc("Win");
+    }
+
     // 도착 UI 애니메이션 표시 (본인만 표시)
     [ClientRpc]
     private void ShowArrivalUIClientRpc(int rank)

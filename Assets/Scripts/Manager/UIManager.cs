@@ -33,8 +33,14 @@ public class UIManager : MonoBehaviour
 
     [Header("Goal Arrival UI")]
     [SerializeField] private GameObject arrivalPanel;  // 도착 UI 패널
-    [SerializeField] private TMP_Text arrivalText;     // 순위 텍스트
+    [SerializeField] private Image arrivalImage;       // 순위 이미지
     [SerializeField] private CanvasGroup arrivalCanvasGroup; // 페이드 효과용
+
+    [Header("Arrival Rank Images")]
+    [SerializeField] private Sprite rank1Sprite;       // 1등 이미지
+    [SerializeField] private Sprite rank2Sprite;       // 2등 이미지
+    [SerializeField] private Sprite rank3Sprite;       // 3등 이미지
+    [SerializeField] private Sprite rankOtherSprite;   // 그 외 등수 이미지
 
     [Header("UI Sound Effects")]
     [SerializeField] private AudioSource uiAudioSource; // UI 효과음 소스
@@ -98,8 +104,11 @@ public class UIManager : MonoBehaviour
         // 각 페이지의 네비게이션 버튼 및 닫기 버튼 이벤트 연결
         SetupPageNavigationButtons();
 
-        // 게임 시작 시 가이드 자동으로 열기
-        OpenGuidePanel();
+        // 게임 시작 시 가이드 자동으로 열기 (서버는 제외)
+        if (NetworkManager.Singleton != null && !NetworkManager.Singleton.IsServer)
+        {
+            OpenGuidePanel();
+        }
     }
 
     // 옵션 버튼 클릭 시 호출
@@ -457,7 +466,7 @@ public class UIManager : MonoBehaviour
     // 도착 애니메이션 표시 (외부에서 호출)
     public void ShowArrivalAnimation(int rank)
     {
-        if (arrivalPanel == null || arrivalText == null || arrivalCanvasGroup == null)
+        if (arrivalPanel == null || arrivalImage == null || arrivalCanvasGroup == null)
         {
             Debug.LogWarning("[UIManager] 도착 UI 요소가 설정되지 않았습니다.");
             return;
@@ -469,13 +478,17 @@ public class UIManager : MonoBehaviour
     // 도착 애니메이션 Coroutine (슬라이드 인 + 페이드 효과)
     private IEnumerator PlayArrivalAnimation(int rank)
     {
-        // 1. 초기화
-        string rankText = rank == 1 ? "1등!" :
-                          rank == 2 ? "2등!" :
-                          rank == 3 ? "3등!" :
-                          $"{rank}등!";
+        // 1. 초기화 - 등수별 이미지 설정
+        Sprite rankSprite = rank == 1 ? rank1Sprite :
+                            rank == 2 ? rank2Sprite :
+                            rank == 3 ? rank3Sprite :
+                            rankOtherSprite;
 
-        arrivalText.text = rankText;
+        if (arrivalImage != null && rankSprite != null)
+        {
+            arrivalImage.sprite = rankSprite;
+        }
+
         arrivalPanel.SetActive(true);
 
         RectTransform rectTransform = arrivalPanel.GetComponent<RectTransform>();
