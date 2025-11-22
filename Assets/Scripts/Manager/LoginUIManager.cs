@@ -224,6 +224,13 @@ public class LoginUIManager : MonoBehaviour
         transport.UseWebSockets = true;  // WebGL 강제 WebSocket
 #endif
         transport.SetConnectionData(serverAddress, serverPort);
+
+        // 타임아웃 설정 - 렉에 더 관대하게
+        transport.ConnectTimeoutMS = 10000;      // 연결 타임아웃: 3초 → 10초
+        transport.MaxConnectAttempts = 10;        // 최대 연결 시도: 10번 유지
+        transport.DisconnectTimeoutMS = 30000;   // 연결 해제 타임아웃: 30초
+        transport.HeartbeatTimeoutMS = 2000;     // 하트비트 타임아웃: 500ms → 2000ms (2초)
+
         Debug.Log($"Connecting to {serverAddress}:{serverPort} ...");
 
         // ✅ Transport 상태 확인
