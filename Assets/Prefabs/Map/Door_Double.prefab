@@ -147,7 +147,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.01735772, y: 0.0026816116, z: 0.04187836}
+  m_Size: {x: 0.02, y: 0.0026816116, z: 0.04187836}
   m_Center: {x: -0.00867886, y: -0.00003566094, z: 0.020939182}
 --- !u!1 &4213156638685593221 stripped
 GameObject:
@@ -197,6 +197,9 @@ MonoBehaviour:
   openSpeed: 3
   leftOpenAngle: -90
   rightOpenAngle: 90
+  audioSource: {fileID: 0}
+  doorOpenClip: {fileID: 0}
+  doorOpenVolume: 0.7
   doorNavObstacle: {fileID: 2281472550556256862}
 --- !u!65 &2352985189821707166
 BoxCollider:
@@ -280,5 +283,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.01735772, y: 0.0025822222, z: 0.041878346}
+  m_Size: {x: 0.02, y: 0.0025822222, z: 0.041878346}
   m_Center: {x: 0.008678849, y: -0.000069604765, z: 0.020939177}
