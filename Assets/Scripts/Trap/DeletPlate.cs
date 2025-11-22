@@ -94,7 +94,7 @@ public class DeletPlate : NetworkBehaviour
     {
         if (audioSource != null && dissolveSound != null)
         {
-            audioSource.PlayOneShot(dissolveSound, volume);
+            audioSource.PlayOneShot(dissolveSound, volume * GetSFXVolume());
         }
 
         StartCoroutine(DissolveAnimationCoroutine());
@@ -134,5 +134,10 @@ public class DeletPlate : NetworkBehaviour
         {
             gameObject.SetActive(newValue);
         }
+    }
+
+    private float GetSFXVolume()
+    {
+        return GameManager.Instance != null ? GameManager.Instance.GetSFXVolume() : 1f;
     }
 }

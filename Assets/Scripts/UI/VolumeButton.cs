@@ -12,20 +12,37 @@ public class VolumeButton : MonoBehaviour
 
     private bool isMuted = false; // 현재 상태 (기본은 켜짐)
 
-    // 버튼을 누를 때 실행될 함수
-    public void ToggleSound()
+    // 슬라이더 값에 따라 아이콘 업데이트 (외부에서 호출)
+    public void UpdateIcon(float sliderValue)
     {
-        // 1. 상태 뒤집기 (켜짐 <-> 꺼짐)
-        isMuted = !isMuted;
+        bool shouldBeMuted = sliderValue <= 0.01f;
 
-        // 2. 상태에 따라 이미지 교체
-        if (isMuted)
+        if (shouldBeMuted != isMuted)
         {
-            targetImage.sprite = soundOffSprite;
+            isMuted = shouldBeMuted;
+            UpdateSprite();
         }
-        else
+    }
+
+    // 아이콘 상태 설정 (외부에서 호출)
+    public void SetMuted(bool muted)
+    {
+        isMuted = muted;
+        UpdateSprite();
+    }
+
+    // 현재 뮤트 상태 반환
+    public bool IsMuted()
+    {
+        return isMuted;
+    }
+
+    // 스프라이트 업데이트
+    private void UpdateSprite()
+    {
+        if (targetImage != null)
         {
-            targetImage.sprite = soundOnSprite;
+            targetImage.sprite = isMuted ? soundOffSprite : soundOnSprite;
         }
     }
 }

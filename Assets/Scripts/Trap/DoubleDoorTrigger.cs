@@ -123,7 +123,12 @@ public class DoubleDoorTrigger : NetworkBehaviour
     {
         if (audioSource != null && doorOpenClip != null)
         {
-            audioSource.PlayOneShot(doorOpenClip, doorOpenVolume);
+            audioSource.PlayOneShot(doorOpenClip, doorOpenVolume * GetSFXVolume());
         }
+    }
+
+    private float GetSFXVolume()
+    {
+        return GameManager.Instance != null ? GameManager.Instance.GetSFXVolume() : 1f;
     }
 }
