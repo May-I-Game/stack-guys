@@ -27,7 +27,7 @@ public class BotController : PlayerController
     [SerializeField] private bool requireReachableWaypoint = true;      // 도달 가능한 웨이포인트만 사용하도록 강제
 
 #if UNITY_EDITOR
-    [SerializeField] private bool showWaypointInEditor = false;         // 에디터/클라이언트에서 웨이포인트 기즈모 표시 여부
+    [SerializeField] private bool showWaypointInEditor = true;         // 에디터/클라이언트에서 웨이포인트 기즈모 표시 여부
     [SerializeField] private bool showGoalInEditor = false;             // 에디터/클라이언트에서 골 기즈모 표시 여부
 #endif
 
