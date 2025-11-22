@@ -196,6 +196,13 @@ public class UIManager : MonoBehaviour
     // 닫기 버튼 클릭 시 호출
     private void OnCloseGuideButtonClicked()
     {
+        // 최초 1회독일 때는 5페이지가 아니면 클릭 불가
+        if (!hasClosedGuideOnce && currentGuidePage != 5)
+        {
+            Debug.Log("[UIManager] 가이드를 모두 읽은 후에 닫을 수 있습니다.");
+            return;
+        }
+
         PlayButtonClickSound(); // 효과음 재생
 
         hasClosedGuideOnce = true;  // 닫기 버튼 클릭 이력 저장

@@ -13,6 +13,8 @@ public class Bomb : InteractiveItem
     public AudioClip explosionClip; // 폭탄 폭발 사운드
     [Range(0f, 1f)] public float explosionVolume = 0.8f; // 폭발 볼륨
 
+    private Floating floatingComponent; // Floating 컴포넌트 참조
+
     protected override void OnCollisionEnter(Collision collision)
     {
         //Debug.Log($"[Bomb] 충돌 감지! 대상: {collision.gameObject.name}");
@@ -25,6 +27,9 @@ public class Bomb : InteractiveItem
     {
         base.OnNetworkSpawn();
 
+        // Floating 컴포넌트 가져오기
+        floatingComponent = GetComponent<Floating>();
+
         // 서버만 물리 활성화 (권위 서버 모델)
         if (IsServer)
         {
@@ -32,6 +37,9 @@ public class Bomb : InteractiveItem
             {
                 Rb.isKinematic = false;  // 서버: 물리 계산
                 Rb.useGravity = true;
+
+                // 폭탄 생성 시 위치 고정 (잡을 때까지)
+                Rb.constraints = RigidbodyConstraints.FreezePosition;
             }
         }
         else
@@ -42,6 +50,23 @@ public class Bomb : InteractiveItem
                 Rb.isKinematic = true;
             }
         }
+    }
+
+    public override void OnGrabbed(PlayerController player)
+    {
+        // 위치 제약 해제 (던졌을 때 자유롭게 움직일 수 있도록)
+        if (IsServer && Rb != null)
+        {
+            Rb.constraints = RigidbodyConstraints.None;
+        }
+
+        // Floating 효과 중지
+        if (floatingComponent != null)
+        {
+            floatingComponent.StopFloating();
+        }
+
+        base.OnGrabbed(player);
     }
 
     protected override void ActivateItem()
