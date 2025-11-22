@@ -219,6 +219,15 @@ public class Options : MonoBehaviour
         return mobileUICanvas != null && mobileUICanvas.activeSelf;
     }
 
+    // 모바일 UI 토글을 설정하는 public 메서드 (시네마틱에서 사용)
+    public void SetMobileUIToggle(bool isOn)
+    {
+        if (mobileUIToggle != null)
+        {
+            mobileUIToggle.isOn = isOn; // 토글 변경 시 OnMobileUIToggleChanged 자동 호출됨
+        }
+    }
+
     // ===================== 볼륨 설정 =====================
     private void OnMasterVolumeChanged(float value)
     {
