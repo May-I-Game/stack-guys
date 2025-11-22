@@ -11370,8 +11370,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 0.9502306, z: 1}
+  m_Center: {x: 0, y: 0, z: -0.004}
 --- !u!23 &162247226
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -22898,7 +22898,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0, z: -0.004}
 --- !u!23 &315628731
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -71433,8 +71433,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 0.96530056, z: 1}
+  m_Center: {x: 0, y: 0, z: -0.004}
 --- !u!23 &1038826418
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -86302,7 +86302,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1277629975
 RectTransform:
   m_ObjectHideFlags: 0
@@ -137238,7 +137238,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!225 &2021625299
 CanvasGroup:
   m_ObjectHideFlags: 0
