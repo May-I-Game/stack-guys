@@ -269,13 +269,15 @@ public class GameManager : NetworkBehaviour
         var playerObj = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
         if (playerObj == null) return;
 
+        // 순위 정보를 먼저 추가하여 순위 계산
+        rankings.Add(playerName);              // NetworkList는 서버에서만 쓰기
+        int currentRank = rankings.Count;      // 현재 플레이어의 순위
+
         var player = playerObj.GetComponent<PlayerController>();
         if (player != null)
         {
-            player.OnGoaled();
+            player.OnGoaled(currentRank);      // 순위 정보와 함께 호출
         }
-
-        rankings.Add(playerName);              // NetworkList는 서버에서만 쓰기
 
         if (rankings.Count == 1 && !isCountingDown)
         {
@@ -578,7 +580,11 @@ public class GameManager : NetworkBehaviour
 
         // 🟩 서버에서 DoRespawn 사용 (서버 권위 방식)
         player.DoRespawn(podiumTransform.position, podiumTransform.rotation);
-        player.OnGoaled();
+
+        // 시상대에서는 입력만 비활성화 (OnGoaled는 호출하지 않음)
+        player.inputEnabled.Value = false;
+        player.ReleaseGrab();
+        player.ForceClearInputOnServer();
 
         Debug.Log($"[Podium] 플레이어 {player.GetPlayerName()}을 시상대로 이동 완료");
     }
