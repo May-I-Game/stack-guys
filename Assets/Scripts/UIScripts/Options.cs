@@ -208,6 +208,17 @@ public class Options : MonoBehaviour
         }
     }
 
+    // 모바일 UI 토글 상태를 반환하는 public 메서드
+    public bool IsMobileUIEnabled()
+    {
+        if (mobileUIToggle != null)
+        {
+            return mobileUIToggle.isOn;
+        }
+        // Toggle이 없으면 GameObject의 실제 상태 반환
+        return mobileUICanvas != null && mobileUICanvas.activeSelf;
+    }
+
     // ===================== 볼륨 설정 =====================
     private void OnMasterVolumeChanged(float value)
     {

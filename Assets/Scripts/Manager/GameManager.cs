@@ -903,10 +903,11 @@ public class GameManager : NetworkBehaviour
 
         ToggleGameUI(true);
 
-        // 모바일 UI는 Options 설정에 따라 복구 (기본값: 꺼짐)
+        // 모바일 UI는 Options 토글 상태에 따라 복구
         if (Mobile != null)
         {
-            bool shouldShowMobileUI = PlayerPrefs.GetInt("ShowMobileUI", 0) == 1;
+            Options options = FindObjectOfType<Options>();
+            bool shouldShowMobileUI = options != null ? options.IsMobileUIEnabled() : false;
             Mobile.SetActive(shouldShowMobileUI);
         }
 
@@ -929,7 +930,9 @@ public class GameManager : NetworkBehaviour
         {
             if (isActive)
             {
-                bool shouldShowMobileUI = PlayerPrefs.GetInt("ShowMobileUI", 0) == 1;
+                // Options 토글 상태를 직접 참조
+                Options options = FindObjectOfType<Options>();
+                bool shouldShowMobileUI = options != null ? options.IsMobileUIEnabled() : false;
                 Mobile.SetActive(shouldShowMobileUI);
             }
             else
