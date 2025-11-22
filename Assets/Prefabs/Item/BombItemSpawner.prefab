@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3742716560314843977}
   - component: {fileID: 314996288179850476}
   - component: {fileID: 2574898166391781414}
-  - component: {fileID: 1553652940607405943}
   - component: {fileID: -5471212520354648784}
   - component: {fileID: 7889111558941029759}
   m_Layer: 3
@@ -89,31 +88,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1553652940607405943
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4087892205320641011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 68519939
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
 --- !u!114 &-5471212520354648784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,7 +100,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4fbe7770f2f57f46b1ce046e466aec5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
   spawnableItems:
   - itemPrefab: {fileID: -1210176074181578495, guid: 0bc572b23a33da9468e9ff457aa7a246, type: 3}
     spawnWeight: 1
