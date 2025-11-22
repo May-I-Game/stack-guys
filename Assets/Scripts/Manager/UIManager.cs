@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -29,6 +30,11 @@ public class UIManager : MonoBehaviour
 
     [Header("Escape Button")]
     [SerializeField] private Button escapeButton;      // 끼임 탈출 버튼
+
+    [Header("Goal Arrival UI")]
+    [SerializeField] private GameObject arrivalPanel;  // 도착 UI 패널
+    [SerializeField] private TMP_Text arrivalText;     // 순위 텍스트
+    [SerializeField] private CanvasGroup arrivalCanvasGroup; // 페이드 효과용
 
     [Header("UI Sound Effects")]
     [SerializeField] private AudioSource uiAudioSource; // UI 효과음 소스
@@ -63,6 +69,9 @@ public class UIManager : MonoBehaviour
         // UI 초기 숨기기
         if (resultPanel != null)
             resultPanel.SetActive(false);
+
+        if (arrivalPanel != null)
+            arrivalPanel.SetActive(false);
 
         // 버튼 이벤트 연결 (PointerDown으로 즉시 반응)
         if (mainButton != null)
@@ -187,6 +196,13 @@ public class UIManager : MonoBehaviour
     // 닫기 버튼 클릭 시 호출
     private void OnCloseGuideButtonClicked()
     {
+        // 최초 1회독일 때는 5페이지가 아니면 클릭 불가
+        if (!hasClosedGuideOnce && currentGuidePage != 5)
+        {
+            Debug.Log("[UIManager] 가이드를 모두 읽은 후에 닫을 수 있습니다.");
+            return;
+        }
+
         PlayButtonClickSound(); // 효과음 재생
 
         hasClosedGuideOnce = true;  // 닫기 버튼 클릭 이력 저장
@@ -434,6 +450,80 @@ public class UIManager : MonoBehaviour
         entry.eventID = EventTriggerType.PointerDown;
         entry.callback.AddListener((data) => { callback(); });
         trigger.triggers.Add(entry);
+    }
+
+    // ========================== 도착 UI 애니메이션 ==========================
+
+    // 도착 애니메이션 표시 (외부에서 호출)
+    public void ShowArrivalAnimation(int rank)
+    {
+        if (arrivalPanel == null || arrivalText == null || arrivalCanvasGroup == null)
+        {
+            Debug.LogWarning("[UIManager] 도착 UI 요소가 설정되지 않았습니다.");
+            return;
+        }
+
+        StartCoroutine(PlayArrivalAnimation(rank));
+    }
+
+    // 도착 애니메이션 Coroutine (슬라이드 인 + 페이드 효과)
+    private IEnumerator PlayArrivalAnimation(int rank)
+    {
+        // 1. 초기화
+        string rankText = rank == 1 ? "1등!" :
+                          rank == 2 ? "2등!" :
+                          rank == 3 ? "3등!" :
+                          $"{rank}등!";
+
+        arrivalText.text = rankText;
+        arrivalPanel.SetActive(true);
+
+        RectTransform rectTransform = arrivalPanel.GetComponent<RectTransform>();
+        if (rectTransform == null)
+        {
+            Debug.LogWarning("[UIManager] arrivalPanel에 RectTransform이 없습니다.");
+            yield break;
+        }
+
+        // 2. 슬라이드 인 + 페이드 인 (0.5초)
+        float slideInDuration = 0.5f;
+        float time = 0f;
+        Vector2 startPos = new Vector2(0, 100);  // 위쪽에서 시작
+        Vector2 targetPos = Vector2.zero;        // 중앙으로
+
+        while (time < slideInDuration)
+        {
+            float t = time / slideInDuration;
+            rectTransform.anchoredPosition = Vector2.Lerp(startPos, targetPos, t);
+            arrivalCanvasGroup.alpha = Mathf.Lerp(0f, 1f, t);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        // 최종 위치 보장
+        rectTransform.anchoredPosition = targetPos;
+        arrivalCanvasGroup.alpha = 1f;
+
+        // 3. 1초 대기
+        yield return new WaitForSeconds(1f);
+
+        // 4. 페이드 아웃 (0.5초)
+        float fadeOutDuration = 0.5f;
+        time = 0f;
+
+        while (time < fadeOutDuration)
+        {
+            float t = time / fadeOutDuration;
+            arrivalCanvasGroup.alpha = Mathf.Lerp(1f, 0f, t);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        // 5. 비활성화
+        arrivalCanvasGroup.alpha = 0f;
+        arrivalPanel.SetActive(false);
+
+        Debug.Log($"[UIManager] 도착 애니메이션 완료 - {rank}등");
     }
 
 }

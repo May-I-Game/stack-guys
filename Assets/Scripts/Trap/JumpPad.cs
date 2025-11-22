@@ -72,9 +72,14 @@ public class JumpPad : NetworkBehaviour
         if (audioSource == null) return;
 
         if (jumpClip != null)
-            audioSource.PlayOneShot(jumpClip, jumpVolume);
+            audioSource.PlayOneShot(jumpClip, jumpVolume * GetSFXVolume());
 
         if (windClip != null)
-            audioSource.PlayOneShot(windClip, windVolume);
+            audioSource.PlayOneShot(windClip, windVolume * GetSFXVolume());
+    }
+
+    private float GetSFXVolume()
+    {
+        return GameManager.Instance != null ? GameManager.Instance.GetSFXVolume() : 1f;
     }
 }
