@@ -183,7 +183,12 @@ public class PlayerBuffManager : NetworkBehaviour, IBuffable
             case BuffType.Invincibility:
                 netIsInvincible.Value = false;
                 if (owner != null)
+                {
                     owner.SetBuffLoopEffect(BuffType.Invincibility, false);
+
+                    // 무적 해제 시 Death 존 체크
+                    owner.CheckDeathZoneOnInvincibilityEnd();
+                }
                 break;
         }
     }
