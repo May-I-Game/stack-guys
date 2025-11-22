@@ -581,10 +581,8 @@ public class GameManager : NetworkBehaviour
         // 🟩 서버에서 DoRespawn 사용 (서버 권위 방식)
         player.DoRespawn(podiumTransform.position, podiumTransform.rotation);
 
-        // 시상대에서는 입력만 비활성화 (OnGoaled는 호출하지 않음)
-        player.inputEnabled.Value = false;
-        player.ReleaseGrab();
-        player.ForceClearInputOnServer();
+        // 시상대에 올라가면 Win 애니메이션 재생 (stabbing2)
+        player.OnPodium();
 
         Debug.Log($"[Podium] 플레이어 {player.GetPlayerName()}을 시상대로 이동 완료");
     }
@@ -925,7 +923,21 @@ public class GameManager : NetworkBehaviour
     private void ToggleGameUI(bool isActive)
     {
         if (LobbyUI != null) LobbyUI.SetActive(false); // 로비는 항상 끔
-        if (Mobile != null) Mobile.SetActive(isActive);
+
+        // Mobile UI는 설정값에 따라 제어 (isActive가 false면 무조건 끔)
+        if (Mobile != null)
+        {
+            if (isActive)
+            {
+                bool shouldShowMobileUI = PlayerPrefs.GetInt("ShowMobileUI", 0) == 1;
+                Mobile.SetActive(shouldShowMobileUI);
+            }
+            else
+            {
+                Mobile.SetActive(false);
+            }
+        }
+
         // FPSCount와 PingCount는 CompleteNGOProfiler가 관리하므로 여기서 제어하지 않음
         // if (FPSCount != null) FPSCount.SetActive(isActive);
         // if (PingCount != null) PingCount.SetActive(isActive);
