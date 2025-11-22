@@ -1,19 +1,16 @@
 fileFormatVersion: 2
-guid: d3f4c79e7645f5a47894002e7513d7bf
+guid: 32b34d6bd0b3ab14994f2b09de39447f
+AssetOrigin:
+  serializedVersion: 1
+  productId: 195080
+  packageName: Game show Pack
+  packageVersion: 1.0
+  assetPath: Assets/Puzzle3DassetPack/Meshes/Rotary_MESH.fbx
+  uploadId: 478390
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: NormalTree_Bark
-    second: {fileID: -1444460858095362738, guid: 84c64ec856cfaa047b8648234ed59c21, type: 3}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: NormalTree_Leaves
-    second: {fileID: -7796859627820213912, guid: 54813a6bfdba69a4c9329008a0fc8a44, type: 3}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -53,7 +50,7 @@ ModelImporter:
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
-    nodeNameCollisionStrategy: 1
+    nodeNameCollisionStrategy: 0
     fileIdsGeneration: 2
     swapUVChannels: 0
     generateSecondaryUV: 0
@@ -109,8 +106,8 @@ ModelImporter:
   humanoidOversampling: 1
   avatarSetup: 0
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
-  importBlendShapeDeformPercent: 1
-  remapMaterialsIfMaterialImportModeIsNone: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
