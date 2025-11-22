@@ -631,7 +631,7 @@ MonoBehaviour:
   goalLineColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   selectedColor: {r: 1, g: 0, b: 0, a: 1}
   requireReachableWaypoint: 1
-  showWaypointInEditor: 0
+  showWaypointInEditor: 1
   showGoalInEditor: 0
   enableDebugLogs: 1
   debugLogInterval: 3
