@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class ItemSpawner : NetworkBehaviour
+public class ItemSpawner : MonoBehaviour
 {
     [System.Serializable]
     public class SpawnableItem
@@ -39,7 +39,7 @@ public class ItemSpawner : NetworkBehaviour
     private void Update()
     {
         // 서버에서만 스폰 처리
-        if (!IsServer) return;
+        if (!NetworkManager.Singleton.IsServer) return;
 
         // 스폰 시간이 되었고 현재 아이템이 없을 때
         if (Time.time >= nextSpawnTime && currentItem == null)
@@ -124,7 +124,7 @@ public class ItemSpawner : NetworkBehaviour
     // 아이템이 사용되었을 때 외부에서 호출하는 메서드
     public void OnItemConsumed()
     {
-        if (!IsServer) return;
+        if (!NetworkManager.Singleton.IsServer) return;
 
         currentItem = null;
         nextSpawnTime = Time.time + spawnInterval;
