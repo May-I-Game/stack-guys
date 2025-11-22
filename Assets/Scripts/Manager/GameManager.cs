@@ -897,6 +897,19 @@ public class GameManager : NetworkBehaviour
             yield return null;
         }
 
+        // 시네마틱 시작 전에 모바일 UI 상태 저장 및 토글 끄기
+        Options options = FindObjectOfType<Options>();
+        bool wasMobileUIEnabled = false;
+        if (options != null)
+        {
+            wasMobileUIEnabled = options.IsMobileUIEnabled();
+            if (wasMobileUIEnabled)
+            {
+                // Options 토글을 통해 끄기
+                options.SetMobileUIToggle(false);
+            }
+        }
+
         ToggleGameUI(false);
 
         // Info 비활성화
@@ -913,12 +926,10 @@ public class GameManager : NetworkBehaviour
 
         ToggleGameUI(true);
 
-        // 모바일 UI는 Options 토글 상태에 따라 복구
-        if (Mobile != null)
+        // 시네마틱 종료 후 모바일인 경우 다시 토글 켜기
+        if (options != null && wasMobileUIEnabled && IsMobileDevice())
         {
-            Options options = FindObjectOfType<Options>();
-            bool shouldShowMobileUI = options != null ? options.IsMobileUIEnabled() : false;
-            Mobile.SetActive(shouldShowMobileUI);
+            options.SetMobileUIToggle(true);
         }
 
         // Info 다시 활성화
@@ -935,21 +946,8 @@ public class GameManager : NetworkBehaviour
     {
         if (LobbyUI != null) LobbyUI.SetActive(false); // 로비는 항상 끔
 
-        // Mobile UI는 설정값에 따라 제어 (isActive가 false면 무조건 끔)
-        if (Mobile != null)
-        {
-            if (isActive)
-            {
-                // Options 토글 상태를 직접 참조
-                Options options = FindObjectOfType<Options>();
-                bool shouldShowMobileUI = options != null ? options.IsMobileUIEnabled() : false;
-                Mobile.SetActive(shouldShowMobileUI);
-            }
-            else
-            {
-                Mobile.SetActive(false);
-            }
-        }
+        // Mobile UI는 Options 토글을 통해서만 제어됨 (여기서는 제어하지 않음)
+        // Options.SetMobileUIToggle()을 통해 제어
 
         // FPSCount와 PingCount는 CompleteNGOProfiler가 관리하므로 여기서 제어하지 않음
         // if (FPSCount != null) FPSCount.SetActive(isActive);
