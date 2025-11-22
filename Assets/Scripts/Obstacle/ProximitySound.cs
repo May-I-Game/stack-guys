@@ -32,7 +32,7 @@ public class ProximitySound : MonoBehaviour
         audioSource.clip = proximityClip;
         audioSource.playOnAwake = true;
         audioSource.loop = true;
-        audioSource.volume = volume;
+        audioSource.volume = volume * GetSFXVolume();
         audioSource.spatialBlend = 1f; // 완전히 3D 사운드
         audioSource.rolloffMode = rolloffMode;
         audioSource.minDistance = minDistance;
@@ -45,6 +45,15 @@ public class ProximitySound : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        // SFX 볼륨 실시간 적용
+        if (audioSource != null)
+        {
+            audioSource.volume = volume * GetSFXVolume();
+        }
+    }
+
     private void OnDisable()
     {
         // 비활성화되면 소리 중지
@@ -52,6 +61,11 @@ public class ProximitySound : MonoBehaviour
         {
             audioSource.Stop();
         }
+    }
+
+    private float GetSFXVolume()
+    {
+        return GameManager.Instance != null ? GameManager.Instance.GetSFXVolume() : 1f;
     }
 
     // 기즈모로 범위 표시 (에디터에서만)
