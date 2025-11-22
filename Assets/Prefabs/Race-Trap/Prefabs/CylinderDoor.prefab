@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 3494578209723841791}
   - component: {fileID: 5469664843812215364}
   - component: {fileID: 5570473964470135184}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: CylinderDoor
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
