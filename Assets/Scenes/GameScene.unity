@@ -25630,7 +25630,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
       propertyPath: m_Name
-      value: BombItemSpawner10
+      value: BombItemSpawner9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -30906,80 +30906,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4958410921186163420, guid: ca9b4549065e6cb448ae922ddd22650f, type: 3}
   m_PrefabInstance: {fileID: 443367685}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &444881997
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 847221831}
-    m_Modifications:
-    - target: {fileID: 1553652940607405943, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
-      propertyPath: GlobalObjectIdHash
-      value: 2005758893
-      objectReference: {fileID: 0}
-    - target: {fileID: 1553652940607405943, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
-      propertyPath: SceneMigrationSynchronization
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1553652940607405943, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
-      propertyPath: InScenePlacedSourceGlobalObjectIdHash
-      value: 68519939
-      objectReference: {fileID: 0}
-    - target: {fileID: 3742716560314843977, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 1.6938386
-      objectReference: {fileID: 0}
-    - target: {fileID: 3742716560314843977, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.32
-      objectReference: {fileID: 0}
-    - target: {fileID: 3742716560314843977, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 130
-      objectReference: {fileID: 0}
-    - target: {fileID: 3742716560314843977, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3742716560314843977, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3742716560314843977, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3742716560314843977, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3742716560314843977, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3742716560314843977, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3742716560314843977, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
-      propertyPath: m_Name
-      value: BombItemSpawner8
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
---- !u!4 &444881998 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3742716560314843977, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
-  m_PrefabInstance: {fileID: 444881997}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &448382717
 PrefabInstance:
@@ -53344,7 +53270,7 @@ MonoBehaviour:
   m_IsOverridingCost: 0
   m_Bidirectional: 1
   m_AutoUpdatePosition: 0
-  m_Area: 0
+  m_Area: 2
 --- !u!1 &771886489
 GameObject:
   m_ObjectHideFlags: 0
@@ -58138,7 +58064,6 @@ Transform:
   - {fileID: 1411714162}
   - {fileID: 931270902}
   - {fileID: 182138821}
-  - {fileID: 444881998}
   - {fileID: 1116290519}
   - {fileID: 358937100}
   m_Father: {fileID: 1733123619}
@@ -62296,7 +62221,7 @@ MonoBehaviour:
   m_IsOverridingCost: 0
   m_Bidirectional: 1
   m_AutoUpdatePosition: 0
-  m_Area: 0
+  m_Area: 2
 --- !u!4 &905949392
 Transform:
   m_ObjectHideFlags: 0
@@ -65422,7 +65347,7 @@ MonoBehaviour:
   m_IsOverridingCost: 0
   m_Bidirectional: 1
   m_AutoUpdatePosition: 0
-  m_Area: 0
+  m_Area: 2
 --- !u!4 &957395909
 Transform:
   m_ObjectHideFlags: 0
@@ -75674,7 +75599,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4087892205320641011, guid: 157c9da1b7a94f94c92093d3784318a0, type: 3}
       propertyPath: m_Name
-      value: BombItemSpawner9
+      value: BombItemSpawner8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -101119,7 +101044,7 @@ MonoBehaviour:
   m_IsOverridingCost: 0
   m_Bidirectional: 1
   m_AutoUpdatePosition: 0
-  m_Area: 0
+  m_Area: 2
 --- !u!4 &1501889263
 Transform:
   m_ObjectHideFlags: 0
