@@ -34,6 +34,10 @@ public class LoginUIManager : MonoBehaviour
     [Tooltip("로딩 중 표시할 UI 패널 (캔버스에 미리 배치되어 있어야 함)")]
     public GameObject loadingPanel;
 
+    [Header("Confirmation UI")]
+    [Tooltip("게임 시작 확인 패널")]
+    public GameObject confirmationPanel;
+
     private int clientCharIndex;
     private string clientName;
     private bool isConnecting = false;
@@ -69,6 +73,7 @@ public class LoginUIManager : MonoBehaviour
         characterSelectPopup?.SetActive(false);
         audioSource = GetComponent<AudioSource>();
         loadingPanel.SetActive(false);
+        confirmationPanel?.SetActive(false);
 
         audioSource = GetComponent<AudioSource>();
 
@@ -148,6 +153,34 @@ public class LoginUIManager : MonoBehaviour
             Debug.Log("이미 연결 중입니다...");
             return;
         }
+
+        // 확인 패널 표시
+        ShowConfirmationPanel();
+    }
+
+    // 확인 패널 표시
+    public void ShowConfirmationPanel()
+    {
+        if (confirmationPanel != null)
+        {
+            confirmationPanel.SetActive(true);
+        }
+    }
+
+    // 확인 패널 숨기기
+    public void HideConfirmationPanel()
+    {
+        if (confirmationPanel != null)
+        {
+            confirmationPanel.SetActive(false);
+        }
+    }
+
+    // 게임 시작 확정 (확인 패널에서 "예" 버튼 클릭 시)
+    public void OnConfirmStart()
+    {
+        // 확인 패널 숨기기
+        HideConfirmationPanel();
 
         // 모바일 기기 감지 및 전체화면 전환
         if (IsMobileDevice())
