@@ -195,7 +195,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
       propertyPath: m_Name
-      value: Trampoline_Mesh
+      value: Trampoline
       objectReference: {fileID: 0}
     - target: {fileID: 8367197599926057102, guid: 372e21bfbbd1c57428ddf622d2b29a4b, type: 3}
       propertyPath: m_LocalPosition.y
