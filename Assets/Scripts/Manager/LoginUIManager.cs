@@ -34,8 +34,9 @@ public class LoginUIManager : MonoBehaviour
     [Tooltip("로딩 중 표시할 UI 패널 (캔버스에 미리 배치되어 있어야 함)")]
     public GameObject loadingPanel;
 
-    [SerializeField]
-    private TextAsset caCertFile;
+    [Header("Confirmation UI")]
+    [Tooltip("게임 시작 확인 패널")]
+    public GameObject confirmationPanel;
 
     private int clientCharIndex;
     private string clientName;
@@ -72,6 +73,7 @@ public class LoginUIManager : MonoBehaviour
         characterSelectPopup?.SetActive(false);
         audioSource = GetComponent<AudioSource>();
         loadingPanel.SetActive(false);
+        confirmationPanel?.SetActive(false);
 
         audioSource = GetComponent<AudioSource>();
 
@@ -152,6 +154,34 @@ public class LoginUIManager : MonoBehaviour
             return;
         }
 
+        // 확인 패널 표시
+        ShowConfirmationPanel();
+    }
+
+    // 확인 패널 표시
+    public void ShowConfirmationPanel()
+    {
+        if (confirmationPanel != null)
+        {
+            confirmationPanel.SetActive(true);
+        }
+    }
+
+    // 확인 패널 숨기기
+    public void HideConfirmationPanel()
+    {
+        if (confirmationPanel != null)
+        {
+            confirmationPanel.SetActive(false);
+        }
+    }
+
+    // 게임 시작 확정 (확인 패널에서 "예" 버튼 클릭 시)
+    public void OnConfirmStart()
+    {
+        // 확인 패널 숨기기
+        HideConfirmationPanel();
+
         // 모바일 기기 감지 및 전체화면 전환
         if (IsMobileDevice())
         {
@@ -180,8 +210,6 @@ public class LoginUIManager : MonoBehaviour
         {
             // 기존 방식: 지정된 게임 서버에 직접 연결
 #if UNITY_EDITOR
-            UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-            transport.SetClientSecrets("127.0.0.1", caCertFile.text);
             ConnectToServer(serverAddress, serverPort);
 #else
             ConnectToServer(productionServerAddress, productionServerPort);
