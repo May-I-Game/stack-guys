@@ -10,9 +10,18 @@ public class EditorCameraControl : MonoBehaviour
     private float rotationX = 0f;
     private float rotationY = 0f;
 
+    private void Start()
+    {
+        Debug.Log("--- EDITOR MODE ACTIVATED ---");
+
+        // 자유롭게 볼 수 있도록 커서 잠금
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
     private void Update()
     {
-        // 커서 토글
+        // 커서 잠금
         if (Input.GetKeyDown(KeyCode.B))
         {
             if (!Cursor.visible)
