@@ -30,7 +30,6 @@ public class Options : MonoBehaviour
     private VolumeButton bgmVolumeButtonComponent;
     private VolumeButton sfxVolumeButtonComponent;
 
-    private const string PERFORMANCE_KEY = "ShowPerformance";
     private const string EFFECTS_KEY = "ShowEffects";
     private const string MOBILE_UI_KEY = "ShowMobileUI";
     private const string MASTER_VOLUME_KEY = "MasterVolume";
@@ -38,6 +37,9 @@ public class Options : MonoBehaviour
     private const string SFX_VOLUME_KEY = "SFXVolume";
 
     private GameObject mobileUICanvas; // UICanvas의 Mobile 자식 오브젝트
+
+    // Performance 설정은 로컬 변수로 관리 (PlayerPrefs 사용 안함)
+    private bool showPerformance = false; // 기본값: 항상 꺼짐
 
     void Start()
     {
@@ -95,12 +97,17 @@ public class Options : MonoBehaviour
             }
         }
 
-        // Performance Toggle (기본값: OFF)
+        // Performance Toggle (기본값: OFF, 로컬 변수 사용)
         if (performanceToggle != null)
         {
-            bool showPerformance = PlayerPrefs.GetInt(PERFORMANCE_KEY, 0) == 1; // 기본값 꺼짐
-            performanceToggle.isOn = showPerformance;
+            performanceToggle.isOn = showPerformance; // 항상 false로 시작
             performanceToggle.onValueChanged.AddListener(OnPerformanceToggleChanged);
+
+            // 초기 상태 적용
+            if (CompleteNGOProfiler.Instance != null)
+            {
+                CompleteNGOProfiler.Instance.ToggleVisibility(showPerformance);
+            }
         }
 
         // Effects Toggle (기본값: ON)
@@ -178,8 +185,8 @@ public class Options : MonoBehaviour
     // ===================== 설정 콜백 =====================
     private void OnPerformanceToggleChanged(bool isOn)
     {
-        PlayerPrefs.SetInt(PERFORMANCE_KEY, isOn ? 1 : 0);
-        PlayerPrefs.Save();
+        // 로컬 변수에만 저장 (PlayerPrefs 사용 안함)
+        showPerformance = isOn;
 
         if (CompleteNGOProfiler.Instance != null)
         {
