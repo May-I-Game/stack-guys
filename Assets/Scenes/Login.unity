@@ -4561,7 +4561,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serverAddress: 127.0.0.1
-  serverPort: 7779
+  serverPort: 443
   productionServerAddress: 127.0.0.1
   productionServerPort: 7779
   nameInput: {fileID: 912574218}
@@ -4570,6 +4570,7 @@ MonoBehaviour:
   productionMatchmakingUrl: http://matchmaking-alb-1609632759.ap-northeast-2.elb.amazonaws.com
   useMatchmaking: 0
   loadingPanel: {fileID: 632846589}
+  caCertFile: {fileID: 4900000, guid: 6c3cdc5e2d4cb6c4cb4b1370ae76d854, type: 3}
 --- !u!82 &1607066192
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6271,7 +6272,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ProtocolType: 0
   m_UseWebSockets: 1
-  m_UseEncryption: 0
+  m_UseEncryption: 1
   m_MaxPacketQueueSize: 32768
   m_MaxPayloadSize: 32768
   m_HeartbeatTimeoutMS: 2000

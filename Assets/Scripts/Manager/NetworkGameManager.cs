@@ -373,6 +373,8 @@ public class NetworkGameManager : MonoBehaviour
         // 연결 승인
         response.Approved = true;
         response.CreatePlayerObject = false;
+        response.Pending = false;
+
         Debug.Log($"Connection Approved ({currentPlayers + 1}/{MAX_PLAYERS})");
     }
 
