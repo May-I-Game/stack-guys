@@ -6457,7 +6457,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2104549442}
   m_Layer: 0
-  m_Name: CharactersPreview (1)
+  m_Name: CharactersPreview
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
