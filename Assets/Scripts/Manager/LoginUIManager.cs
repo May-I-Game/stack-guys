@@ -34,6 +34,9 @@ public class LoginUIManager : MonoBehaviour
     [Tooltip("로딩 중 표시할 UI 패널 (캔버스에 미리 배치되어 있어야 함)")]
     public GameObject loadingPanel;
 
+    [SerializeField]
+    private TextAsset caCertFile;
+
     private int clientCharIndex;
     private string clientName;
     private bool isConnecting = false;
@@ -177,6 +180,8 @@ public class LoginUIManager : MonoBehaviour
         {
             // 기존 방식: 지정된 게임 서버에 직접 연결
 #if UNITY_EDITOR
+            UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+            transport.SetClientSecrets("127.0.0.1", caCertFile.text);
             ConnectToServer(serverAddress, serverPort);
 #else
             ConnectToServer(productionServerAddress, productionServerPort);
