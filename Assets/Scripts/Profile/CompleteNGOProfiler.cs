@@ -99,10 +99,10 @@ public class CompleteNGOProfiler : NetworkBehaviour
             }
         }
 
-        // PlayerPrefs에서 설정 불러오기
-        isVisible = PlayerPrefs.GetInt("ShowPerformance", 0) == 1;
+        // 게임 시작 시 항상 꺼진 상태로 (PlayerPrefs 사용 안함)
+        isVisible = false;
 
-        // 시작할 때 무조건 꺼진 상태로
+        // UI 무조건 꺼진 상태로 시작
         if (Fps != null)
         {
             Fps.gameObject.SetActive(false);
@@ -110,12 +110,6 @@ public class CompleteNGOProfiler : NetworkBehaviour
         if (Ping != null)
         {
             Ping.gameObject.SetActive(false);
-        }
-
-        // 설정에 따라 가시성 업데이트
-        if (isVisible)
-        {
-            UpdateVisibility();
         }
     }
 
@@ -230,9 +224,7 @@ public class CompleteNGOProfiler : NetworkBehaviour
         isVisible = show;
         UpdateVisibility();
 
-        // 설정 저장
-        PlayerPrefs.SetInt("ShowPerformance", isVisible ? 1 : 0);
-        PlayerPrefs.Save();
+        // 로컬 변수로만 관리 (PlayerPrefs 사용 안함)
     }
 
     private void UpdateVisibility()
