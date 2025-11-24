@@ -14,6 +14,7 @@ public class EditorManager : MonoBehaviour
 {
     [Header("에디터 설정")]
     public float gridSize = 1.0f;
+    public float heightStep = 0.5f;
     public float rotationStep = 45.0f;
 
     [Header("현재 상태")]
@@ -132,7 +133,7 @@ public class EditorManager : MonoBehaviour
             DeleteObject();
         }
 
-        // B 키로 커서 토글시 선택해제
+        // B 키로 이동 토글시 선택해제
         if (Input.GetKeyDown(KeyCode.B))
         {
             currentSelectedPrefab = null;
@@ -152,13 +153,11 @@ public class EditorManager : MonoBehaviour
         // Q, E로 높이 조절
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            float heightStep = (gridSize > 0) ? gridSize : 1.0f;
             currentGridPosition.y -= heightStep;
             UpdatePreviewPosition();
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-            float heightStep = (gridSize > 0) ? gridSize : 1.0f;
             currentGridPosition.y += heightStep;
             UpdatePreviewPosition();
         }
