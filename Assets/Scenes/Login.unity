@@ -5006,10 +5006,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01e3e5f34683dc34b925cffa242a807d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverAddress: 172.21.102.204
-  serverPort: 7779
-  productionServerAddress: 172.21.102.204
-  productionServerPort: 7779
+  serverAddress: 127.0.0.1
+  serverPort: 443
+  productionServerAddress: 127.0.0.1
+  productionServerPort: 443
   nameInput: {fileID: 912574218}
   characterSelectCamera: {fileID: 142083412}
   characterSelectPopup: {fileID: 1064280942}
@@ -5017,6 +5017,7 @@ MonoBehaviour:
   useMatchmaking: 0
   loadingPanel: {fileID: 632846589}
   confirmationPanel: {fileID: 321852695}
+  caCertFile: {fileID: 4900000, guid: 6c3cdc5e2d4cb6c4cb4b1370ae76d854, type: 3}
 --- !u!82 &1607066192
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6718,7 +6719,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ProtocolType: 0
   m_UseWebSockets: 1
-  m_UseEncryption: 0
+  m_UseEncryption: 1
   m_MaxPacketQueueSize: 32768
   m_MaxPayloadSize: 32768
   m_HeartbeatTimeoutMS: 2000
@@ -6727,7 +6728,7 @@ MonoBehaviour:
   m_DisconnectTimeoutMS: 30000
   ConnectionData:
     Address: 127.0.0.1
-    Port: 7779
+    Port: 443
     ServerListenAddress: 0.0.0.0
   DebugSimulator:
     PacketDelayMS: 0
@@ -6786,6 +6787,8 @@ MonoBehaviour:
   matchmakingServerUrl: 172.21.102.204
   serverPublicIP: 172.21.102.204
   heartbeatInterval: 5
+  serverCert: {fileID: 4900000, guid: 6c3cdc5e2d4cb6c4cb4b1370ae76d854, type: 3}
+  serverKey: {fileID: 4900000, guid: ee9c4e6a37fd7a14f8abea74eed91968, type: 3}
 --- !u!1001 &1951648188819123406
 PrefabInstance:
   m_ObjectHideFlags: 0
