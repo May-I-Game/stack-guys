@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: d0f0d8c9be203fc45ab2e6b5e35661e3
+ShaderImporter:
+  defaultTextures: []
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 209613
+  packageName: Cute Dolls
+  packageVersion: 1.0
+  assetPath: Assets/Cute Dolls/ToonShading/Shaders/ToonBasic.shader
+  uploadId: 621387
