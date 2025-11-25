@@ -353,6 +353,10 @@ public class GameManager : NetworkBehaviour
     // 플레이어 텔레포트와 봇 스폰을 시간차를 두고 생성
     private IEnumerator TeleportPlayersAndSpawnBots()
     {
+        // 시네마틱 먼저 시작 (플레이어 이동 전에)
+        timelineStartTime.Value = NetworkManager.Singleton.ServerTime.Time + SYNC_BUFFER;
+        shouldPlayTimeline.Value = true;
+
         int i = 0;
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
@@ -393,9 +397,6 @@ public class GameManager : NetworkBehaviour
         {
             Debug.LogWarning("[GameManager] BotManager.Singleton null");
         }
-
-        timelineStartTime.Value = NetworkManager.Singleton.ServerTime.Time + SYNC_BUFFER;
-        shouldPlayTimeline.Value = true;
 
         StartCoroutine(ServerEnableBotsAfterCinematic()); // 시네마틱이 끝나고 서버에서 봇을 활성화
     }
@@ -796,8 +797,8 @@ public class GameManager : NetworkBehaviour
         // 시네마틱 직후 게임 시작 카운트 다운 (3, 2, 1, Start!)
         else if (isGameReadyCountdownActive.Value && inGameReadyText != null)
         {
-            int count = Mathf.CeilToInt(newValue);
-            int previousCount = Mathf.CeilToInt(prviousValue);
+            int count = Mathf.Min(Mathf.CeilToInt(newValue), 3); // 최대 3으로 제한
+            int previousCount = Mathf.CeilToInt(prviousValue); // previousCount는 제한하지 않음 (4 -> 3 변화 감지용)
 
             if (count > 0)
             {
