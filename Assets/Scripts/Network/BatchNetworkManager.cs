@@ -289,12 +289,9 @@ public class BatchNetworkManager : NetworkBehaviour
         {
             if (!_spawnedObjects.TryGetValue(netId, out IBatchSyncObject other)) continue;
 
-            if (!GameManager.Instance.IsEnded)
-            {
-                // 관심영역(AOI) 체크 (거리 기반)
-                float sqrDistance = (observerPos - other.Transform.position).sqrMagnitude;
-                if (sqrDistance > _sqrSyncDistance) continue;
-            }
+            // 관심영역(AOI) 체크 (거리 기반)
+            float sqrDistance = (observerPos - other.Transform.position).sqrMagnitude;
+            if (sqrDistance > _sqrSyncDistance) continue;
 
             // other을 스냅샷에 추가해서 동기화
             _objectSnapshotBuffer.Add(new ObjectSnapshot(
