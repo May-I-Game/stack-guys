@@ -15,64 +15,88 @@ mergeInto(LibraryManager.library, {
         var userAgent = navigator.userAgent || navigator.vendor || window.opera;
         var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
 
-        // iOS 전용 브라우저 UI 자동 숨김 함수
-        function hideIOSBrowserUI() {
-            console.log("🍎 [iOS] Hiding browser UI");
+        // iOS 전용 화면 맞춤 함수
+        function adjustIOSScreen() {
+            console.log("🍎 [iOS] Adjusting screen to fit available viewport");
 
-            // 1. 스크롤하여 주소창 숨기기
-            setTimeout(function() {
-                window.scrollTo(0, 1);
-            }, 0);
+            // 1. 실제 사용 가능한 화면 크기 가져오기 (주소창 제외)
+            var availableWidth = window.innerWidth;
+            var availableHeight = window.innerHeight;
 
-            // 2. viewport 설정 업데이트
+            console.log("📐 Available screen:", availableWidth, "x", availableHeight);
+
+            // 2. viewport 설정
             var viewport = document.querySelector('meta[name="viewport"]');
             if (viewport) {
                 viewport.setAttribute('content',
-                    'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+                    'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, minimal-ui');
             } else {
                 viewport = document.createElement('meta');
                 viewport.name = 'viewport';
-                viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+                viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, minimal-ui';
                 document.head.appendChild(viewport);
             }
 
-            // 3. body 스타일 조정
+            // 3. body 스타일 - 스크롤 방지 및 고정
             document.body.style.margin = "0";
             document.body.style.padding = "0";
             document.body.style.overflow = "hidden";
             document.body.style.position = "fixed";
-            document.body.style.width = "100%";
-            document.body.style.height = "100%";
+            document.body.style.top = "0";
+            document.body.style.left = "0";
+            document.body.style.width = availableWidth + "px";
+            document.body.style.height = availableHeight + "px";
 
             // 4. 캔버스 컨테이너 조정
             var canvas = document.querySelector("#unity-canvas") || document.querySelector("canvas");
             if (canvas) {
                 var container = canvas.parentElement;
                 if (container) {
-                    container.style.width = "100%";
-                    container.style.height = "100%";
                     container.style.position = "fixed";
                     container.style.top = "0";
                     container.style.left = "0";
+                    container.style.width = availableWidth + "px";
+                    container.style.height = availableHeight + "px";
+                    container.style.overflow = "hidden";
                 }
 
-                canvas.style.width = "100%";
-                canvas.style.height = "100%";
+                // 캔버스 크기를 실제 사용 가능한 영역에 맞춤
+                canvas.style.width = availableWidth + "px";
+                canvas.style.height = availableHeight + "px";
                 canvas.style.display = "block";
             }
 
-            // 5. 터치 시작 시 다시 주소창 숨기기
-            document.addEventListener('touchstart', function() {
-                window.scrollTo(0, 1);
-            }, { once: true });
+            // 5. 화면 회전이나 리사이즈 시 재조정
+            var resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(function() {
+                    var newWidth = window.innerWidth;
+                    var newHeight = window.innerHeight;
 
-            console.log("✅ [iOS] Browser UI hidden");
+                    console.log("📐 Screen resized:", newWidth, "x", newHeight);
+
+                    document.body.style.width = newWidth + "px";
+                    document.body.style.height = newHeight + "px";
+
+                    if (canvas) {
+                        if (container) {
+                            container.style.width = newWidth + "px";
+                            container.style.height = newHeight + "px";
+                        }
+                        canvas.style.width = newWidth + "px";
+                        canvas.style.height = newHeight + "px";
+                    }
+                }, 100);
+            });
+
+            console.log("✅ [iOS] Screen adjusted to available viewport");
         }
 
-        // iOS인 경우 브라우저 UI 자동 숨김 사용
+        // iOS인 경우 화면 맞춤 사용
         if (isIOS) {
-            console.log("🍎 iOS detected - using browser UI auto-hide");
-            hideIOSBrowserUI();
+            console.log("🍎 iOS detected - adjusting to available screen");
+            adjustIOSScreen();
             return;
         }
 
