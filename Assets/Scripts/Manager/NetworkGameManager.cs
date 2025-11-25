@@ -24,9 +24,6 @@ public class NetworkGameManager : MonoBehaviour
     [SerializeField] private string serverPublicIP = "3.37.88.2"; // Fallback IP (로컬 개발용)
     [SerializeField] private int heartbeatInterval = 5;
 
-    [SerializeField] private TextAsset serverCert;
-    [SerializeField] private TextAsset serverKey;
-
     // EC2 메타데이터에서 자동 감지된 Public IP (ASG 대응)
     private string detectedPublicIP = null;
 
@@ -123,11 +120,6 @@ public class NetworkGameManager : MonoBehaviour
         if (transport != null)
         {
             transport.UseWebSockets = true;
-
-            if (serverCert != null && serverKey != null)
-            {
-                transport.SetServerSecrets(serverCert.text, serverKey.text);
-            }
 
             // 타임아웃 설정 - 렉에 더 관대하게 (서버 측)
             transport.ConnectTimeoutMS = 10000;      // 연결 타임아웃: 10초
@@ -381,8 +373,6 @@ public class NetworkGameManager : MonoBehaviour
         // 연결 승인
         response.Approved = true;
         response.CreatePlayerObject = false;
-        response.Pending = false;
-
         Debug.Log($"Connection Approved ({currentPlayers + 1}/{MAX_PLAYERS})");
     }
 
