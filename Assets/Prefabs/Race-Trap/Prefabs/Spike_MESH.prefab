@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4479925183712469985}
   - component: {fileID: 8462794359611937463}
   m_Layer: 3
-  m_Name: Spike
+  m_Name: Spike_MESH
   m_TagString: Death
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
