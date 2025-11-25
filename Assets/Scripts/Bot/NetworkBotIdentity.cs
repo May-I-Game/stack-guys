@@ -14,11 +14,9 @@ public class NetworkBotIdentity : NetworkBehaviour
     // 사용 가능한 이름 인덱스 풀
     private static System.Collections.Generic.List<int> availableNameIndices = null;
 
-    // 봇 이름 생성
-    public static string GenerateBotName()
+    // 봇 이름 목록 (한 번만 할당)
+    private static readonly string[] botNames = new string[]
     {
-        string[] botNames = new string[]
-        {
         "김민준","김서준","김도윤","김하준","김지호",
         "김유준","김승우","김현우","김지후","김시우",
         "이서연","이지우","이서윤","이하은","이지민",
@@ -39,20 +37,17 @@ public class NetworkBotIdentity : NetworkBehaviour
         "장유진","장하린","장수현","장태영","장민서",
         "한서준","한지우","한도윤","한채원","한유진",
         "한수민","한하윤","한민서","한예린",
-        };
+    };
 
-        //int nameIndex = botCounter % botNames.Length;
+    // 봇 이름 생성
+    public static string GenerateBotName()
+    {
         botCounter++;
-
-        // return $"{botNames[nameIndex]}_{botCounter:D2}";
-
-        // 랜덤하게 봇 이름 리턴
-        //int nameIndex = Random.Range(0, botNames.Length);
 
         // 이름을 다 한번씩 사용했으면 풀 재초기화
         if (availableNameIndices == null || availableNameIndices.Count == 0)
         {
-            availableNameIndices = new System.Collections.Generic.List<int>();
+            availableNameIndices = new System.Collections.Generic.List<int>(botNames.Length);
             for (int i = 0; i < botNames.Length; i++)
             {
                 availableNameIndices.Add(i);
@@ -64,7 +59,7 @@ public class NetworkBotIdentity : NetworkBehaviour
 
         availableNameIndices.RemoveAt(randomIndex);
 
-        return $"{botNames[nameIndex]}";
+        return botNames[nameIndex];
     }
 
     // 다른 스크립트에서 봇 여부를 확인하는 헬퍼 함수
