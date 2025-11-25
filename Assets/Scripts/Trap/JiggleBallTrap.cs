@@ -14,6 +14,9 @@ public class JiggleBallTrap : MonoBehaviour
     private float totalCycleDuration;
     private Quaternion baseRotation;
 
+    private bool IsEditor => EditorManager.Instance;
+    private bool IsGame => GameManager.Instance ? GameManager.Instance.IsGame : EditorManager.Instance.IsGame;
+
     private void Awake()
     {
         // 속도 0 방지
@@ -33,16 +36,14 @@ public class JiggleBallTrap : MonoBehaviour
     private void Update()
     {
         // 게임 진행 중일 때만 작동
-        if (!(GameManager.Instance && GameManager.Instance.IsGame)
-            && !(EditorManager.Instance && EditorManager.Instance.IsGame)) return;
+        if (!IsGame) return;
 
         CalculateMovement();
     }
 
     private void CalculateMovement()
     {
-        // 핵심: 변수 동기화 없이 "서버 시간"만으로 위치 계산
-        double currentTime = NetworkManager.Singleton.ServerTime.Time;
+        double currentTime = IsEditor ? Time.time : NetworkManager.Singleton.ServerTime.Time;
 
         // 전체 주기 안에서 현재 시간의 위치 (0 ~ totalCycleDuration)
         float cycleTime = (float)(currentTime % totalCycleDuration);

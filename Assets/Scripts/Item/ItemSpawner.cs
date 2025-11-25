@@ -30,17 +30,45 @@ public class ItemSpawner : MonoBehaviour
     [Header("Debug")]
     public bool enableDebugLog = true;
 
+    [SerializeField]
     // 현재 스폰된 아이템 (서버만 관리)
     private NetworkObject currentItem = null;
 
     // 다음 스폰 시간 (서버만 관리)
     private float nextSpawnTime = 0f;
 
+    private bool IsEditor => EditorManager.Instance;
+
     private void Update()
     {
-        // 서버에서만 스폰 처리
-        if (!NetworkManager.Singleton.IsServer) return;
+        if (IsEditor)
+        {
+            if (!EditorManager.Instance.IsGame) return;
 
+            EditorSpawnLogic();
+        }
+
+        else
+        {
+            // 서버에서만 스폰 처리
+            if (!NetworkManager.Singleton.IsServer) return;
+
+            SpawnLogic();
+        }
+    }
+
+    private void EditorSpawnLogic()
+    {
+        // 스폰 시간이 되었고 현재 아이템이 없을 때
+        if (Time.time >= nextSpawnTime && currentItem == null)
+        {
+            SpawnRandomItem();
+            nextSpawnTime = Time.time + spawnInterval;
+        }
+    }
+
+    private void SpawnLogic()
+    {
         // 스폰 시간이 되었고 현재 아이템이 없을 때
         if (Time.time >= nextSpawnTime && currentItem == null)
         {
@@ -54,7 +82,7 @@ public class ItemSpawner : MonoBehaviour
             currentItem = null;
             if (enableDebugLog)
             {
-                Debug.Log($"[ItemSpawner] 아이템이 사용됨 다음 스폰: {spawnPoint}초 후");
+                Debug.Log($"[ItemSpawner] 아이템이 사용됨 다음 스폰: {spawnInterval}초 후");
             }
         }
     }
@@ -109,7 +137,10 @@ public class ItemSpawner : MonoBehaviour
                     interactiveItem.SourceSpawner = this;
                 }
 
-                currentItem.Spawn();
+                if (!IsEditor)
+                {
+                    currentItem.Spawn();
+                }
 
                 if (enableDebugLog)
                 {
