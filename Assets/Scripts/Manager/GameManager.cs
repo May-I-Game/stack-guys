@@ -928,7 +928,7 @@ public class GameManager : NetworkBehaviour
             }
 
             // 설정 UI 토글도 최신화
-            Options options = FindObjectOfType<Options>();
+            Options options = FindFirstObjectByType<Options>();
             if (options != null)
             {
                 options.SetMobileUIToggle(true);

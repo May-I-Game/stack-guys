@@ -4,7 +4,7 @@ public class CameraDebug : MonoBehaviour
 {
     void Start()
     {
-        Camera[] allCameras = FindObjectsOfType<Camera>(true); // 비활성 카메라도 포함
+        Camera[] allCameras = FindObjectsByType<Camera>(FindObjectsSortMode.None); // 비활성 카메라도 포함
         Debug.Log($"총 카메라 수: {allCameras.Length}");
 
         foreach (Camera cam in allCameras)

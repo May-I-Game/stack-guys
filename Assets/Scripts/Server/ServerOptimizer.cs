@@ -55,7 +55,7 @@ public static class ServerOptimizer
 
     private static void DisableCameras()
     {
-        var cameras = Object.FindObjectsOfType<Camera>(true);
+        var cameras = Object.FindObjectsByType<Camera>(FindObjectsSortMode.None);
         foreach (var cam in cameras)
         {
             cam.enabled = false;
@@ -71,7 +71,7 @@ public static class ServerOptimizer
     {
         AudioListener.volume = 0f;
 
-        var audioSources = Object.FindObjectsOfType<AudioSource>(true);
+        var audioSources = Object.FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
         foreach (var audio in audioSources)
         {
             audio.enabled = false;
