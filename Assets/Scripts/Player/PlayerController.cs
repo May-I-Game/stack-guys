@@ -14,8 +14,8 @@ public class PlayerController : NetworkBehaviour
     public float diveForce = 4f; // 다이브할 때 앞으로 가는 힘
     public float diveDownForce = 1f; // 다이브할 때 아래로 가는 힘
 
-    [Header("Grap Settings")]
-    public float grabRange = 1f; // 잡기 범위
+    [Header("Grab Settings")]
+    public float grabRange = 1.15f; // 잡기 범위
     public float holdHeight = 0.6f; // 머리 위 높이
     public float holdDistance = 0.1f; // 플레이어 앞쪽 거리
     public float throwForce = 5f; // 던지기 힘
