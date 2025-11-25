@@ -40,10 +40,6 @@ public class EditorPlayerController : MonoBehaviour
 
     public GameObject bodyPrefab;
 
-    // TODO : 애니메이션 종료시에 함수 호출해서
-    // netIsDiveGrounded 말고 private bool 변수 사용해서 서버만 동기화하도록
-    private float diveGroundedDuration = 0.65f; // 다이브 착지 애니메이션 길이
-
     private bool isMove;
     private bool isGrounded;
     private bool isDiving;
