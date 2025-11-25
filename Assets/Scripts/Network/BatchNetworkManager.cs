@@ -88,7 +88,7 @@ public class BatchNetworkManager : NetworkBehaviour
     private float _sqrSyncDistance;
 
     [SerializeField]
-    private float posDeltaThreshold = 0.05f; // 5cm
+    private float posDeltaThreshold = 0.02f; // 2cm
     [SerializeField]
     private float rotDeltaThreshold = 1f; // 1도
 
