@@ -72,8 +72,7 @@ public class NetworkPoolManager : NetworkBehaviour, INetworkPrefabInstanceHandle
             netObj.transform.rotation = rotation;
             netObj.gameObject.SetActive(true);
 
-            // Debug.Log($"[NetworkPoolManager] 시체 1개 풀에서 사용 완료!");
-            // Debug.Log($"[NetworkPoolManager] 풀에 {pool.Count}개 시체 남음!");
+            //Debug.Log($"[NetworkPoolManager] 풀에 {PrefabToPool.name} {pool.Count}개 남음!");
 
             return netObj;
         }
