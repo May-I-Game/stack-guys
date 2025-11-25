@@ -15825,7 +15825,7 @@ MonoBehaviour:
   - {fileID: 3668012762698612247, guid: d2558e6e7f4e4ff4b9b213d227aa60d4, type: 3}
   - {fileID: 1487229761582353401, guid: 390d0ac1668051846bf6b540ee45ac4f, type: 3}
   - {fileID: 6837014527919319146, guid: b1c3c2cd08f943a4dbfeb3812b3980b1, type: 3}
-  - {fileID: -2516490683871743645, guid: a5df49f48d59ac74bba3c09ca589feb5, type: 3}
+  - {fileID: -2516490683871743645, guid: 563bff721deb93346be694b5b82b70ca, type: 3}
   debugSpawnPoints:
   - {fileID: 1683083045}
 --- !u!114 &252778272
