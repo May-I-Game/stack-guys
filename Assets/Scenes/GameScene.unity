@@ -113728,7 +113728,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   syncDistance: 30
-  posDeltaThreshold: 0.05
+  posDeltaThreshold: 0.02
   rotDeltaThreshold: 1
 --- !u!4 &2000712414
 Transform:

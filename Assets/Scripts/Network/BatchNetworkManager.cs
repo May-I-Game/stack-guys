@@ -88,7 +88,7 @@ public class BatchNetworkManager : NetworkBehaviour
     private float _sqrSyncDistance;
 
     [SerializeField]
-    private float posDeltaThreshold = 0.05f; // 5cm
+    private float posDeltaThreshold = 0.02f; // 2cm
     [SerializeField]
     private float rotDeltaThreshold = 1f; // 1도
 
@@ -289,12 +289,9 @@ public class BatchNetworkManager : NetworkBehaviour
         {
             if (!_spawnedObjects.TryGetValue(netId, out IBatchSyncObject other)) continue;
 
-            if (!GameManager.Instance.IsEnded)
-            {
-                // 관심영역(AOI) 체크 (거리 기반)
-                float sqrDistance = (observerPos - other.Transform.position).sqrMagnitude;
-                if (sqrDistance > _sqrSyncDistance) continue;
-            }
+            // 관심영역(AOI) 체크 (거리 기반)
+            float sqrDistance = (observerPos - other.Transform.position).sqrMagnitude;
+            if (sqrDistance > _sqrSyncDistance) continue;
 
             // other을 스냅샷에 추가해서 동기화
             _objectSnapshotBuffer.Add(new ObjectSnapshot(
