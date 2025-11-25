@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class JiggleBallTrap : NetworkBehaviour
+public class JiggleBallTrap : MonoBehaviour
 {
     [Header("Rotate Settings")]
     [SerializeField] float rightZ = 60f;
@@ -55,7 +55,7 @@ public class JiggleBallTrap : NetworkBehaviour
         if (cycleTime < moveDuration)
         {
             float t = cycleTime / moveDuration;
-            // t = Mathf.SmoothStep(0f, 1f, t); // 이 로직쓰면 끝부분감속 구현됨
+            t = Mathf.SmoothStep(0f, 1f, t);
             targetZ = Mathf.Lerp(rightZ, leftZ, t);
         }
         // 2. Left 대기
@@ -68,7 +68,7 @@ public class JiggleBallTrap : NetworkBehaviour
         {
             float progress = cycleTime - (moveDuration + stayTime);
             float t = progress / moveDuration;
-            // t = Mathf.SmoothStep(0f, 1f, t); // 이 로직쓰면 끝부분감속 구현됨
+            t = Mathf.SmoothStep(0f, 1f, t);
             targetZ = Mathf.Lerp(leftZ, rightZ, t);
         }
         // 4. Right 대기 (나머지 시간)
