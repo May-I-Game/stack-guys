@@ -25,6 +25,12 @@ public class EditorPlayerController : MonoBehaviour
     private Rigidbody rb;
     private CapsuleCollider col;
 
+    // 버프 적용 배율 (봇이면 1로 처리)
+    private float SpeedMul => buffManager != null ? buffManager.SpeedMultiplier : 1f;
+    private float JumpMul => buffManager != null ? buffManager.JumpMultiplier : 1f;
+
+    private PlayerBuffManager buffManager;    // 버프 관리자
+
     private Vector2 moveDir = Vector2.zero;
     private Vector2 lastSentInput = Vector2.zero;  // 실제로 서버에 전송한 마지막 입력
 
@@ -61,8 +67,6 @@ public class EditorPlayerController : MonoBehaviour
 
     private void Start()
     {
-        Camera.main.GetComponent<CameraFollow>().target = this.transform;
-
         // Animator가 설정되지 않았다면 자동으로 찾기
         animator = animator != null ? animator : GetComponent<Animator>();
         animator = animator != null ? animator : GetComponentInChildren<Animator>();
@@ -70,7 +74,6 @@ public class EditorPlayerController : MonoBehaviour
 
     private void Update()
     {
-        //본인이 아닌 캐릭터, 혹은 input이 비활성화 되어있을 때는 애니메이션만 최신화
         if (!inputEnabled)
         {
             UpdateAnimation();
@@ -185,6 +188,12 @@ public class EditorPlayerController : MonoBehaviour
         isHit = false;
     }
 
+    public void ResetDiveGroundedStateServerRpc()
+    {
+        // Debug.Log("다이브리셋 호출됨!!");
+        isDiveGrounded = false;
+    }
+
     public void ResetStateServerRpc()
     {
         ResetPlayerState();
@@ -220,7 +229,10 @@ public class EditorPlayerController : MonoBehaviour
         // 땅에 있을 때: 점프
         if (isGrounded)
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            // 점프 버프 적용
+            float currentJumpForce = jumpForce * JumpMul;
+            rb.AddForce(Vector3.up * currentJumpForce, ForceMode.Impulse);
+
             isGrounded = false; // 점프 시 강제로 false 설정
             canDive = true; // 점프 후 다이브 가능
         }
@@ -256,16 +268,7 @@ public class EditorPlayerController : MonoBehaviour
         isDiveGrounded = true;
 
         Debug.Log("[다이브 착지] 착지 애니메이션 재생, 조작 불가");
-
-        // 착지 애니메이션이 끝나면 복구
-        StartCoroutine(ResetDiveGroundedState());
-    }
-
-    // 다이브 착지 상태 복구
-    private System.Collections.IEnumerator ResetDiveGroundedState()
-    {
-        yield return new WaitForSeconds(diveGroundedDuration);
-        isDiveGrounded = false;
+        animator.SetTrigger("DiveLand");
     }
 
     public void PlayerDeath()
@@ -482,10 +485,6 @@ public class EditorPlayerController : MonoBehaviour
             animator.SetBool("IsMoving", isMove);
             // 점프 상태를 애니메이터에 전달
             animator.SetBool("IsGrounded", isGrounded);
-            // 다이브 상태를 애니메이터에 전달
-            animator.SetBool("IsDiving", isDiving);
-            // 다이브 착지 상태를 애니메이터에 전달
-            animator.SetBool("IsDiveGrounded", isDiveGrounded);
         }
     }
 }

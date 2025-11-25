@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -15,6 +16,7 @@ public class EditorManager : MonoBehaviour
     [Header("에디터 설정")]
     public float gridSize = 1.0f;
     public float rotationStep = 45.0f;
+    public float heightStep = 0.5f;
 
     [Header("현재 상태")]
     public GameObject currentSelectedPrefab;
@@ -36,6 +38,7 @@ public class EditorManager : MonoBehaviour
     [Header("카메라 설정")]
     public GameObject editorCam;
     public GameObject playerCam;
+    public CinemachineCamera cineCam;
 
     [Header("플레이 모드 설정")]
     public GameObject playerPref;
@@ -152,13 +155,11 @@ public class EditorManager : MonoBehaviour
         // Q, E로 높이 조절
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            float heightStep = (gridSize > 0) ? gridSize : 1.0f;
             currentGridPosition.y -= heightStep;
             UpdatePreviewPosition();
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-            float heightStep = (gridSize > 0) ? gridSize : 1.0f;
             currentGridPosition.y += heightStep;
             UpdatePreviewPosition();
         }
@@ -665,7 +666,7 @@ public class EditorManager : MonoBehaviour
         editorCam.SetActive(false);
         playerCam.SetActive(true);
 
-        playerCam.GetComponent<CameraFollow>().target = currentPlayer.transform;
+        cineCam.Target.TrackingTarget = currentPlayer.transform;
     }
 
     private void EndGame()
