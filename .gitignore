@@ -102,3 +102,4 @@ InitTestScene*.unity*
 *.md
 Assets/Editor/BotLauncher.cs.meta
 Assets/Resources/Materials/Sky0008_Day.mat
+Assets/Editor/BotLauncher.cs
