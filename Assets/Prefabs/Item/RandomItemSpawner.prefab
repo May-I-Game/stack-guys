@@ -109,10 +109,11 @@ MonoBehaviour:
     spawnWeight: 1
   - itemPrefab: {fileID: -1210176074181578495, guid: 0bc572b23a33da9468e9ff457aa7a246, type: 3}
     spawnWeight: 1
-  spawnHeightOffset: 0.5
+  spawnHeightOffset: 0.4
   spawnInterval: 5
   spawnPoint: {fileID: 0}
   enableDebugLog: 1
+  currentItem: {fileID: 0}
 --- !u!65 &-4045047939043529364
 BoxCollider:
   m_ObjectHideFlags: 0
