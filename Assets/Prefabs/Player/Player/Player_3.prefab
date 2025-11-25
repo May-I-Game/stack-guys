@@ -723,7 +723,7 @@ MonoBehaviour:
   jumpForce: 3
   diveForce: 4
   diveDownForce: 1
-  grabRange: 1
+  grabRange: 1.15
   holdHeight: 0.5
   holdDistance: 0.1
   throwForce: 5
