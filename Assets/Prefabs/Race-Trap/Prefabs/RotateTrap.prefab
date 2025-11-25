@@ -183,7 +183,7 @@ MonoBehaviour:
   degreesPerSecond: 360
   spaceMode: 0
   clockWise: 1
-  randomizeStartAngle: 1
+  randomizeStartAngle: 0
 --- !u!114 &2497728213748474516
 MonoBehaviour:
   m_ObjectHideFlags: 0

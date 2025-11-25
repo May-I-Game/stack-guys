@@ -14,7 +14,7 @@ public class NetworkSpinner : NetworkBehaviour
     [SerializeField] private bool randomizeStartAngle = false;
 
     // 초기 각도는 서버에서 결정
-    private readonly NetworkVariable<float> netStartAngle = new NetworkVariable<float>();
+    private readonly NetworkVariable<float> netStartAngle = new NetworkVariable<float>(0f);
 
     private Vector3 axisVector;
     private Quaternion initialRotation;
