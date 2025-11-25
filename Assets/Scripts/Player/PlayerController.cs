@@ -480,8 +480,21 @@ public class PlayerController : NetworkBehaviour
     {
         if (!inputEnabled.Value) return;
 
-        // 충돌 중이거나 공중에 있거나 다이브 착지 중이거나 잡힌 상태면 입력 무시
-        if (isHit || !netIsGrounded.Value || isDiveGrounded || netIsGrabbed.Value)
+        // 충돌 중이거나 다이브 착지 중이거나 잡힌 상태면 입력 무시
+        if (isHit || isDiveGrounded || netIsGrabbed.Value)
+        {
+            return;
+        }
+
+        // 무언가를 들고 있으면 공중에서도 던지기 허용
+        if (isHolding)
+        {
+            isGrabQueued = true;
+            return;
+        }
+
+        // 잡기는 땅에 있을 때만 가능
+        if (!netIsGrounded.Value)
         {
             return;
         }
