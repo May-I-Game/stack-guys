@@ -11,7 +11,7 @@ public class PlayerBody : NetworkBehaviour, IBatchSyncObject
     private float _targetRotY;
 
     // 보간 속도
-    private float _lerpSpeed = 20f;
+    private float _lerpSpeed = 10f;
 
     // 로컬 모드로 전환되었는지 여부
     private bool _isLocalMode = false;
