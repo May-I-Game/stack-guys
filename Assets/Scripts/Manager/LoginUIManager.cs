@@ -3,7 +3,9 @@ using TMPro;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 /// <summary>
 /// LoginUIManager
@@ -35,9 +37,6 @@ public class LoginUIManager : MonoBehaviour
     [Header("Confirmation UI")]
     [Tooltip("게임 시작 확인 패널")]
     public GameObject confirmationPanel;
-
-    [SerializeField]
-    private TextAsset caCertFile;
 
     private int clientCharIndex;
     private string clientName;
@@ -257,8 +256,6 @@ public class LoginUIManager : MonoBehaviour
 #if UNITY_WEBGL && !UNITY_EDITOR
         transport.UseWebSockets = true;  // WebGL 강제 WebSocket
 #endif
-
-        transport.SetClientSecrets("127.0.0.1", caCertFile.text);
         transport.SetConnectionData(serverAddress, serverPort);
 
         // 타임아웃 설정 - 렉에 더 관대하게
