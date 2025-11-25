@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class JiggleBallTrap : NetworkBehaviour
+public class JiggleBallTrap : MonoBehaviour
 {
     [Header("Rotate Settings")]
     [SerializeField] float rightZ = 60f;
@@ -13,6 +13,9 @@ public class JiggleBallTrap : NetworkBehaviour
     private float moveDuration;
     private float totalCycleDuration;
     private Quaternion baseRotation;
+
+    private bool IsEditor => EditorManager.Instance;
+    private bool IsGame => GameManager.Instance ? GameManager.Instance.IsGame : EditorManager.Instance.IsGame;
 
     private void Awake()
     {
@@ -33,16 +36,14 @@ public class JiggleBallTrap : NetworkBehaviour
     private void Update()
     {
         // 게임 진행 중일 때만 작동
-        if (!(GameManager.Instance && GameManager.Instance.IsGame)
-            && !(EditorManager.Instance && EditorManager.Instance.IsGame)) return;
+        if (!IsGame) return;
 
         CalculateMovement();
     }
 
     private void CalculateMovement()
     {
-        // 핵심: 변수 동기화 없이 "서버 시간"만으로 위치 계산
-        double currentTime = NetworkManager.Singleton.ServerTime.Time;
+        double currentTime = IsEditor ? Time.time : NetworkManager.Singleton.ServerTime.Time;
 
         // 전체 주기 안에서 현재 시간의 위치 (0 ~ totalCycleDuration)
         float cycleTime = (float)(currentTime % totalCycleDuration);
@@ -55,7 +56,7 @@ public class JiggleBallTrap : NetworkBehaviour
         if (cycleTime < moveDuration)
         {
             float t = cycleTime / moveDuration;
-            // t = Mathf.SmoothStep(0f, 1f, t); // 이 로직쓰면 끝부분감속 구현됨
+            t = Mathf.SmoothStep(0f, 1f, t);
             targetZ = Mathf.Lerp(rightZ, leftZ, t);
         }
         // 2. Left 대기
@@ -68,7 +69,7 @@ public class JiggleBallTrap : NetworkBehaviour
         {
             float progress = cycleTime - (moveDuration + stayTime);
             float t = progress / moveDuration;
-            // t = Mathf.SmoothStep(0f, 1f, t); // 이 로직쓰면 끝부분감속 구현됨
+            t = Mathf.SmoothStep(0f, 1f, t);
             targetZ = Mathf.Lerp(leftZ, rightZ, t);
         }
         // 4. Right 대기 (나머지 시간)

@@ -14,10 +14,13 @@ public class NetworkSpinner : NetworkBehaviour
     [SerializeField] private bool randomizeStartAngle = false;
 
     // 초기 각도는 서버에서 결정
-    private readonly NetworkVariable<float> netStartAngle = new NetworkVariable<float>();
+    private readonly NetworkVariable<float> netStartAngle = new NetworkVariable<float>(0f);
 
     private Vector3 axisVector;
     private Quaternion initialRotation;
+
+    private bool IsEditor => EditorManager.Instance;
+    private bool IsGame => GameManager.Instance ? GameManager.Instance.IsGame : EditorManager.Instance.IsGame;
 
     private void Awake()
     {
@@ -52,23 +55,21 @@ public class NetworkSpinner : NetworkBehaviour
 
     private void Update()
     {
-        // 게임 매니저 조건 체크 (원래 코드 유지)
-        if (!(GameManager.Instance && GameManager.Instance.IsGame)) return;
+        if (!IsGame) return;
 
         CalculateRotation();
     }
 
     private void CalculateRotation()
     {
-        if (NetworkManager.Singleton == null) return;
         // Time.deltaTime을 더하는게 아니라, "현재 서버 시간"을 기반으로 절대각을 계산함
         // 모든 클라이언트는 NetworkManager를 통해 동기화된 ServerTime을 사용하여 동일한 결과를 얻음
-        double time = NetworkManager.Singleton.ServerTime.Time;
+        double time = IsEditor ? Time.time : NetworkManager.Singleton.ServerTime.Time;
 
         float dir = clockWise ? -1f : 1f;
 
         // 공식: (속도 * 시간) + 초기각도
-        // 모듈로 연산(% 360)을 통해 숫자가 무한히 커지는 것 방지
+        // 모듈러 연산(% 360)을 통해 숫자가 무한히 커지는 것 방지
         float currentAngle = (float)((time * degreesPerSecond * dir) % 360.0f) + netStartAngle.Value;
 
         // 회전 적용
