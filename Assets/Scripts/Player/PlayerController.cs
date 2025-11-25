@@ -148,6 +148,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] protected NetworkVariable<bool> netIsDeath = new NetworkVariable<bool>(false); // 죽었는지
     [SerializeField] protected bool isHit = false; // 충돌 상태 (이동 불가)
     protected bool canDive = false; // 다이브 가능 상태 (점프 중)
+    protected float diveGroundedTime = 0f; // 다이브 착지 타이머 (안전장치)
 
     // 걷기 파티클 재생 상태 추적
     private bool isWalkParticlePlaying = false;
@@ -365,6 +366,19 @@ public class PlayerController : NetworkBehaviour
         ServerPerformanceProfiler.Start("PlayerController.FixedUpdate");
         // 땅 체크
         GroundCheck();
+
+        // 다이브 착지 타이머 체크 (안전장치: 애니메이션 이벤트가 호출되지 않을 경우 대비)
+        if (isDiveGrounded)
+        {
+            diveGroundedTime += Time.fixedDeltaTime;
+            if (diveGroundedTime >= 1.5f) // 1.5초 후 자동 해제
+            {
+                Debug.LogWarning("[다이브 착지] 타이머 초과로 자동 해제");
+                isDiveGrounded = false;
+                diveGroundedTime = 0f;
+            }
+        }
+
         // 이동 처리
         PlayerMove();
 
@@ -563,6 +577,7 @@ public class PlayerController : NetworkBehaviour
     {
         // Debug.Log("다이브리셋 호출됨!!");
         isDiveGrounded = false;
+        diveGroundedTime = 0f; // 타이머 리셋
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -664,7 +679,7 @@ public class PlayerController : NetworkBehaviour
                 canDive = true; // 점프 후 다이브 가능
             }
             // 공중에 있을 때: 다이브
-            else if (canDive && !isDiving && !isHolding)
+            else if (canDive && !isDiving && !isHolding && !netIsGrounded.Value)
             {
                 PlayerDive();
             }
@@ -675,6 +690,13 @@ public class PlayerController : NetworkBehaviour
 
     private void PlayerDive()
     {
+        // 땅에 있으면 다이브 불가
+        if (netIsGrounded.Value)
+        {
+            Debug.Log("[다이브] 땅에 있어서 다이브 불가");
+            return;
+        }
+
         isDiving = true;
         canDive = false;
 
@@ -703,6 +725,7 @@ public class PlayerController : NetworkBehaviour
 
         isDiving = false;
         isDiveGrounded = true;
+        diveGroundedTime = 0f; // 타이머 시작
 
         // 이동 입력 초기화 (걷기 파티클 즉시 재생 방지)
         moveDir = Vector2.zero;
@@ -901,6 +924,9 @@ public class PlayerController : NetworkBehaviour
         isHolding = false;
         holdingTargetId = 0;
         canvasManager.ToggleArrow(true); // 화살표 켜기
+
+        // 던진 후 다이브 방지 (점프 상태에서 던지면 다이브 안되게)
+        canDive = false;
 
         // 콜라이더 정보 초기화
         grabbedColliderCenter = Vector3.zero;

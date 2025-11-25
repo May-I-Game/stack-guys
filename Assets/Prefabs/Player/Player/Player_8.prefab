@@ -1162,7 +1162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  visibleRange: 70
+  visibleRange: 30
   hysteresisDistance: 5
   updateInterval: 0.5
 --- !u!114 &7509974800349344399
