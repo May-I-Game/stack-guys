@@ -20,6 +20,13 @@ public class PlayerBody : NetworkBehaviour, IBatchSyncObject
 
     public override void OnNetworkSpawn()
     {
+        // 클라이언트는 물리 끄기
+        if (IsClient)
+        {
+            var rb = GetComponent<Rigidbody>();
+            rb.isKinematic = true;
+        }
+
         // 초기값 설정
         _targetPos = transform.position;
         _targetRotY = transform.rotation.eulerAngles.y;
@@ -97,10 +104,6 @@ public class PlayerBody : NetworkBehaviour, IBatchSyncObject
         {
             BatchNetworkManager.Instance.UnregisterObject(NetworkObjectId);
         }
-
-        // 예: 리지드바디가 있다면 키네마틱을 끄고 물리 효과를 줌
-        var rb = GetComponent<Rigidbody>();
-        if (rb != null) rb.isKinematic = false;
 
         Debug.Log($"{this.gameObject}: 배칭 동기화 중단, 로컬 모드로 전환됨");
 
