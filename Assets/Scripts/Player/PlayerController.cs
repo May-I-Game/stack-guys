@@ -451,7 +451,10 @@ public class PlayerController : NetworkBehaviour
 
     public void SetInputEnabled(bool enabled)
     {
-        inputEnabled.Value = enabled;
+        if (IsServer)
+        {
+            inputEnabled.Value = enabled;
+        }
     }
 
     public string GetPlayerName()
