@@ -198,8 +198,9 @@ public class GameManager : NetworkBehaviour
 
     private void HandleClientConnected(ulong clientId)
     {
-        // 새로 접속한 플레이어를 로비 스폰 지점으로 이동
-        MovePlayerToLobby(clientId);
+        // ✅ 수정된 방식 (레이스 컨디션 방지)
+        StartCoroutine(MovePlayerToLobbyCoroutine(clientId));
+
         CheckPlayerCount();
     }
 
@@ -208,14 +209,62 @@ public class GameManager : NetworkBehaviour
         CheckPlayerCount();
     }
 
-    private void MovePlayerToLobby(ulong clientId)
+    private IEnumerator MovePlayerToLobbyCoroutine(ulong clientId)
     {
-        NetworkObject playerObject = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
-        if (playerObject == null) return;
+        NetworkObject playerObject = null;
+        int retryCount = 0;
+        const int MAX_RETRIES = 10; // 최대 10번 시도 (1초)
+
+        // PlayerObject가 등록될 때까지 대기
+        while (retryCount < MAX_RETRIES)
+        {
+            if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client))
+            {
+                playerObject = client.PlayerObject;
+                if (playerObject != null)
+                    break;
+            }
+
+            yield return new WaitForSeconds(0.1f);
+            retryCount++;
+        }
+
+        if (playerObject == null)
+        {
+            Debug.LogError($"[MovePlayerToLobby] Failed to get PlayerObject for client {clientId} after {MAX_RETRIES} retries");
+            yield break;
+        }
+
+        // 검증 후 텔레포트
+        MovePlayerToLobbyInternal(playerObject);
+    }
+
+    private void MovePlayerToLobbyInternal(NetworkObject playerObject)
+    {
+        // 배열 검증
+        if (lobbySpawnPoints == null || lobbySpawnPoints.Length == 0)
+        {
+            Debug.LogError("[MovePlayerToLobby] lobbySpawnPoints not configured!");
+            return;
+        }
 
         Transform randomSpawnPoint = lobbySpawnPoints[Random.Range(0, lobbySpawnPoints.Length)];
-        PlayerController player = playerObject.GetComponent<PlayerController>();
+
+        // Null 검증
+        if (randomSpawnPoint == null)
+        {
+            Debug.LogError("[MovePlayerToLobby] Selected spawn point is null!");
+            return;
+        }
+
+        if (!playerObject.TryGetComponent<PlayerController>(out var player))
+        {
+            Debug.LogError("[MovePlayerToLobby] PlayerController not found!");
+            return;
+        }
+
         player.DoRespawn(randomSpawnPoint.position, randomSpawnPoint.rotation);
+        Debug.Log($"[MovePlayerToLobby] Player {player.GetPlayerName()} teleported to lobby");
     }
 
     private void CheckPlayerCount()
@@ -358,8 +407,18 @@ public class GameManager : NetworkBehaviour
         shouldPlayTimeline.Value = true;
 
         int i = 0;
-        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        // 현재 연결된 클라이언트 리스트를 복사 (iteration 중 disconnection 방지)
+        var clientsList = new List<NetworkClient>(NetworkManager.Singleton.ConnectedClientsList);
+
+        foreach (var client in clientsList)
         {
+            // 클라이언트가 연결이 끊겼는지 확인
+            if (client == null || !NetworkManager.Singleton.ConnectedClients.ContainsKey(client.ClientId))
+            {
+                Debug.LogWarning($"[TeleportPlayers] Client {client?.ClientId} disconnected during teleport, skipping");
+                continue;
+            }
+
             NetworkObject playerObject = client.PlayerObject;
             if (playerObject == null) continue;
 
@@ -374,13 +433,21 @@ public class GameManager : NetworkBehaviour
             PlayerController controller = playerObject.GetComponent<PlayerController>();
             if (controller != null)
             {
-                controller.inputEnabled.Value = false;
-                controller.ReleaseGrab();
-                controller.ForceClearInputOnServer();
-            }
+                try
+                {
+                    controller.inputEnabled.Value = false;
+                    controller.ReleaseGrab();
+                    controller.ForceClearInputOnServer();
 
-            // 해당 플레이어에게 텔레포트 명령
-            controller.DoRespawn(spawnPos, Quaternion.identity);
+                    // 해당 플레이어에게 텔레포트 명령
+                    controller.DoRespawn(spawnPos, Quaternion.identity);
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogWarning($"[TeleportPlayers] Error teleporting player {client.ClientId}: {e.Message}");
+                    continue;
+                }
+            }
 
             i++;
 
