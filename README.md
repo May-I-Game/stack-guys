@@ -146,22 +146,22 @@ Assets/Scripts/
 
 #### 1. 대규모 플레이어 동기화 문제
 
-**문제**: Unity Netcode의 기본 NetworkTransform은 100명 동기화 시 대역폭 폭증
+**문제**: Unity Netcode의 기본 NetworkTransform은 100명 동기화 시 대역폭 폭증  
 **해결**: 커스텀 배치 동기화 시스템 + AOI로 대역폭 **85% 감소**
 
 #### 2. 시네마틱 동기화
 
-**문제**: 네트워크 지연으로 인한 Timeline 재생 타이밍 불일치
+**문제**: 네트워크 지연으로 인한 Timeline 재생 타이밍 불일치  
 **해결**: ServerTime 기반 동기화 + 버퍼 시간으로 **±50ms 오차** 달성
 
 #### 3. 봇 AI 경로 탐색
 
-**문제**: 동적 장애물(문)이 열릴 때 봇이 인식하지 못함
+**문제**: 동적 장애물(문)이 열릴 때 봇이 인식하지 못함  
 **해결**: 우선순위 기반 웨이포인트 시스템 + 이벤트 기반 등록
 
 #### 4. WebGL 네트워크
 
-**문제**: WebGL에서 UDP 불가능
+**문제**: WebGL에서 UDP 불가능  
 **해결**: NativeWebSocket 패키지 사용, Transport Layer 분기 처리
 
 ### 얻은 인사이트
@@ -201,7 +201,8 @@ Assets/Scripts/
 
 ## 📄 라이선스
 
-본 프로젝트는 학습용으로 개발되며, 상업적 목적이 없습니다. 따라서 본 프로젝트에서는 어떠한 수익도 발생시키지 않습니다.
+본 프로젝트는 학습용으로 개발되며, 상업적 목적이 없습니다. 따라서 본 프로젝트에서는 어떠한 수익도 발생시키지 않습니다.  
+This project is developed for educational purposes and has no commercial intent. Therefore, it does not generate any revenue.
 
 ---
 
