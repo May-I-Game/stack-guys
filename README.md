@@ -10,17 +10,11 @@
 ## 📋 목차
 
 - [프로젝트 개요](#-프로젝트-개요)
-- [핵심 기술 스택](#-핵심-기술-스택)
-- [주요 기술 구현](#-주요-기술-구현)
-  - [1. 네트워크 최적화 시스템](#1-네트워크-최적화-시스템)
-  - [2. 서버 권한 기반 아키텍처](#2-서버-권한-기반-아키텍처)
-  - [3. AI 봇 시스템](#3-ai-봇-시스템)
-  - [4. AWS 클라우드 인프라](#4-aws-클라우드-인프라)
 - [게임 시스템](#-게임-시스템)
 - [프로젝트 구조](#-프로젝트-구조)
 - [성능 지표](#-성능-지표)
-
----
+- [학습 및 성과](#-학습-및-성과)
+- [팀 구성](#-팀-구성)
 
 ## 🎮 프로젝트 개요
 
@@ -31,14 +25,12 @@ Stack Guys는 **최대 100명의 플레이어**가 동시에 참여할 수 있�
 - **팀 프로젝트** (5명)
 - 개발 기간: 2025년 11월 ~ 2025년 12월 (1개월)
 
-### 담당 역할
+### 시스템 특징징
 
 - **네트워크 시스템 설계 및 구현** (BatchNetworkManager, 관심 영역 최적화)
 - **AI 봇 시스템 개발** (NavMesh 기반 경로 탐색, 동적 웨이포인트 시스템)
 - **AWS 인프라 구축** (EC2 Auto Scaling, ALB, 매치메이킹 서버 연동)
-- **게임명
-  → 자동 헬스 체크를 통한 매칭 로직
-```
+- **매칭 서버** (자동 헬스 체크를 통한 매칭 로직)
 
 ---
 
@@ -54,50 +46,13 @@ Stack Guys는 **최대 100명의 플레이어**가 동시에 참여할 수 있�
 - **잡기**: 1.15m 범위, 머리 위 0.6m에 고정
 
 #### 탈출 메커니즘
+- 잡힌 상태에서 5번 점프하면 탈출
 
-```csharp
-// 잡힌 상태에서 5번 점프하면 탈출
-private int escapeJumpCount = 0;
-private const int ESCAPE_THRESHOLD = 5;
-
-void Update()
-{
-    if (isGrabbed && Input.GetKeyDown(KeyCode.Space))
-    {
-        escapeJumpCount++;
-        if (escapeJumpCount >= ESCAPE_THRESHOLD)
-        {
-            EscapeFromGrabServerRpc();
-        }
-    }
-}
-```
-
-### 버프 시스템
-
-**파일**: [`Assets/Scripts/Item/BuffSystem.cs`](Assets/Scripts/Item/BuffSystem.cs)
-
-```csharp
-public enum BuffType
-{
-    SpeedBoost,     // 이동 속도 20% 증가
-    JumpBoost,      // 점프력 증가
-    Invincibility   // 무적 (잡기 면역)
-}
-
-[ServerRpc(RequireOwnership = false)]
-public void ApplyBuffServerRpc(BuffType type, float duration, float multiplier)
-{
-    switch (type)
-    {
-        case BuffType.SpeedBoost:
-            playerController.walkSpeed *= multiplier;
-            StartCoroutine(RemoveBuffAfterDuration(type, duration));
-            break;
-        // ...
-    }
-}
-```
+### 아이템 시스템
+- 속도 버프 아이템: 이동 속도 20% 증가
+- 점프 버프 아이템: 점프력 증가
+- 무적 아이템:  무적 (잡기 면역)
+- 폭탄 아이템: 잡은 후 던져서 충격파를 발생하는 아이템
 
 ### 트랩/장애물
 
@@ -108,10 +63,8 @@ public void ApplyBuffServerRpc(BuffType type, float duration, float multiplier)
 | RandomDoorTrigger | 랜덤하게 통과 허용/차단       | `RandomDoorTrigger.cs` |
 | GoalFlag          | 결승선 (랭킹 기록)            | `GoalFlag.cs`          |
 
----
 
 ## 📁 프로젝트 구조
-
 ```
 Assets/Scripts/
 ├── Manager/
@@ -149,8 +102,7 @@ Assets/Scripts/
     ├── CompleteNGOProfiler.cs      -          네트워크 프로파일러
     ├── ServerPerformanceProfiler.cs -         서버 성능 모니터
     └── ServerTickRateMonitor.cs    -          틱레이트 모니터
-
----
+```
 
 ## 📊 성능 지표
 
@@ -187,8 +139,6 @@ Assets/Scripts/
 | 서버당 플레이어 | 최대 100명            |
 | 메모리 사용량   | ~1.2 GB (100명 기준)  |
 | CPU 사용률      | ~40% (100명 기준)     |
-
----
 
 ## 🎓 학습 및 성과
 
@@ -243,15 +193,15 @@ Assets/Scripts/
 | --------------------- | ------ | ---------------------------------- |
 | 팀장, 게임 서버 개발  | 강경찬 | 서버 최적화, 게임 UI, 이펙트, SFX |
 | 게임 서버 개발        | 서정   | 게임 서버, 플레이어 로직, 맵 에디터, 부하 테스트 툴 개발 |
-| 게임 클라이언트 개발  | 김도훈 | 게임 클라이언트, 봇 플레이어 로직, 아이템 구현 |
-| 게임 클라이언트 개발  | 이정호 | 게임 클라이언트, 타일 질감, 물 커스텀 셰이더, 레벨 디자인 ,타일 에디터 ,게임 UI |
+| 게임 클라이언트 개발  | 김도훈 | 게임 클라이언트, 봇 AI, 아이템 구현 |
+| 게임 클라이언트 개발  | 이정호 | 게임 클라이언트, 타일 질감, 물 커스텀 셰이더, 레벨 디자인, 타일 에디터, 게임 UI |
 | DevOps               | 전석모 | 인프라 구축, 매치메이킹 서버 구현 |
 
 ---
 
 ## 📄 라이선스
 
-이 프로젝트는 팀 프로젝트로, 상업적 사용이 제한될 수 있습니다.
+본 프로젝트는 학습용으로 개발되며, 상업적 목적이 없습니다. 따라서 본 프로젝트에서는 어떠한 수익도 발생시키지 않습니다.
 
 ---
 
@@ -262,4 +212,3 @@ Assets/Scripts/
 ---
 
 **Made by May-I-Game Team**
-```
