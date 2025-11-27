@@ -44,7 +44,7 @@ Stack Guys는 **최대 100명의 플레이어**가 동시에 참여할 수 있�
 
 ### 게임 엔진 & 프레임워크
 
-- **Unity 2022.3 LTS** - URP (Universal Render Pipeline)
+- **Unity 6000.0.06f1 LTS** - Unity 6 게임 엔진
 - **Netcode for GameObjects 1.5.2** - Unity 공식 멀티플레이어 프레임워크
 - **Unity Transport** - 저수준 네트워크 전송 계층
 - **NativeWebSocket** - WebGL 빌드용 WebSocket 지원
@@ -70,7 +70,7 @@ Stack Guys는 **최대 100명의 플레이어**가 동시에 참여할 수 있�
 
 ### 빌드 플랫폼
 
-- **Windows (Standalone)** - 게임 서버 + 클라이언트
+- **Linux** - 게임 서버
 - **WebGL** - 웹 브라우저 클라이언트
 
 ---
@@ -105,7 +105,7 @@ public struct PlayerSnapshot : INetworkSerializeByMemcpy
    - Network ID: `ulong` (8 bytes) → `ushort` (2 bytes)
    - **압축률: 73% 감소** (36 bytes → 10 bytes)
 
-2. **델타 압축 (Delta Compression)**
+2. **임계값 기반 컬링 (Threshold Culling)**
 
    ```csharp
    private const float POSITION_THRESHOLD = 0.02f;  // 2cm
@@ -141,8 +141,8 @@ foreach (var player in allPlayers)
 
 **효과**:
 
-- 100명 게임에서 각 클라이언트는 평균 **10~15명의 플레이어만 동기화**
-- 대역폭 사용량 **85% 감소**
+- 100명 게임에서 각 클라이언트는 평균 **70~80명의 플레이어만 동기화**
+- 대역폭 사용량 **20% 감소**
 
 #### 1.3 입력 최적화 (Input Dampening)
 
@@ -432,24 +432,6 @@ private string GetPublicIP()
         return "3.37.88.2"; // Fallback IP
     }
 }
-```
-
-#### 4.3 자동 종료 시스템
-
-```csharp
-// 게임 종료 시 플레이어 0명이면 서버 종료
-IEnumerator AutoShutdownIfEmpty()
-{
-    yield return new WaitForSeconds(60f); // 60초 대기
-
-    if (NetworkManager.ConnectedClientsIds.Count == 0
-        && currentGameState.Value == GameState.Ended)
-    {
-        Debug.Log("No players remaining. Shutting down server...");
-        Application.Quit();
-    }
-}
-```
 
 **인프라 구조**:
 
@@ -529,11 +511,8 @@ public void ApplyBuffServerRpc(BuffType type, float duration, float multiplier)
 | 트랩 이름         | 기능                          | 파일                   |
 | ----------------- | ----------------------------- | ---------------------- |
 | JumpPad           | 플레이어를 특정 방향으로 튕김 | `JumpPad.cs`           |
-| PressTrap         | 플레이어 무게로 작동, 밀어냄  | `PressTrap.cs`         |
 | DoubleDoorTrigger | 트리거 기반 문 개폐           | `DoubleDoorTrigger.cs` |
 | RandomDoorTrigger | 랜덤하게 통과 허용/차단       | `RandomDoorTrigger.cs` |
-| RotatingPlatform  | 회전하는 플랫폼               | `RotatingPlatform.cs`  |
-| Teleporter        | 순간 이동 포털                | `Teleporter.cs`        |
 | GoalFlag          | 결승선 (랭킹 기록)            | `GoalFlag.cs`          |
 
 ---
@@ -554,8 +533,7 @@ Assets/Scripts/
 │
 ├── Player/
 │   ├── PlayerController.cs         (800+줄)  - 플레이어 컨트롤
-│   ├── PlayerAnimationController.cs -         애니메이션 제어
-│   └── PlayerGrabSystem.cs         -          잡기 시스템
+│   └── PlayerAnimationController.cs -         애니메이션 제어
 │
 ├── Bot/
 │   ├── BotController.cs            (930줄)   - AI 봇
@@ -671,7 +649,7 @@ Assets/Scripts/
 | 역할                  | 담당자 | 주요 업무                          |
 | --------------------- | ------ | ---------------------------------- |
 | 팀장, 서버 엔지니어   | 강경찬 | 서버 최적화, 게임 UI, 이펙트, SFX |
-| 게임 서버 개발        | 서정   | 게임 서버, 맵 에디터, 부하 테스트 툴 개발 |
+| 게임 서버 개발        | 서정   | 게임 서버, 플레이어 로직, 맵 에디터, 부하 테스트 툴 개발 |
 | 게임 클라이언트 개발  | 김도훈 | 게임 클라이언트, 봇 플레이어 로직, 아이템 구현 |
 | 게임 클라이언트 개발  | 이정호 | 게임 클라이언트, 타일 질감, 물 커스텀 셰이더, 레벨 디자인 |
 | DevOps 엔지니어       | 전석모 | AWS 인프라 구축, 매치메이킹 서버 구현 |
