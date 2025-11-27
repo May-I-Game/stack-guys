@@ -23,7 +23,7 @@ public class EditorManager : MonoBehaviour
     public Material previewMaterial;
 
     [Header("팔레트 UI 설정")]
-    public Transform paletteContentArea;
+    public Transform palettePanel;
     public GameObject paletteButtonPrefab;
 
     [Header("Save/Load UI")]
@@ -236,21 +236,19 @@ public class EditorManager : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, 1000f))
         {
-            // "MapObjectInfo" 컴포넌트가 있고, 현재 활성화된(삭제되지 않은) 오브젝트만 삭제
-            MapObjectInfo info = hit.collider.GetComponent<MapObjectInfo>();
+            // 자식의 콜라이더를 맞췄더라도 부모 쪽으로 올라가며 컴포넌트를 찾기
+            MapObjectInfo info = hit.collider.GetComponentInParent<MapObjectInfo>();
 
-            if (info != null && hit.collider.gameObject.activeSelf)
+            if (info != null && info.gameObject.activeSelf)
             {
-                // 직접 Destroy 하는 대신, DeleteObjectAction을 생성하고 등록
-                IEditorAction action = new DeleteObjectAction(hit.collider.gameObject);
+                // 자식이 아니라 부모를 기준으로 삭제 액션에 등록
+                IEditorAction action = new DeleteObjectAction(info.gameObject);
                 RegisterAction(action);
             }
         }
     }
 
-    // --- [수정] 액션 등록 및 실행 ---
-
-    // 새로운 행동을 등록하고 실행합니다.
+    // 새로운 행동을 등록하고 실행
     private void RegisterAction(IEditorAction action)
     {
         // 1. 행동을 즉시 실행
@@ -378,7 +376,7 @@ public class EditorManager : MonoBehaviour
         }
 
         // 기존 팔레트 버튼들을 모두 삭제합니다.
-        foreach (Transform child in paletteContentArea)
+        foreach (Transform child in palettePanel)
         {
             Destroy(child.gameObject);
         }
@@ -390,7 +388,7 @@ public class EditorManager : MonoBehaviour
         foreach (PaletteItem item in selectedCategory.items)
         {
             // paletteButtonPrefab을 Content 영역 자식으로 Instantiate
-            GameObject newButtonGO = Instantiate(paletteButtonPrefab, paletteContentArea);
+            GameObject newButtonGO = Instantiate(paletteButtonPrefab, palettePanel);
 
             // 버튼 아이콘 설정
             Image buttonIcon = newButtonGO.GetComponent<Image>();
@@ -557,6 +555,18 @@ public class EditorManager : MonoBehaviour
         saveLoadPanel.SetActive(false);
     }
 
+    public void OpenPalettePanel()
+    {
+        if (palettePanel == null) return;
+        palettePanel.gameObject.SetActive(true);
+    }
+
+    public void ClosePalettePanel()
+    {
+        if (palettePanel == null) return;
+        palettePanel.gameObject.SetActive(false);
+    }
+
     public void OnSaveButtonPressed()
     {
         string mapName = mapNameInput.text;
@@ -649,15 +659,17 @@ public class EditorManager : MonoBehaviour
 
     private void StartGame()
     {
-        CloseSaveLoadPanel();
-        currentEditorState = EditorState.Playing;
-
         GameObject spawnPointObj = GameObject.FindGameObjectWithTag("SpawnPoint");
         if (spawnPointObj == null)
         {
             Debug.LogError("맵에 'SpawnPoint'가 없습니다! 플레이 테스트를 시작할 수 없습니다.");
             return;
         }
+
+        CloseSaveLoadPanel();
+        ClosePalettePanel();
+        currentSelectedPrefab = null;
+        currentEditorState = EditorState.Playing;
 
         spawnPoint = spawnPointObj.transform;
         currentPlayer = Instantiate(playerPref, spawnPoint.position, spawnPoint.rotation).GetComponent<EditorPlayerController>();
@@ -672,6 +684,8 @@ public class EditorManager : MonoBehaviour
     private void EndGame()
     {
         currentEditorState = EditorState.Editor;
+
+        OpenPalettePanel();
 
         editorCam.SetActive(true);
         playerCam.SetActive(false);
