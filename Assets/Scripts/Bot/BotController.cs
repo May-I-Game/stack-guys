@@ -89,10 +89,10 @@ public class BotController : PlayerController
         // 봇은 땅체크 자주안하기
         groundCheckInterval = 4;
 
-        // 서버에서만 AI 설정
+        // 클라이언트에서는 AI 비활성화
         if (!IsServer)
         {
-            // 클라이언트에서는 NavMeshAgent 비활성화 (AI 로직 실행 안 함)
+            // avMeshAgent 비활성화 (AI 로직 실행 안 함)
             if (navAgent != null)
                 navAgent.enabled = false;
 
@@ -188,7 +188,7 @@ public class BotController : PlayerController
             // NavMeshAgent 재초기화
             if (navAgent != null)
             {
-                // NavMeshAget 완전 리셋 (false, true 해야 내부 상태 리셋됨)
+                // NavMeshAgent 완전 리셋 (false, true 해야 내부 상태 리셋됨)
                 navAgent.enabled = false;
                 navAgent.enabled = true;
 
@@ -380,7 +380,7 @@ public class BotController : PlayerController
             return distA.CompareTo(distB);
         });
 
-        // 가장 가까운 topCloesestCount개 중에서 랜덤 선택
+        // 가장 가까운 topClosestCount개 중에서 랜덤 선택
         int topCount = Mathf.Min(topClosestCount, forwardIndices.Count);
         int randomPick = Random.Range(0, topCount);
         int chosen = forwardIndices[randomPick];
@@ -553,7 +553,7 @@ public class BotController : PlayerController
         isJumpQueued = true;
     }
 
-    // NavMeshAgen = 어디로 가야 하는지만 계산
+    // NavMeshAgent = 어디로 가야 하는지만 계산
     // 실제 이동/점프 물리 = PlayerController의 Rigidbody가 전부 담당
     // 점프 구간 통과중
     private void UpdateJumpLink()
