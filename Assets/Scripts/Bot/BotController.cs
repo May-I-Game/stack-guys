@@ -899,9 +899,9 @@ public class BotController : PlayerController
             EnablePhysics(false);
         }
 
-        if (BatchNetworkManager.Instance != null)
+        if (NetworkBatchManager.Instance != null)
         {
-            BatchNetworkManager.Instance.RegisterPlayer(NetworkObjectId, this);
+            NetworkBatchManager.Instance.RegisterPlayer(NetworkObjectId, this);
         }
 
         // 초기 위치 동기화
@@ -913,9 +913,9 @@ public class BotController : PlayerController
 
     public override void OnNetworkDespawn()
     {
-        if (BatchNetworkManager.Instance != null)
+        if (NetworkBatchManager.Instance != null)
         {
-            BatchNetworkManager.Instance.UnregisterPlayer(NetworkObjectId);
+            NetworkBatchManager.Instance.UnregisterPlayer(NetworkObjectId);
         }
     }
 

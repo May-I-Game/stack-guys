@@ -81,7 +81,7 @@ public struct ObjectSnapshot : INetworkSerializeByMemcpy
     }
 }
 
-public class BatchNetworkManager : NetworkBehaviour
+public class NetworkBatchManager : NetworkBehaviour
 {
     [SerializeField]
     private float syncDistance = 30f;
@@ -108,7 +108,7 @@ public class BatchNetworkManager : NetworkBehaviour
     private float _logTimer = 0f;
     private long _totalSnapshotsSentInSecond = 0;
 
-    public static BatchNetworkManager Instance;
+    public static NetworkBatchManager Instance;
 
     private void Awake()
     {
