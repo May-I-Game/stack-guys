@@ -235,7 +235,7 @@ public class BotManager : NetworkBehaviour
         BotController botController = bot.GetComponent<BotController>();
         if (botController != null)
         {
-            botController.DoRespawn(targetPosition, targetRotation);
+            botController.DoRespawnTeleport(targetPosition, targetRotation);
         }
 
         // 새로운 NavMesh에서 NavMeshAgent 재활성화

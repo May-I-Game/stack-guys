@@ -4,6 +4,12 @@ using UnityEngine.EventSystems;
 
 public class PlayerInputHandler : NetworkBehaviour
 {
+    [Header("Network Optimization")]
+    [Tooltip("입력 전송 최소 간격 (초). 모바일 조이스틱 떨림 방지. 권장: 0.033~0.05")]
+    [SerializeField] private float inputSendInterval = 0.05f;  // 50ms = 20Hz
+    [Tooltip("입력 변화량 임계값. 이 값 이상 변할 때만 즉시 전송. 권장: 0.1")]
+    [SerializeField] protected float inputDeltaThreshold = 0.1f;  // 10% 변화
+
     // 모바일 UI 세팅
     private FloatingJoystick joystick;
 
@@ -17,6 +23,10 @@ public class PlayerInputHandler : NetworkBehaviour
     private Vector2 camRightCache;
 
     private PlayerCanvasManager canvasManager;  // 캔버스 관리자
+
+    // 입력 전송 상태 변수
+    private Vector2 lastSentInput = Vector2.zero;
+    private float lastInputSendTime = 0f;
 
     private void Start()
     {
@@ -210,5 +220,51 @@ public class PlayerInputHandler : NetworkBehaviour
         {
             GrabInput = true;
         }
+    }
+
+    public bool ShouldSendInput(out Vector2 moveInput)
+    {
+        moveInput = this.MoveInput;
+
+        float timeSinceLastSend = Time.time - lastInputSendTime;
+        float inputDelta = Vector2.Distance(moveInput, lastSentInput);
+
+        bool shouldSend = false;
+
+        // 조건 1: 이동 시작 (정지 → 이동)
+        if (lastSentInput.magnitude < 0.01f && moveInput.magnitude >= 0.1f)
+        {
+            shouldSend = true;  // 즉시 전송 (반응성 최우선)
+        }
+        // 조건 2: 완전히 멈춤 (이동 → 정지)
+        else if (lastSentInput.magnitude >= 0.1f && moveInput.magnitude < 0.01f)
+        {
+            shouldSend = true;  // 즉시 전송 (멈춤은 즉각 반영)
+        }
+        // 조건 3: 큰 방향 전환 (임계값 이상 변화)
+        else if (inputDelta >= inputDeltaThreshold)
+        {
+            shouldSend = true;  // 즉시 전송 (급격한 방향 전환)
+        }
+        // 조건 4: 일정 시간마다 전송 (조이스틱 유지 시 주기적 동기화)
+        else if (timeSinceLastSend >= inputSendInterval && inputDelta > 0.001f)
+        {
+            shouldSend = true;  // 주기적 전송 (미세 변화 누적 반영)
+        }
+
+        if (shouldSend)
+        {
+            lastSentInput = moveInput;
+            lastInputSendTime = Time.time;
+            return true;
+        }
+
+        return false;
+    }
+
+    public void ResetInputState()
+    {
+        lastSentInput = Vector2.zero;
+        lastInputSendTime = 0f;
     }
 }

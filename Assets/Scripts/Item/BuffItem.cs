@@ -32,7 +32,7 @@ public abstract class BuffItem : InteractiveItem
         ApplyBuffToPlayer(Holder);
 
         // 플레이어의 버프 픽업 이펙트 재생
-        Holder.PlayBuffPickupEffect();
+        Holder.OnItemGet();
 
         base.ActivateItem();
     }

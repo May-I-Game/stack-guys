@@ -263,7 +263,7 @@ public class GameManager : NetworkBehaviour
             return;
         }
 
-        player.DoRespawn(randomSpawnPoint.position, randomSpawnPoint.rotation);
+        player.DoRespawnTeleport(randomSpawnPoint.position, randomSpawnPoint.rotation);
         Debug.Log($"[MovePlayerToLobby] Player {player.GetPlayerName()} teleported to lobby");
     }
 
@@ -435,12 +435,12 @@ public class GameManager : NetworkBehaviour
             {
                 try
                 {
-                    controller.inputEnabled.Value = false;
+                    controller.InputEnabled = true;
                     controller.ReleaseGrab();
                     controller.ForceClearInputOnServer();
 
                     // 해당 플레이어에게 텔레포트 명령
-                    controller.DoRespawn(spawnPos, Quaternion.identity);
+                    controller.DoRespawnTeleport(spawnPos, Quaternion.identity);
                 }
                 catch (System.Exception e)
                 {
@@ -657,7 +657,7 @@ public class GameManager : NetworkBehaviour
         }
 
         // 🟩 서버에서 DoRespawn 사용 (서버 권위 방식)
-        player.DoRespawn(podiumTransform.position, podiumTransform.rotation);
+        player.DoRespawnTeleport(podiumTransform.position, podiumTransform.rotation);
 
         // 시상대에 올라가면 Win 애니메이션 재생 (stabbing2)
         player.OnPodium();
@@ -812,7 +812,7 @@ public class GameManager : NetworkBehaviour
             PlayerController controller = playerObject.GetComponent<PlayerController>();
             if (controller != null)
             {
-                controller.inputEnabled.Value = false;
+                controller.InputEnabled = false;
                 controller.ForceClearInputOnServer();
             }
         }
@@ -837,7 +837,7 @@ public class GameManager : NetworkBehaviour
             PlayerController controller = playerObject.GetComponent<PlayerController>();
             if (controller != null)
             {
-                controller.inputEnabled.Value = true;
+                controller.InputEnabled = true;
             }
         }
 
