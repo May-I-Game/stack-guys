@@ -32,13 +32,13 @@ public class PlayerBody : NetworkBehaviour, IBatchSyncObject
         _targetRotY = transform.rotation.eulerAngles.y;
 
         // 스폰 시 배칭 매니저에 등록 (서버/클라 모두)
-        BatchNetworkManager.Instance.RegisterObject(NetworkObjectId, this);
+        NetworkBatchManager.Instance.RegisterObject(NetworkObjectId, this);
     }
 
     public override void OnNetworkDespawn()
     {
         // 디스폰 시 안전하게 해제
-        BatchNetworkManager.Instance.UnregisterObject(NetworkObjectId);
+        NetworkBatchManager.Instance.UnregisterObject(NetworkObjectId);
     }
 
     private void Update()
@@ -81,7 +81,7 @@ public class PlayerBody : NetworkBehaviour, IBatchSyncObject
         if (collision.gameObject.CompareTag("Ocean"))
         {
             // 서버에서 먼저 배칭 해제 (더 이상 전송 안 함)
-            BatchNetworkManager.Instance.UnregisterObject(NetworkObjectId);
+            NetworkBatchManager.Instance.UnregisterObject(NetworkObjectId);
 
             // 클라이언트들에게 로컬 모드 전환 알림
             ConvertToLocalClientRpc();
@@ -100,9 +100,9 @@ public class PlayerBody : NetworkBehaviour, IBatchSyncObject
         _isLocalMode = true;
 
         // 클라이언트에서도 배칭 목록에서 제거 (수신 처리 중단)
-        if (BatchNetworkManager.Instance != null)
+        if (NetworkBatchManager.Instance != null)
         {
-            BatchNetworkManager.Instance.UnregisterObject(NetworkObjectId);
+            NetworkBatchManager.Instance.UnregisterObject(NetworkObjectId);
         }
 
         Debug.Log($"{this.gameObject}: 배칭 동기화 중단, 로컬 모드로 전환됨");
