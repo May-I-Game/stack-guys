@@ -205,9 +205,9 @@ public class PlayerController : NetworkBehaviour
             EnablePhysics(false);
         }
 
-        if (BatchNetworkManager.Instance != null)
+        if (NetworkBatchManager.Instance != null)
         {
-            BatchNetworkManager.Instance.RegisterPlayer(NetworkObjectId, this);
+            NetworkBatchManager.Instance.RegisterPlayer(NetworkObjectId, this);
         }
 
         // 초기 위치 동기화
@@ -229,9 +229,9 @@ public class PlayerController : NetworkBehaviour
     // 디스폰 때 등록 해제 (안 하면 에러 남)
     public override void OnNetworkDespawn()
     {
-        if (BatchNetworkManager.Instance != null)
+        if (NetworkBatchManager.Instance != null)
         {
-            BatchNetworkManager.Instance.UnregisterPlayer(NetworkObjectId);
+            NetworkBatchManager.Instance.UnregisterPlayer(NetworkObjectId);
         }
 
         if (IsServer)
