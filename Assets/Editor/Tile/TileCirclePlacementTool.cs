@@ -156,16 +156,8 @@ public class TileCirclePlacementTool : EditorWindow
         }
         else // EdgePoint
         {
-            // Z축일 때는 클릭 지점에서 Z축 방향으로 radius만큼 이동
-            if (selectedAxis == Axis.Z)
-            {
-                float direction = invertDirection ? -1f : 1f;
-                return clickPoint + new Vector3(0, 0, radius * direction);
-            }
-
-            // X, Y축일 때는 원의 시작점 기준으로 계산
-            float startAngle = -angleRange / 2f;
-            Vector3 offset = GetOffsetVector(startAngle);
+            // 0도 위치의 offset을 구해서 중심 계산
+            Vector3 offset = GetOffsetVector(0f);
 
             // 클릭 지점에서 offset의 반대 방향으로 이동하면 중심
             return clickPoint - offset;
@@ -185,7 +177,9 @@ public class TileCirclePlacementTool : EditorWindow
 
     private Vector3 GetOffsetVector(float angle)
     {
-        float angleRad = angle * Mathf.Deg2Rad;
+        // 기준점이 항상 아래(270도)에 오도록 -90도 오프셋 추가
+        float adjustedAngle = angle - 90f;
+        float angleRad = adjustedAngle * Mathf.Deg2Rad;
         float direction = invertDirection ? -1f : 1f;
 
         switch (selectedAxis)
@@ -193,21 +187,21 @@ public class TileCirclePlacementTool : EditorWindow
             case Axis.X:
                 // X축 회전: YZ 평면에서 원
                 return new Vector3(0,
-                    Mathf.Sin(angleRad) * radius * direction,
-                    Mathf.Cos(angleRad) * radius);
+                    Mathf.Cos(angleRad) * radius,
+                    Mathf.Sin(angleRad) * radius * direction);
 
             case Axis.Y:
                 // Y축 회전: XZ 평면에서 원 (수평)
                 return new Vector3(
-                    Mathf.Sin(angleRad) * radius * direction,
+                    Mathf.Cos(angleRad) * radius,
                     0,
-                    Mathf.Cos(angleRad) * radius);
+                    Mathf.Sin(angleRad) * radius * direction);
 
             case Axis.Z:
                 // Z축 회전: XY 평면에서 원 (Z축은 고정, XY만 변함)
                 return new Vector3(
                     Mathf.Cos(angleRad) * radius,
-                    Mathf.Sin(angleRad) * radius,
+                    Mathf.Sin(angleRad) * radius * direction,
                     0);
 
             default:
@@ -221,7 +215,9 @@ public class TileCirclePlacementTool : EditorWindow
         if (!hasClickPoint || count <= 0) return;
 
         Vector3 centerPoint = GetActualCenterPoint();
-        float startAngle = -angleRange / 2f;
+
+        // 항상 0도부터 시작하도록 수정
+        float startAngle = 0f;
 
         // 360도일 때는 마지막이 처음과 겹치지 않도록 count개로 나눔
         float step = (angleRange >= 360f) ? angleRange / count :
@@ -234,6 +230,39 @@ public class TileCirclePlacementTool : EditorWindow
             Vector3 pos = centerPoint + offset;
             previewPositions.Add(pos);
         }
+    }
+
+    private Quaternion GetRotationForPosition(GameObject originalObject, float angleOffset)
+    {
+        // 원본 오브젝트의 회전값 가져오기
+        Quaternion originalRotation = originalObject.transform.rotation;
+
+        if (!faceCenter)
+        {
+            return originalRotation;
+        }
+
+        // 기준 프리팹의 회전에서 angleOffset만큼 추가 회전
+        float direction = invertDirection ? -1f : 1f;
+        Quaternion additionalRotation = Quaternion.identity;
+
+        switch (selectedAxis)
+        {
+            case Axis.X:
+                additionalRotation = Quaternion.Euler(angleOffset * direction, 0, 0);
+                break;
+
+            case Axis.Y:
+                additionalRotation = Quaternion.Euler(0, angleOffset * direction, 0);
+                break;
+
+            case Axis.Z:
+                additionalRotation = Quaternion.Euler(0, 0, angleOffset * direction);
+                break;
+        }
+
+        // 원본 회전에 추가 회전 적용
+        return additionalRotation * originalRotation;
     }
 
     private void ApplyPlacement()
@@ -254,6 +283,10 @@ public class TileCirclePlacementTool : EditorWindow
         Vector3 centerPoint = GetActualCenterPoint();
         Undo.IncrementCurrentGroup();
 
+        // 첫 번째 프리팹은 0도 오프셋 (기준), 나머지는 각도를 더해감
+        float step = (angleRange >= 360f) ? angleRange / count :
+                     (count > 1) ? angleRange / (count - 1) : 0f;
+
         if (!usePrefab)
         {
             // 일반 모드: 선택한 오브젝트를 첫 번째 위치로 이동
@@ -262,14 +295,8 @@ public class TileCirclePlacementTool : EditorWindow
                 Undo.RecordObject(selected.transform, "Move Object");
                 selected.transform.position = previewPositions[0];
 
-                if (faceCenter)
-                {
-                    Vector3 dir = (centerPoint - previewPositions[0]).normalized;
-                    if (dir != Vector3.zero)
-                    {
-                        selected.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
-                    }
-                }
+                // 첫 번째는 원본 회전 유지 (0도 오프셋)
+                selected.transform.rotation = GetRotationForPosition(selected, 0f);
 
                 // 나머지 위치에는 복제본 생성
                 for (int i = 1; i < previewPositions.Count; i++)
@@ -278,14 +305,9 @@ public class TileCirclePlacementTool : EditorWindow
                     GameObject newObj = Instantiate(selected);
                     newObj.transform.position = pos;
 
-                    if (faceCenter)
-                    {
-                        Vector3 dir = (centerPoint - pos).normalized;
-                        if (dir != Vector3.zero)
-                        {
-                            newObj.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
-                        }
-                    }
+                    // i번째 오브젝트는 step * i 만큼 회전
+                    float angleOffset = step * i;
+                    newObj.transform.rotation = GetRotationForPosition(selected, angleOffset);
 
                     Undo.RegisterCreatedObjectUndo(newObj, "Place Tile Circle");
                 }
@@ -309,14 +331,9 @@ public class TileCirclePlacementTool : EditorWindow
                 GameObject newObj = (GameObject)PrefabUtility.InstantiatePrefab(prefabSource);
                 newObj.transform.position = pos;
 
-                if (faceCenter)
-                {
-                    Vector3 dir = (centerPoint - pos).normalized;
-                    if (dir != Vector3.zero)
-                    {
-                        newObj.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
-                    }
-                }
+                // i번째 오브젝트는 step * i 만큼 회전
+                float angleOffset = step * i;
+                newObj.transform.rotation = GetRotationForPosition(selected, angleOffset);
 
                 Undo.RegisterCreatedObjectUndo(newObj, "Place Tile Circle");
             }
