@@ -1847,6 +1847,7 @@ GameObject:
   - component: {fileID: 203405907508950157}
   - component: {fileID: -5275568350055898461}
   - component: {fileID: 5802204827935318110}
+  - component: {fileID: 3421916987492310398}
   - component: {fileID: 8535606429997229100}
   m_Layer: 6
   m_Name: Player_4
@@ -2046,55 +2047,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1352
   bounceForce: 5
-  animator: {fileID: 5076005474336651356}
-  walkParticle: {fileID: 5339777539888548834}
-  jumpParticle: {fileID: 862146240533727198}
-  diveLandParticle: {fileID: 736563503412454115}
-  respawnParticle: {fileID: 1990026608530258290}
-  buffPickupEffect: {fileID: 2232378834868531213}
-  jumpBuffLoopEffect: {fileID: 1557191839780880793}
-  speedBuffLoopEffect: {fileID: 3296745458244855286}
-  invincibleBuffLoopEffect: {fileID: 5473573617313316334}
-  footstepAudioSource: {fileID: 1332932080452137869}
-  footstepClip: {fileID: 8300000, guid: 3bb824bb265c1fc42a7ec2d1050b863e, type: 3}
-  footstepVolume: 1
-  footstepInterval: 0.3
-  jumpAudioSource: {fileID: 1332932080452137869}
-  jumpVoiceClip: {fileID: 8300000, guid: 82c9a5c7e1dff9b4aac35c058e4ca25b, type: 3}
-  jumpEffectClip: {fileID: 8300000, guid: 0d05960287b44a246bccf049e2dc8712, type: 3}
-  jumpVoiceVolume: 0.2
-  jumpEffectVolume: 1
-  diveAudioSource: {fileID: 1332932080452137869}
-  diveStartClip: {fileID: 8300000, guid: 1691ee7657f19484982d4c509c5c6603, type: 3}
-  diveLandVoiceClip: {fileID: 8300000, guid: 7f49a3714ef345a4ba50941af49e0163, type: 3}
-  diveLandImpactClip: {fileID: 8300000, guid: 9ad0186fe67999640bc03d6e7579e654, type: 3}
-  diveStartVolume: 0.6
-  diveLandVoiceVolume: 1
-  diveLandImpactVolume: 0.8
-  buffAudioSource: {fileID: 1332932080452137869}
-  buffPickupClip: {fileID: 8300000, guid: d34e5b16e50b694429290677e60465aa, type: 3}
-  buffPickupVolume: 0.7
-  buffLoopAudioSource: {fileID: 2331709955026313599}
-  buffLoopClip: {fileID: 8300000, guid: cb8efadc31735404990852adee92e9f8, type: 3}
-  buffLoopVolume: 0.5
-  invincibleBuffLoopAudioSource: {fileID: 2623109325337949263}
-  invincibleBuffLoopClip: {fileID: 8300000, guid: 47bd1601e60432343bdb3d7421ce26e4, type: 3}
-  invincibleBuffLoopVolume: 0.5
-  respawnAudioSource: {fileID: 1332932080452137869}
-  respawnClip: {fileID: 8300000, guid: f0275c29b52376a40949f9c19fa4f2af, type: 3}
-  respawnVolume: 0.4
-  deathAudioSource: {fileID: 1332932080452137869}
-  deathVoiceClip: {fileID: 8300000, guid: 73db79184b7d80d4392366c2be8fd5a6, type: 3}
-  deathSpikeClip: {fileID: 8300000, guid: 472912c9b3dc34e45b45e4b7b6dbff66, type: 3}
-  deathOceanClip: {fileID: 8300000, guid: a09bd743764efd7409592bf02cc6101e, type: 3}
-  deathVolume: 0.7
-  hitAudioSource: {fileID: 1332932080452137869}
-  hitVoiceClip: {fileID: 8300000, guid: 7f49a3714ef345a4ba50941af49e0163, type: 3}
-  hitImpactClip: {fileID: 8300000, guid: e30c384e8591b1b498c383cbae1fd0cf, type: 3}
-  hitVolume: 1
-  throwAudioSource: {fileID: 1332932080452137869}
-  throwClip: {fileID: 8300000, guid: e03957dfe85ccbd4f917fa1544ae7545, type: 3}
-  throwVolume: 0.7
   inputSendInterval: 0.05
   inputDeltaThreshold: 0.1
   speedThreshold: 0.5
@@ -2102,15 +2054,67 @@ MonoBehaviour:
   lerpSpeed: 15
   smoothTime: 0.1
   bodyPrefab: {fileID: 7401533755334486338, guid: 4705ea76d85f92341b20255465d9dcf5, type: 3}
-  isDiveGrounded: 0
-  netIsDeath:
-    m_InternalValue: 0
-  isHit: 0
-  RespawnId:
-    m_InternalValue: 0
-  respawnManager: {fileID: 0}
-  inputEnabled:
-    m_InternalValue: 1
+--- !u!114 &3421916987492310398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7770702166532179593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17d987caf64a12f4e88d0135459d1890, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  footstepAudioSource: {fileID: 0}
+  footstepClip: {fileID: 0}
+  footstepVolume: 0.5
+  footstepInterval: 0.4
+  jumpAudioSource: {fileID: 0}
+  jumpVoiceClip: {fileID: 8300000, guid: 82c9a5c7e1dff9b4aac35c058e4ca25b, type: 3}
+  jumpEffectClip: {fileID: 8300000, guid: 0d05960287b44a246bccf049e2dc8712, type: 3}
+  jumpVoiceVolume: 0.7
+  jumpEffectVolume: 0.5
+  diveAudioSource: {fileID: 0}
+  diveStartClip: {fileID: 8300000, guid: 1691ee7657f19484982d4c509c5c6603, type: 3}
+  diveLandVoiceClip: {fileID: 8300000, guid: 7f49a3714ef345a4ba50941af49e0163, type: 3}
+  diveLandImpactClip: {fileID: 8300000, guid: 9ad0186fe67999640bc03d6e7579e654, type: 3}
+  diveStartVolume: 0.6
+  diveLandVoiceVolume: 0.7
+  diveLandImpactVolume: 0.8
+  throwAudioSource: {fileID: 0}
+  throwClip: {fileID: 8300000, guid: e03957dfe85ccbd4f917fa1544ae7545, type: 3}
+  throwVolume: 0.7
+  buffAudioSource: {fileID: 0}
+  buffPickupClip: {fileID: 8300000, guid: d34e5b16e50b694429290677e60465aa, type: 3}
+  buffPickupVolume: 0.7
+  buffLoopAudioSource: {fileID: 0}
+  buffLoopClip: {fileID: 8300000, guid: cb8efadc31735404990852adee92e9f8, type: 3}
+  buffLoopVolume: 0.5
+  invincibleBuffLoopAudioSource: {fileID: 0}
+  invincibleBuffLoopClip: {fileID: 8300000, guid: 47bd1601e60432343bdb3d7421ce26e4, type: 3}
+  invincibleBuffLoopVolume: 0.5
+  hitAudioSource: {fileID: 0}
+  hitVoiceClip: {fileID: 0}
+  hitImpactClip: {fileID: 0}
+  hitVolume: 0.7
+  deathAudioSource: {fileID: 0}
+  deathVoiceClip: {fileID: 8300000, guid: 73db79184b7d80d4392366c2be8fd5a6, type: 3}
+  deathSpikeClip: {fileID: 8300000, guid: 472912c9b3dc34e45b45e4b7b6dbff66, type: 3}
+  deathOceanClip: {fileID: 8300000, guid: a09bd743764efd7409592bf02cc6101e, type: 3}
+  deathVolume: 0.7
+  respawnAudioSource: {fileID: 0}
+  respawnClip: {fileID: 8300000, guid: f0275c29b52376a40949f9c19fa4f2af, type: 3}
+  respawnVolume: 0.7
+  walkParticle: {fileID: 3145141465443542576, guid: fcdecf1d692f11242a17b45f1671ee81, type: 3}
+  jumpParticle: {fileID: 141433446842962268, guid: 9fe8f8b3288e45a44af36ff8aa04486e, type: 3}
+  diveLandParticle: {fileID: 9157105887693468085, guid: c4f829cb7dd4b864caf8832ec5b1ee55, type: 3}
+  respawnParticle: {fileID: 3280519133390621004, guid: a71be3e7990efb040a07565c43cbb198, type: 3}
+  buffPickupEffect: {fileID: 2009675295250644980, guid: 964f31a73329d2f42824c8c47d084c19, type: 3}
+  jumpBuffLoopEffect: {fileID: 4046818884017920158, guid: 1c3551b6962d214448fca58f2037fbdf, type: 3}
+  speedBuffLoopEffect: {fileID: 6753280293378598414, guid: 008d5c3c0e126ec459791b179433d1d0, type: 3}
+  invincibleBuffLoopEffect: {fileID: 5824670795371433368, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
 --- !u!114 &8535606429997229100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2520,64 +2524,9 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
---- !u!198 &736563503412454115 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 6775093113509036079, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 6070073641491260108}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &862146240533727198 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 6902838044273927442, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 6070073641491260108}
-  m_PrefabAsset: {fileID: 0}
---- !u!82 &1332932080452137869 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 5062817266100212033, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 6070073641491260108}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &1557191839780880793 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 4729195682098488149, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 6070073641491260108}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &1990026608530258290 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 5737803048190286782, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 6070073641491260108}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &2232378834868531213 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 5388059330547028673, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 6070073641491260108}
-  m_PrefabAsset: {fileID: 0}
---- !u!82 &2331709955026313599 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 8387635487822152627, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 6070073641491260108}
-  m_PrefabAsset: {fileID: 0}
---- !u!82 &2623109325337949263 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 8095805100435707523, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 6070073641491260108}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &3296745458244855286 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 8790286879126538042, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 6070073641491260108}
-  m_PrefabAsset: {fileID: 0}
 --- !u!82 &4170895237796500247 stripped
 AudioSource:
   m_CorrespondingSourceObject: {fileID: 7916418634819760603, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 6070073641491260108}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &5339777539888548834 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 2172855640851409198, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
-  m_PrefabInstance: {fileID: 6070073641491260108}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &5473573617313316334 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 2290979693427728162, guid: b590abd1b14b1664ab8329cf10911311, type: 3}
   m_PrefabInstance: {fileID: 6070073641491260108}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &8545057770750583153 stripped
