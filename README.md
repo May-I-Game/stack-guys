@@ -88,7 +88,10 @@ Assets/Scripts/
 │   └── BotSpawner.cs                         - 봇 생성
 │
 ├── Item/
-│   └── BuffSystem.cs               (42줄)    - 버프 시스템
+│   ├── SpeedBoostItem.cs                     - 속도 버프 아이템
+│   ├── JumpBoostItem.cs                      - 점프 버프 아이템
+│   ├── InvincibilityItem.cs                  - 무적 아이템
+│   └── Bomb.cs                               - 폭탄 아이템
 │
 ├── Trap/
 │   ├── JiggleBall.cs                         - 지글 볼
@@ -208,12 +211,6 @@ Assets/Scripts/
 
 본 프로젝트는 학습용으로 개발되며, 상업적 목적이 없습니다. 따라서 본 프로젝트에서는 어떠한 수익도 발생시키지 않습니다.
 This project is developed for educational purposes and has no commercial intent. Therefore, it does not generate any revenue.
-
----
-
-## 📧 연락처
-
-프로젝트 관련 문의: [GitHub Issues](https://github.com/May-I-Game/stack-guys/issues)
 
 ---
 
