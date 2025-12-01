@@ -12,6 +12,8 @@
 - [프로젝트 개요](#-프로젝트-개요)
 - [게임 시스템](#-게임-시스템)
 - [프로젝트 구조](#-프로젝트-구조)
+  - [AI 시스템](#ai-시스템)
+  - [아이템 시스템](#아이템-시스템)
 - [성능 지표](#-성능-지표)
 - [학습 및 성과](#-학습-및-성과)
 - [팀 구성](#-팀-구성)
@@ -103,6 +105,12 @@ Assets/Scripts/
     ├── ServerPerformanceProfiler.cs -         서버 성능 모니터
     └── ServerTickRateMonitor.cs    -          틱레이트 모니터
 ```
+
+### AI 시스템
+- [AI 시스템 설명](https://github.com/May-I-Game/stack-guys/issues/729)
+
+### 아이템 시스템
+- [아이템 시스템 설명](https://github.com/May-I-Game/stack-guys/issues/730)
 
 ## 📊 성능 지표
 
