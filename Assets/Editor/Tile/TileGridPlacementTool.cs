@@ -68,11 +68,14 @@ public class TileGridPlacementTool : EditorWindow
         Vector3 basePos = selected.transform.position;
         previewPositions.Clear();
 
-        // 미리보기 위치 계산
+        // 미리보기 위치 계산 (기준 오브젝트 위치 제외)
         for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < columns; c++)
             {
+                // 첫 번째 위치 (0,0)는 기준 오브젝트가 있으므로 건너뛰기
+                if (r == 0 && c == 0) continue;
+
                 Vector3 pos = basePos + new Vector3(c * spacingX, 0f, r * spacingZ);
                 previewPositions.Add(pos);
             }
@@ -113,18 +116,24 @@ public class TileGridPlacementTool : EditorWindow
 
         Undo.IncrementCurrentGroup();
 
+        int createdCount = 0;
+
         for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < columns; c++)
             {
+                // 첫 번째 위치 (0,0)는 기준 오브젝트가 있으므로 건너뛰기
+                if (r == 0 && c == 0) continue;
+
                 Vector3 pos = selectedPrefab.transform.position + new Vector3(c * spacingX, 0f, r * spacingZ);
                 GameObject newTile = (GameObject)PrefabUtility.InstantiatePrefab(prefabSource);
                 newTile.transform.position = pos;
                 newTile.transform.rotation = selectedPrefab.transform.rotation;
                 Undo.RegisterCreatedObjectUndo(newTile, "Place Tile Grid");
+                createdCount++;
             }
         }
 
-        Debug.Log($"✅ Placed {rows * columns} tiles from {selectedPrefab.name}");
+        Debug.Log($"✅ Created {createdCount} tiles from {selectedPrefab.name} (기존 오브젝트 유지)");
     }
 }
