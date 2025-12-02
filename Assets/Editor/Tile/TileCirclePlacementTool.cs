@@ -23,7 +23,7 @@ public class TileCirclePlacementTool : EditorWindow
     private bool usePrefab = true;
 
     // 클릭 모드: true = 위치 선택, false = 오브젝트 선택
-    private bool isPlacementMode = false;
+    // 더 이상 필요없음 - 제거됨
 
     private List<Vector3> previewPositions = new List<Vector3>();
 
@@ -48,16 +48,6 @@ public class TileCirclePlacementTool : EditorWindow
         GUILayout.Label("Tile Circle Placement Tool", EditorStyles.boldLabel);
         EditorGUILayout.Space();
 
-        // 클릭 모드 전환
-        isPlacementMode = EditorGUILayout.Toggle("Placement Mode", isPlacementMode);
-
-        string placementModeDescription = isPlacementMode
-            ? "Scene 클릭으로 배치 위치를 선택합니다"
-            : "Scene 클릭으로 오브젝트를 선택합니다";
-        EditorGUILayout.HelpBox(placementModeDescription, MessageType.None);
-
-        EditorGUILayout.Space();
-
         radius = EditorGUILayout.FloatField("Radius", radius);
         angleRange = EditorGUILayout.Slider("Angle Range (°)", angleRange, 0f, 360f);
         count = EditorGUILayout.IntSlider("Count", count, 1, 100);
@@ -76,8 +66,8 @@ public class TileCirclePlacementTool : EditorWindow
         clickMode = (ClickMode)EditorGUILayout.EnumPopup("Click Point Mode", clickMode);
 
         string modeDescription = clickMode == ClickMode.Center
-            ? "클릭 지점이 원의 중심이 됩니다"
-            : "클릭 지점이 원 둘레의 시작점이 됩니다";
+            ? "선택한 프리팹 위치가 원의 중심이 됩니다"
+            : "선택한 프리팹 위치가 원 둘레의 시작점이 됩니다";
         EditorGUILayout.HelpBox(modeDescription, MessageType.None);
 
         EditorGUILayout.Space();
@@ -88,10 +78,9 @@ public class TileCirclePlacementTool : EditorWindow
         }
 
         EditorGUILayout.HelpBox(
-            "1️⃣ Placement Mode 끄고 Scene에서 Prefab 선택\n" +
-            "2️⃣ Placement Mode 켜고 Scene에서 배치 위치 클릭\n" +
-            "3️⃣ Click Point Mode, 축, Radius 등 조정\n" +
-            "4️⃣ Apply Placement 버튼 클릭",
+            "1️⃣ Scene에서 Prefab 선택\n" +
+            "2️⃣ Click Point Mode, 축, Radius 등 조정\n" +
+            "3️⃣ Apply Placement 버튼 클릭",
             MessageType.Info);
     }
 
@@ -100,43 +89,27 @@ public class TileCirclePlacementTool : EditorWindow
 
     private void OnSceneGUI(SceneView sceneView)
     {
-        Event e = Event.current;
+        GameObject selected = Selection.activeGameObject;
+        if (selected == null) return;
 
-        // Placement Mode가 켜져있을 때만 클릭 제어
-        if (isPlacementMode)
-        {
-            HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
-        }
-
-        if (e.type == EventType.MouseDown && e.button == 0 && !e.alt && isPlacementMode)
-        {
-            Ray ray = HandleUtility.GUIPointToWorldRay(e.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                clickPoint = hit.point;
-                hasClickPoint = true;
-                e.Use();
-            }
-        }
-
-        if (!hasClickPoint) return;
+        Vector3 objectPosition = selected.transform.position;
 
         // 실제 중심점 계산
-        Vector3 centerPoint = GetActualCenterPoint();
+        Vector3 centerPoint = GetActualCenterPoint(objectPosition);
 
         // 원 시각화
         Handles.color = Color.yellow;
         Vector3 normal = GetAxisVector(selectedAxis);
         Handles.DrawWireDisc(centerPoint, normal, radius);
 
-        // 클릭 지점 표시
+        // 선택한 오브젝트 위치 표시
         Handles.color = clickMode == ClickMode.Center ? Color.cyan : Color.magenta;
-        Handles.DrawSolidDisc(clickPoint, normal, 0.2f);
-        Handles.Label(clickPoint + Vector3.up * 0.5f,
+        Handles.DrawSolidDisc(objectPosition, normal, 0.2f);
+        Handles.Label(objectPosition + Vector3.up * 0.5f,
             clickMode == ClickMode.Center ? "Center" : "Start Point");
 
         // 프리뷰 계산
-        UpdatePreviewPositions();
+        UpdatePreviewPositions(objectPosition);
 
         if (previewMode)
         {
@@ -148,19 +121,19 @@ public class TileCirclePlacementTool : EditorWindow
         SceneView.RepaintAll();
     }
 
-    private Vector3 GetActualCenterPoint()
+    private Vector3 GetActualCenterPoint(Vector3 objectPosition)
     {
         if (clickMode == ClickMode.Center)
         {
-            return clickPoint;
+            return objectPosition;
         }
         else // EdgePoint
         {
             // 0도 위치의 offset을 구해서 중심 계산
             Vector3 offset = GetOffsetVector(0f);
 
-            // 클릭 지점에서 offset의 반대 방향으로 이동하면 중심
-            return clickPoint - offset;
+            // 오브젝트 위치에서 offset의 반대 방향으로 이동하면 중심
+            return objectPosition - offset;
         }
     }
 
@@ -209,21 +182,21 @@ public class TileCirclePlacementTool : EditorWindow
         }
     }
 
-    private void UpdatePreviewPositions()
+    private void UpdatePreviewPositions(Vector3 objectPosition)
     {
         previewPositions.Clear();
-        if (!hasClickPoint || count <= 0) return;
+        if (count <= 0) return;
 
-        Vector3 centerPoint = GetActualCenterPoint();
+        Vector3 centerPoint = GetActualCenterPoint(objectPosition);
 
-        // 항상 0도부터 시작하도록 수정
+        // 1번째부터 시작 (0번째는 기존 오브젝트 위치라서 제외)
         float startAngle = 0f;
 
         // 360도일 때는 마지막이 처음과 겹치지 않도록 count개로 나눔
         float step = (angleRange >= 360f) ? angleRange / count :
                      (count > 1) ? angleRange / (count - 1) : 0f;
 
-        for (int i = 0; i < count; i++)
+        for (int i = 1; i < count; i++) // i = 1부터 시작
         {
             float angle = startAngle + step * i;
             Vector3 offset = GetOffsetVector(angle);
@@ -274,13 +247,12 @@ public class TileCirclePlacementTool : EditorWindow
             return;
         }
 
-        if (!hasClickPoint)
-        {
-            Debug.LogWarning("⚠️ Scene에서 배치할 위치를 클릭해주세요!");
-            return;
-        }
+        Vector3 objectPosition = selected.transform.position;
+        Vector3 centerPoint = GetActualCenterPoint(objectPosition);
 
-        Vector3 centerPoint = GetActualCenterPoint();
+        // 프리뷰 위치 업데이트
+        UpdatePreviewPositions(objectPosition);
+
         Undo.IncrementCurrentGroup();
 
         // 첫 번째 프리팹은 0도 오프셋 (기준), 나머지는 각도를 더해감
@@ -289,30 +261,24 @@ public class TileCirclePlacementTool : EditorWindow
 
         if (!usePrefab)
         {
-            // 일반 모드: 선택한 오브젝트를 첫 번째 위치로 이동
+            // 일반 모드: 선택한 오브젝트는 그대로 두고 나머지만 복제
             if (previewPositions.Count > 0)
             {
-                Undo.RecordObject(selected.transform, "Move Object");
-                selected.transform.position = previewPositions[0];
-
-                // 첫 번째는 원본 회전 유지 (0도 오프셋)
-                selected.transform.rotation = GetRotationForPosition(selected, 0f);
-
-                // 나머지 위치에는 복제본 생성
-                for (int i = 1; i < previewPositions.Count; i++)
+                // 기존 오브젝트는 그대로 유지
+                for (int i = 0; i < previewPositions.Count; i++)
                 {
                     Vector3 pos = previewPositions[i];
                     GameObject newObj = Instantiate(selected);
                     newObj.transform.position = pos;
 
-                    // i번째 오브젝트는 step * i 만큼 회전
-                    float angleOffset = step * i;
+                    // (i+1)번째 오브젝트는 step * (i+1) 만큼 회전
+                    float angleOffset = step * (i + 1);
                     newObj.transform.rotation = GetRotationForPosition(selected, angleOffset);
 
                     Undo.RegisterCreatedObjectUndo(newObj, "Place Tile Circle");
                 }
 
-                Debug.Log($"✅ [Object Mode] Moved 1 + Created {previewPositions.Count - 1} objects");
+                Debug.Log($"✅ [Object Mode] Created {previewPositions.Count} objects (기존 오브젝트 유지)");
             }
         }
         else
@@ -325,20 +291,21 @@ public class TileCirclePlacementTool : EditorWindow
                 return;
             }
 
+            // 기존 오브젝트는 그대로 유지하고 나머지만 생성
             for (int i = 0; i < previewPositions.Count; i++)
             {
                 Vector3 pos = previewPositions[i];
                 GameObject newObj = (GameObject)PrefabUtility.InstantiatePrefab(prefabSource);
                 newObj.transform.position = pos;
 
-                // i번째 오브젝트는 step * i 만큼 회전
-                float angleOffset = step * i;
+                // (i+1)번째 오브젝트는 step * (i+1) 만큼 회전
+                float angleOffset = step * (i + 1);
                 newObj.transform.rotation = GetRotationForPosition(selected, angleOffset);
 
                 Undo.RegisterCreatedObjectUndo(newObj, "Place Tile Circle");
             }
 
-            Debug.Log($"✅ [Prefab Mode] Created {previewPositions.Count} prefabs from: {prefabSource.name}");
+            Debug.Log($"✅ [Prefab Mode] Created {previewPositions.Count} prefabs from: {prefabSource.name} (기존 오브젝트 유지)");
         }
     }
 }
