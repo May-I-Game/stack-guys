@@ -67,24 +67,24 @@ Stack Guys는 **최대 100명의 플레이어**가 동시에 참여할 수 있�
 ```
 Assets/Scripts/
 ├── Manager/
-│   ├── GameManager.cs              (1,147줄) - 게임 상태 관리
+│   ├── GameManager.cs                        - 게임 상태 관리
 │   ├── UIManager.cs                          - UI 상태 관리
-│   └── RespawnManager.cs           (81줄)    - 리스폰 시스템
+│   └── RespawnManager.cs                     - 리스폰 시스템
 │
 ├── Network/
-│   ├── NetworkGameManager.cs       (692줄)   - 네트워크 매니저
-│   ├── NetworkBatchManager.cs      (443줄)   - 배치 동기화
-│   ├── NetworkVisibilityControl.cs (88줄)    - AOI 시스템
+│   ├── NetworkGameManager.cs                 - 네트워크 매니저
+│   ├── NetworkBatchManager.cs                - 배치 동기화
+│   ├── NetworkVisibilityControl.cs           - AOI 시스템
 │   └── NetworkPoolManager.cs                 -  객체 풀링
 │
 ├── Player/
-│   ├── PlayerController.cs         (800+줄)  - 플레이어 컨트롤
+│   ├── PlayerController.cs                   - 플레이어 컨트롤
 │   ├── PlayerInputHandler.cs                 - 플레이어 입력
 │   ├── PlayerCanvasManager.cs                - 플레이어 UI
 │   └── PlayerEffectManager.cs                - 플레이어 SFX, 파티클
 │
 ├── Bot/
-│   ├── BotController.cs            (930줄)   - AI 봇
+│   ├── BotController.cs                      - AI 봇
 │   └── BotSpawner.cs                         - 봇 생성
 │
 ├── Item/
@@ -101,7 +101,7 @@ Assets/Scripts/
 │   └── ...                                   - 기타 트랩
 │
 ├── Test/
-│   ├── WebSocketManager.cs         (250줄)   - WebSocket 봇 연결
+│   ├── WebSocketManager.cs                   - WebSocket 봇 연결
 │   └── DummyController.cs                    - 테스트 봇
 │
 └── Profile/
