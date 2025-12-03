@@ -1,15 +1,10 @@
+using Unity.Cinemachine;
+using Unity.Collections;
 using Unity.Netcode;
-using Unity.Netcode.Components;
 using UnityEngine;
 
 public class PlayerController : NetworkBehaviour
 {
-#if UNITY_ANDROID || UNITY_IOS
-    [Header("Mobile Input")]
-    public VirtualJoystick virtualJoystick;
-    public UnityEngine.UI.Button jumpButton;
-#endif
-
     [Header("Movement Settings")]
     public float walkSpeed = 4f;
     public float rotationSpeed = 10f;
@@ -19,186 +14,635 @@ public class PlayerController : NetworkBehaviour
     public float diveForce = 4f; // 다이브할 때 앞으로 가는 힘
     public float diveDownForce = 1f; // 다이브할 때 아래로 가는 힘
 
-    [Header("Grap Settings")]
-    public float grabRange = 1f; // 잡기 범위
-    public float holdHeight = 0.5f; // 머리 위 높이
+    [Header("Grab Settings")]
+    public float grabRange = 1.15f; // 잡기 범위
+    public float holdHeight = 0.6f; // 머리 위 높이
     public float holdDistance = 0.1f; // 플레이어 앞쪽 거리
     public float throwForce = 5f; // 던지기 힘
     public int escapeRequiredJumps = 5; // 탈출에 필요한 점프 횟수
 
+    private Vector3 grabbedColliderCenter;  // 잡은 콜라이더의 월드 센터
+    private Vector3 grabbedColliderSize;    // 잡은 콜라이더의 크기
+
+    [Header("Collision")]
+    public float groundCheckDist = 0.1f;
+    private RaycastHit[] groundHits = new RaycastHit[3];
+    private Collider[] grabColliders = new Collider[10]; // GC 최적화: 사전 할당
+    public LayerMask groundLayerMask = -1; // 땅으로 인식할 레이어 (최적화용, -1 = 모든 레이어)
+    public float bounceForce = 5f; // 튕겨나가는 힘
+
     [Header("Animation")]
     public Animator animator;
 
-    private float weakHitDuration = 2f;    // weakHit 애니메이션 길이
-    private float strongHitDuration = 2.4f; // StrongHit 애니메이션 길이
-    private float diveGroundedDuration = 0.65f; // 다이브 착지 애니메이션 길이
+    [Header("Particle Effects")]
+    public ParticleSystem walkParticle; // 걷기 파티클
+    public ParticleSystem jumpParticle; // 점프 파티클
+    public ParticleSystem diveLandParticle; // 다이브 착지 파티클
+    public ParticleSystem respawnParticle; // 리스폰 파티클
 
-    private Rigidbody rb;
+    [Header("Buff Effects")]
+    public ParticleSystem buffPickupEffect;          // 아이템 먹는 순간 번쩍
+    public ParticleSystem jumpBuffLoopEffect;        // 점프 버프 루프
+    public ParticleSystem speedBuffLoopEffect;       // 속도 버프 루프
+    public ParticleSystem invincibleBuffLoopEffect;  // 무적 버프 루프
 
-    private NetworkVariable<Vector3> netMoveDirection = new NetworkVariable<Vector3>();
-    private NetworkVariable<float> netCurrentSpeed = new NetworkVariable<float>();
-    private bool isjumpQueued;
+    // 버프 적용 배율 (봇이면 1로 처리)
+    protected float SpeedMul => buffManager != null ? buffManager.SpeedMultiplier : 1f;
+    protected float JumpMul => buffManager != null ? buffManager.JumpMultiplier : 1f;
 
-    private NetworkVariable<bool> netIsGrounded = new NetworkVariable<bool>();
-    private NetworkVariable<float> netVerticalVelocity = new NetworkVariable<float>();
-    private NetworkVariable<bool> netIsDiving = new NetworkVariable<bool>(false); // 공중 다이브 중인지
-    private NetworkVariable<bool> netIsDiveGrounded = new NetworkVariable<bool>(false); // 다이브 착지 상태 (이동 불가)
-    private bool isHit = false; // 충돌 상태 (이동 불가)
-    private bool canDive = false; // 다이브 가능 상태 (점프 중)
+    [Header("Audio")]
+    public AudioSource footstepAudioSource; // 발걸음 오디오 소스
+    public AudioClip footstepClip; // 발걸음 사운드 클립
+    [Range(0f, 1f)] public float footstepVolume = 0.5f; // 발걸음 볼륨
+    public float footstepInterval = 0.4f; // 발걸음 재생 간격 (초)
+
+    public AudioSource jumpAudioSource; // 점프 오디오 소스
+    public AudioClip jumpVoiceClip; // 점프 캐릭터 보이스 클립
+    public AudioClip jumpEffectClip; // 점프 효과음 클립
+    [Range(0f, 1f)] public float jumpVoiceVolume = 0.7f; // 점프 보이스 볼륨
+    [Range(0f, 1f)] public float jumpEffectVolume = 0.5f; // 점프 효과음 볼륨
+
+    public AudioSource diveAudioSource; // 다이브 오디오 소스
+    public AudioClip diveStartClip; // 다이브 시작 효과음
+    public AudioClip diveLandVoiceClip; // 다이브 착지 캐릭터 보이스
+    public AudioClip diveLandImpactClip; // 다이브 착지 바닥 충돌음
+    [Range(0f, 1f)] public float diveStartVolume = 0.6f; // 다이브 시작 볼륨
+    [Range(0f, 1f)] public float diveLandVoiceVolume = 0.7f; // 다이브 착지 보이스 볼륨
+    [Range(0f, 1f)] public float diveLandImpactVolume = 0.8f; // 다이브 착지 충돌음 볼륨
+
+    public AudioSource buffAudioSource; // 버프 아이템 오디오 소스
+    public AudioClip buffPickupClip; // 버프 아이템 획득 사운드
+    [Range(0f, 1f)] public float buffPickupVolume = 0.7f; // 버프 아이템 획득 볼륨
+
+    public AudioSource buffLoopAudioSource; // 버프 루프 오디오 소스 (속도/점프)
+    public AudioClip buffLoopClip; // 버프 루프 사운드 (속도/점프 버프용)
+    [Range(0f, 1f)] public float buffLoopVolume = 0.5f; // 버프 루프 볼륨
+
+    public AudioSource invincibleBuffLoopAudioSource; // 무적 버프 루프 오디오 소스
+    public AudioClip invincibleBuffLoopClip; // 무적 버프 루프 사운드
+    [Range(0f, 1f)] public float invincibleBuffLoopVolume = 0.5f; // 무적 버프 루프 볼륨
+
+    public AudioSource respawnAudioSource; // 리스폰 오디오 소스
+    public AudioClip respawnClip; // 리스폰 효과음
+    [Range(0f, 1f)] public float respawnVolume = 0.7f; // 리스폰 볼륨
+
+    public AudioSource deathAudioSource; // 죽음 오디오 소스
+    public AudioClip deathVoiceClip; // 죽음 음성 효과음 (항상 재생)
+    public AudioClip deathSpikeClip; // 가시/장애물 죽음 환경음 (Death 태그)
+    public AudioClip deathOceanClip; // 물에 빠진 죽음 환경음 (Ocean 태그)
+    [Range(0f, 1f)] public float deathVolume = 0.7f; // 죽음 볼륨
+
+    public AudioSource hitAudioSource; // 피격 오디오 소스
+    public AudioClip hitVoiceClip; // 피격 음성 효과음 (항상 재생)
+    public AudioClip hitImpactClip; // 피격 환경 효과음 (충돌음)
+    [Range(0f, 1f)] public float hitVolume = 0.7f; // 피격 볼륨
+
+    public AudioSource throwAudioSource; // 던지기 오디오 소스
+    public AudioClip throwClip; // 던지기 효과음
+    [Range(0f, 1f)] public float throwVolume = 0.7f; // 던지기 볼륨
+
+    [Header("Network Optimization")]
+    [Tooltip("입력 전송 최소 간격 (초). 모바일 조이스틱 떨림 방지. 권장: 0.033~0.05")]
+    public float inputSendInterval = 0.05f;  // 50ms = 20Hz
+    [Tooltip("입력 변화량 임계값. 이 값 이상 변할 때만 즉시 전송. 권장: 0.1")]
+    public float inputDeltaThreshold = 0.1f;  // 10% 변화
+    [Tooltip("이동 속도 동기화 임계값. 이 값 이상 변할 때만 동기화. 권장: 0.5")]
+    public float speedThreshold = 0.5f;  // 0.5 m/s 이상 변화만
+    [Tooltip("땅 체크 간격 (프레임). 1=매프레임, 2=2프레임마다. 권장: 2")]
+    public int groundCheckInterval = 2;  // 2프레임마다 체크 (50Hz → 25Hz)
+
+    public float lerpSpeed = 15f;
+    public float smoothTime = 0.1f;
+
+    [Header("Player Info")]
+    private NetworkVariable<FixedString32Bytes> playerName = new NetworkVariable<FixedString32Bytes>(
+        "",
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner
+    );
+
+    protected Rigidbody rb;
+    private CapsuleCollider col;
+    private PlayerInputHandler inputHandler;
+    protected PlayerBuffManager buffManager;    // 버프 관리자
+    private PlayerCanvasManager canvasManager;     // 캔버스 관리자
+
+    protected Vector2 moveDir = Vector2.zero;
+    private Vector2 lastSentInput = Vector2.zero;  // 실제로 서버에 전송한 마지막 입력
+    private float lastInputSendTime = 0f;  // 마지막 입력 전송 시간
+
+    // GC 최적화: WaitForSeconds 캐싱
+    private WaitForSeconds botRespawnWait;
+    private Vector3 lastHeldObjectPosition = Vector3.zero;  // 마지막 잡은 오브젝트 위치
+    protected bool isJumpQueued;
+    protected bool isGrabQueued;
+    private Vector3 deathPosition;  // 죽은 위치 저장용
+
+    public NetworkObject bodyPrefab;
+
+    protected NetworkVariable<bool> netIsMove = new NetworkVariable<bool>(false); // 움직이는중인지
+    protected NetworkVariable<bool> netIsGrounded = new NetworkVariable<bool>(true); // 땅인지
+    protected bool isDiving = false; // 공중 다이브 중인지
+    // 디버그용
+    [SerializeField] protected bool isDiveGrounded = false; // 다이브 착지 상태 (이동 불가)
+    [SerializeField] protected NetworkVariable<bool> netIsDeath = new NetworkVariable<bool>(false); // 죽었는지
+    [SerializeField] protected bool isHit = false; // 충돌 상태 (이동 불가)
+    protected bool canDive = false; // 다이브 가능 상태 (점프 중)
+    protected float diveGroundedTime = 0f; // 다이브 착지 타이머 (안전장치)
+
+    // 걷기 파티클 재생 상태 추적
+    private bool isWalkParticlePlaying = false;
+
+    // 발걸음 사운드 타이머
+    private float footstepTimer = 0f;
 
     // 잡기 관련 변수
-    private NetworkVariable<bool> netIsHolding = new NetworkVariable<bool>(false); // 무언가를 들고 있는지
-    private NetworkVariable<bool> netIsGrabbed = new NetworkVariable<bool>(false); // 잡혀있는지
-    private NetworkVariable<ulong> netGrabberId = new NetworkVariable<ulong>(0); // 누가 잡고 있는지
-    private NetworkVariable<ulong> netHoldingTargetId = new NetworkVariable<ulong>(0); // 누구를 잡고 있는지
+    protected NetworkVariable<bool> netIsGrabbed = new NetworkVariable<bool>(false); // 잡혀있는지
+    protected bool isHolding = false; // 잡고 있는지
+    private ulong grabberId = 0; // 누구한테 잡혔는지
+    private ulong holdingTargetId = 0; // 누구를 잡고있는지
 
-    private GameObject holdingObject = null; // 실제로 들고 있는 오브젝트
+    protected GameObject holdingObject = null; // 실제로 들고 있는 오브젝트
+    private PlayerController heldPlayerCache = null; // 잡은 플레이어 캐시 (최적화)
+    private int heldObjectOriginLayer;
     private int escapeJumpCount = 0; // 탈출 시도 횟수
 
-    NetworkTransform nt;
+    // 위치 동기화용 변수
+    protected Vector3 _targetPos;
+    protected float _targetRotY;
+    private Vector3 _currentVelocity;
 
-    // 최초 스폰 자리 저장 (서버 전용)
-    private Vector3 _initialSpawnPosition;
+    // 마지막 동기화 상태 변수 (Dirty Check)
+    private Vector3 _lastSyncedPos;
+    private float _lastSyncedRotY;
+    private bool _lastSyncStateInitialized = false;
+
+    private CinemachineCamera cam;
 
     // 리스폰 구역 Index 값
     public NetworkVariable<int> RespawnId = new(
         0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
-    [SerializeField] private RespawnManager respawnManager;     // 리스폰 리스트를 사용하기 위하여 선언
+    [SerializeField] protected RespawnManager respawnManager;     // 리스폰 리스트를 사용하기 위하여 선언
+
+    // 시네마틱 동기화를 위한 사용자 입력 무시 변수
+    public NetworkVariable<bool> inputEnabled = new NetworkVariable<bool>(true, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+    // hit 타이머 변수 (관심 영역 밖 봇을 위한 타이머)
+    protected float hitTime = 0f;
+    protected float hitDuration = 1.5f;                           // 애니메이션 길이보다 약간 길게
 
     public override void OnNetworkSpawn()
     {
+        // 서버만 물리 활성화 (서버 권위 방식)
+        // 클라이언트는 NetworkTransform으로 위치만 동기화
         if (IsServer)
         {
-            // 최초 스폰 위치 저장
-            _initialSpawnPosition = transform.position;
+            EnablePhysics(true);
         }
+        else
+        {
+            EnablePhysics(false);
+        }
+
+        if (NetworkBatchManager.Instance != null)
+        {
+            NetworkBatchManager.Instance.RegisterPlayer(NetworkObjectId, this);
+        }
+
+        // 초기 위치 동기화
+        _targetPos = transform.position;
+        _targetRotY = transform.rotation.eulerAngles.y;
 
         if (IsOwner)
         {
-            Camera.main.GetComponent<CameraFollow>().target = this.transform;
+            cam = FindAnyObjectByType<CinemachineCamera>();
+            cam.Follow = this.transform;
+
+            string savedName = PlayerPrefs.GetString("player_name", ""); // 소문자!
+            playerName.Value = savedName;
+            Debug.Log($"플레이어 이름 설정: {savedName}");
+        }
+
+    }
+
+    // 디스폰 때 등록 해제 (안 하면 에러 남)
+    public override void OnNetworkDespawn()
+    {
+        if (NetworkBatchManager.Instance != null)
+        {
+            NetworkBatchManager.Instance.UnregisterPlayer(NetworkObjectId);
+        }
+
+        if (IsServer)
+        {
+            // 잡기 해제하고 가기
+            ReleaseGrab();
         }
     }
 
-    private void Start()
+    public void EnablePhysics(bool on)
+    {
+        if (rb)
+        {
+            rb.isKinematic = !on;
+            rb.detectCollisions = on;
+        }
+        // Collider는 항상 켜두되, 클라이언트는 Trigger 전용 (물리 충돌 없음)
+        if (col)
+        {
+            col.enabled = true;  // 항상 활성화
+            col.isTrigger = !on; // 서버: Collision, 클라이언트: Trigger
+        }
+    }
+
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        nt = GetComponent<NetworkTransform>();
+        col = GetComponent<CapsuleCollider>();
+    }
+
+    protected virtual void Start()
+    {
+        inputHandler = GetComponent<PlayerInputHandler>();
         respawnManager = FindFirstObjectByType<RespawnManager>();
 
+        buffManager = GetComponent<PlayerBuffManager>();
+        canvasManager = GetComponent<PlayerCanvasManager>();
+
+        // GC 최적화: WaitForSeconds 사전 생성
+        botRespawnWait = new WaitForSeconds(2.267f);
+
         // Animator가 설정되지 않았다면 자동으로 찾기
-        if (animator == null)
+        animator = animator != null ? animator : GetComponent<Animator>();
+        animator = animator != null ? animator : GetComponentInChildren<Animator>();
+
+        // AudioSource 초기 설정 (Owner만 설정)
+        if (IsOwner && footstepAudioSource != null)
         {
-            animator = GetComponent<Animator>();
-            if (animator == null)
-            {
-                animator = GetComponentInChildren<Animator>();
-            }
-        }
-
-#if UNITY_ANDROID || UNITY_IOS
-            if (IsOwner && virtualJoystick != null)
-            {
-                // 점프 버튼 클릭 시 서버에 점프 명령 보내기
-                virtualJoystick.OnJumpPressed += () => JumpPlayerServerRpc();
-            }
-#endif
-    }
-
-    private void Update()
-    {
-        if (IsOwner)
-        {
-            // 로비/게임 중에만 입력 받기
-            if (GameManager.instance.IsLobby || GameManager.instance.IsGame)
-            {
-                HandleInput();
-            }
-
-            // 오른쪽 버튼 커서 토글 부분
-            ToggleCursorWithRMB();
-        }
-
-        UpdateAnimation();
-    }
-
-    private void FixedUpdate()
-    {
-        if (IsServer)
-        {
-            // 이동 처리
-            MovePlayer();
-            // 점프 처리
-            JumpPlayer();
-            // 들기 처리
-            HeldPlayer();
-
-            // 애니메이션 업데이트
-            SyncAnimationState();
+            footstepAudioSource.playOnAwake = false;
         }
     }
 
-    void HandleInput()
+    protected virtual void Update()
     {
+        //클라이언트만 Update 수행
+        if (IsServer) return;
 
-#if UNITY_STANDALONE || UNITY_EDITOR
-        // ============ PC: 기존 키보드 입력 ============ // WASD 입력 받기
-        float horizontal = Input.GetAxisRaw("Horizontal"); // A, D
-        float vertical = Input.GetAxisRaw("Vertical");     // W, S
-
-        MovePlayerServerRpc(new Vector3(vertical, 0f, -horizontal).normalized);
-
-        // Space 키로 점프 또는 다이브
-        if (Input.GetKeyDown(KeyCode.Space))
+        //본인이 아닌 캐릭터, 혹은 input이 비활성화 되어있을 때는 애니메이션만 최신화
+        if (!IsOwner || !inputEnabled.Value)
         {
-            JumpPlayerServerRpc();
-        }
-
-        // E 키로 잡기 또는 던지기
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            if (!netIsHolding.Value)
-            {
-                GrapPlayerServerRpc();
-            }
-            else
-            {
-                ThrowPlayerServerRpc();
-            }
-        }
-
-#elif UNITY_ANDROID || UNITY_IOS
-        // ============ 모바일: 가상 조이스틱 ============
-        if (virtualJoystick != null)
-        {
-            Vector2 input = virtualJoystick.GetInputVector();
-            direction = new Vector3(input.y, 0f, -input.x).normalized;
-        }
-        // 공통: 이동 명령 전송
-        MovePlayerServerRpc(direction);
-        // 점프는 UI 버튼으로 처리 (Start에서 연결)
-#endif
-    }
-
-
-    #region ServerRPCs
-    [ServerRpc]
-    private void MovePlayerServerRpc(Vector3 direction)
-    {
-        // 충돌 중이거나 다이브 착지 중이면 입력 무시
-        if (isHit || netIsDiveGrounded.Value)
-        {
-            netMoveDirection.Value = Vector3.zero;
+            InterpolateMovement();
+            UpdateAnimation();
             return;
         }
 
-        netMoveDirection.Value = direction;
-        // 기본 이동 속도
-        netCurrentSpeed.Value = walkSpeed;
+        Vector2 currentInput = inputHandler.MoveInput;
+
+        // ===== 입력 동기화 최적화 (모바일 조이스틱 기준) =====
+        float timeSinceLastSend = Time.time - lastInputSendTime;
+        float inputDelta = Vector2.Distance(currentInput, lastSentInput);
+
+        bool shouldSendInput = false;
+
+        // 조건 1: 이동 시작 (정지 → 이동)
+        if (lastSentInput.magnitude < 0.01f && currentInput.magnitude >= 0.1f)
+        {
+            shouldSendInput = true;  // 즉시 전송 (반응성 최우선)
+        }
+        // 조건 2: 완전히 멈춤 (이동 → 정지)
+        else if (lastSentInput.magnitude >= 0.1f && currentInput.magnitude < 0.01f)
+        {
+            shouldSendInput = true;  // 즉시 전송 (멈춤은 즉각 반영)
+        }
+        // 조건 3: 큰 방향 전환 (임계값 이상 변화)
+        else if (inputDelta >= inputDeltaThreshold)
+        {
+            shouldSendInput = true;  // 즉시 전송 (급격한 방향 전환)
+        }
+        // 조건 4: 일정 시간마다 전송 (조이스틱 유지 시 주기적 동기화)
+        else if (timeSinceLastSend >= inputSendInterval && inputDelta > 0.001f)
+        {
+            shouldSendInput = true;  // 주기적 전송 (미세 변화 누적 반영)
+        }
+
+        if (shouldSendInput)
+        {
+            MovePlayerServerRpc(currentInput);
+            lastSentInput = currentInput;
+            lastInputSendTime = Time.time;
+        }
+
+        // 점프 입력
+        if (inputHandler.JumpInput)
+        {
+            // 점프 사운드 즉시 로컬 재생 (지연 방지)
+            PlayJumpSoundLocal();
+
+            JumpPlayerServerRpc();
+            inputHandler.ResetJumpInput();
+        }
+
+        // 잡기 입력
+        if (inputHandler.GrabInput)
+        {
+            GrabPlayerServerRpc();
+            inputHandler.ResetGrabInput();
+        }
+
+        InterpolateMovement();
+        UpdateAnimation();
+        // 파티클 상태가 업데이트된 후 발걸음 사운드 재생
+        UpdateFootstepSoundLocal();
     }
 
-    [ServerRpc]
-    private void JumpPlayerServerRpc()
+    protected virtual void FixedUpdate()
+    {
+        // 서버만 로직 처리
+        if (!IsServer) return;
+        // 죽었으면 처리 무시
+        if (netIsDeath.Value) return;
+
+        ServerPerformanceProfiler.Start("PlayerController.FixedUpdate");
+        // 땅 체크
+        GroundCheck();
+
+        // 다이브 착지 타이머 체크 (안전장치: 애니메이션 이벤트가 호출되지 않을 경우 대비)
+        if (isDiveGrounded)
+        {
+            diveGroundedTime += Time.fixedDeltaTime;
+            if (diveGroundedTime >= 1.5f) // 1.5초 후 자동 해제
+            {
+                Debug.LogWarning("[다이브 착지] 타이머 초과로 자동 해제");
+                isDiveGrounded = false;
+                diveGroundedTime = 0f;
+            }
+        }
+
+        // 이동 처리
+        PlayerMove();
+
+        // 점프 요청이 있으면
+        if (isJumpQueued)
+        {
+            // 점프 처리
+            ServerPerformanceProfiler.Start("PlayerController.Jump");
+            PlayerJump();
+            ServerPerformanceProfiler.End("PlayerController.Jump");
+        }
+        // 잡기 요청이 있으면
+        if (isGrabQueued)
+        {
+            // 잡기 처리
+            ServerPerformanceProfiler.Start("PlayerController.Grab");
+            PlayerGrab();
+            ServerPerformanceProfiler.End("PlayerController.Grab");
+        }
+        // 잡고 있으면
+        if (isHolding && holdingObject != null)
+        {
+            // 들기 처리
+            ServerPerformanceProfiler.Start("PlayerController.Holding");
+            PlayerHeld();
+            ServerPerformanceProfiler.End("PlayerController.Holding");
+        }
+        ServerPerformanceProfiler.End("PlayerController.FixedUpdate");
+    }
+
+    // 매니저가 호출해주는 함수 (패킷 도착 시)
+    public void UpdateTargetState(Vector3 newPos, float newRotY)
+    {
+        _targetPos = newPos;
+        _targetRotY = newRotY;
+    }
+
+    protected void InterpolateMovement()
+    {
+        // 너무 멀면 SmoothDamp 하지 말고 그냥 강제 이동 (텔레포트로 간주)
+        float sqrDist = (transform.position - _targetPos).sqrMagnitude;
+        if (sqrDist > 9.0f) // 3 * 3 = 9
+        {
+            Vector3 delta = _targetPos - transform.position;
+
+            transform.position = _targetPos;
+            transform.rotation = Quaternion.Euler(0, _targetRotY, 0);
+            _currentVelocity = Vector3.zero;
+
+            if (IsOwner)
+            {
+                cam.OnTargetObjectWarped(this.transform, delta);
+            }
+
+            return;
+        }
+
+        // 위치 보간 (부드럽게)
+        transform.position = Vector3.SmoothDamp(
+            transform.position,
+            _targetPos,
+            ref _currentVelocity,
+            smoothTime
+        );
+
+        // 회전 보간 (Y축만)
+        Quaternion targetRot = Quaternion.Euler(0, _targetRotY, 0);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * lerpSpeed);
+    }
+
+    public void SetInputEnabled(bool enabled)
+    {
+        if (IsServer)
+        {
+            inputEnabled.Value = enabled;
+        }
+    }
+
+    public string GetPlayerName()
+    {
+        string name = playerName.Value.ToString();
+        return string.IsNullOrEmpty(name) ? $"Player{OwnerClientId}" : name;
+    }
+
+    // 클라에서 서버에게 요청할 Rpc 모음, 봇의 소유권 문제 때문에 false 설정
+    #region ServerRpcs
+    [ServerRpc(Delivery = RpcDelivery.Unreliable)]
+    protected void MovePlayerServerRpc(Vector2 direction)
+    {
+        if (!inputEnabled.Value) return;
+
+        // 이동 방향 임계값 체크: 방향 변화가 크거나 멈출 때만 동기화
+        Vector2 directionDelta = direction - moveDir;
+        if (directionDelta.magnitude >= inputDeltaThreshold || direction == Vector2.zero)
+        {
+            moveDir = direction;
+        }
+    }
+
+    [ServerRpc(Delivery = RpcDelivery.Unreliable)]
+    protected void JumpPlayerServerRpc()
+    {
+        if (!inputEnabled.Value) return;
+
+        // 충돌 중이거나 다이브 착지 중이면 입력 무시
+        if (isHit || isDiveGrounded)
+        {
+            return;
+        }
+
+        isJumpQueued = true;
+    }
+
+    [ServerRpc(Delivery = RpcDelivery.Unreliable)]
+    private void GrabPlayerServerRpc()
+    {
+        if (!inputEnabled.Value) return;
+
+        // 충돌 중이거나 다이브 착지 중이거나 잡힌 상태면 입력 무시
+        if (isHit || isDiveGrounded || netIsGrabbed.Value)
+        {
+            return;
+        }
+
+        // 무언가를 들고 있으면 공중에서도 던지기 허용
+        if (isHolding)
+        {
+            isGrabQueued = true;
+            return;
+        }
+
+        // 잡기는 땅에 있을 때만 가능
+        if (!netIsGrounded.Value)
+        {
+            return;
+        }
+
+        isGrabQueued = true;
+    }
+
+    // 애니메이션 이벤트에서 호출됨
+    public void RespawnPlayer()
+    {
+        // Owner만 실행 (다른 클라이언트는 무시)
+        if (!IsOwner) return;
+
+        // 봇은 이미 BotRespawnDelay()로 리스폰하므로 무시
+        if (this is BotController) return;
+
+        // ServerRpc 호출 (시체 생성 + 텔레포트)
+        RespawnPlayerServerRpc();
+    }
+
+    // ServerRpc: 서버에서 시체 생성 + 텔레포트 실행
+    [ServerRpc(RequireOwnership = false)]
+    private void RespawnPlayerServerRpc()
+    {
+        DoRespawnTeleport();
+    }
+
+    // 끼임 탈출용 리스폰 요청 (UIManager에서 호출)
+    public void RequestEscapeRespawn()
+    {
+        if (!IsOwner) return;
+
+        // ServerRpc 호출하여 현재 리스폰 지점으로 이동
+        EscapeRespawnServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void EscapeRespawnServerRpc()
+    {
+        // 리스폰 리스트 가져오기
+        int index = RespawnId.Value;
+        var dest = respawnManager.respawnPoints[index];
+
+        if (!dest)
+        {
+            Debug.LogWarning("[EscapeRespawn] Respawn Transform null");
+            return;
+        }
+
+        // DoRespawn을 사용하여 리스폰
+        DoRespawn(dest.position, dest.rotation);
+
+        Debug.Log($"[EscapeRespawn] 플레이어가 리스폰 지점 {index}로 탈출했습니다.");
+    }
+
+    // 애니메이션이 끝날때 호출되는 함수
+    [ServerRpc(RequireOwnership = false)]
+    public void ResetHitStateServerRpc()
+    {
+        //이제 이동 가능
+        isHit = false;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ResetDiveGroundedStateServerRpc()
+    {
+        // Debug.Log("다이브리셋 호출됨!!");
+        isDiveGrounded = false;
+        diveGroundedTime = 0f; // 타이머 리셋
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ResetStateServerRpc()
+    {
+        ResetPlayerState();
+    }
+    #endregion
+
+    // 서버에서 실제로 실행할 로직
+    // 여기에 있는 모든 로직은 서버만 실행해야함!!!!!!!!
+    #region ServerLogic
+    protected void PlayerMove()
+    {
+        // 충돌 중이거나 다이브 착지 중이거나 잡힌 상태면 입력 무시
+        if (isHit || isDiveGrounded || netIsGrabbed.Value) return;
+
+        // 이동 요청이 있으면
+        if (moveDir.magnitude >= 0.1f)
+        {
+            // 이동 버프 적용
+            float currentSpeed = walkSpeed * SpeedMul;
+
+            // 이동
+            Vector3 movement = new Vector3(
+                moveDir.x,
+                0,
+                moveDir.y
+            ) * currentSpeed * Time.fixedDeltaTime;
+            rb.MovePosition(rb.position + movement);
+
+            // 회전
+            Quaternion targetRotation = Quaternion.LookRotation(movement);
+            // 현재 각도와 차이가 클 때만 회전 적용 (약 0.5도 이상 차이날 때)
+            if (Quaternion.Angle(rb.rotation, targetRotation) > 0.05f)
+            {
+                rb.MoveRotation(targetRotation);
+            }
+
+            netIsMove.Value = true;
+        }
+        else
+        {
+            netIsMove.Value = false;
+        }
+    }
+
+    public bool GetLastSyncedState(out Vector3 lastPos, out float lastRotY)
+    {
+        lastPos = _lastSyncedPos;
+        lastRotY = _lastSyncedRotY;
+        return _lastSyncStateInitialized;
+    }
+
+    public void SetLastSyncedState(Vector3 newPos, float newRotY)
+    {
+        _lastSyncedPos = newPos;
+        _lastSyncedRotY = newRotY;
+        _lastSyncStateInitialized = true;
+    }
+
+    protected void PlayerJump()
     {
         // 잡혔으면 탈출시도
         if (netIsGrabbed.Value)
@@ -211,144 +655,52 @@ public class PlayerController : NetworkBehaviour
             }
         }
 
-        // 이외에는 점프시도
         else
-        {
-            // 충돌 중이거나 다이브 착지 중이면 입력 무시
-            if (isHit || netIsDiveGrounded.Value)
-            {
-                return;
-            }
-
-            isjumpQueued = true;
-        }
-    }
-
-    [ServerRpc]
-    private void GrapPlayerServerRpc()
-    {
-        if (isHit || netIsDiveGrounded.Value || netIsHolding.Value || netIsGrabbed.Value)
-        {
-            return;
-        }
-
-        // 범위 내 잡을 수 있는 오브젝트에 잡기시도
-        Collider[] colliders = Physics.OverlapSphere(transform.position, grabRange);
-        foreach (Collider col in colliders)
-        {
-            // 자기자신 제외
-            if (col.gameObject == this.gameObject) continue;
-
-            // TODO: GrabbableObject 체크
-            //GrabbableObject grabbable = col.GetComponent<GrabbableObject>();
-            //if (grabbable != null && !grabbable.IsGrabbed())
-            //{
-            //    GrabObject(col.gameObject);
-            //    return;
-            //}
-
-            // 다른 플레이어 체크
-            PlayerController otherPlayer = col.GetComponent<PlayerController>();
-            if (otherPlayer != null && !otherPlayer.netIsGrabbed.Value && !otherPlayer.netIsHolding.Value)
-            {
-                GrabPlayer(otherPlayer);
-                return;
-            }
-        }
-    }
-
-    private void GrabPlayer(PlayerController target)
-    {
-        holdingObject = target.gameObject;
-        netIsHolding.Value = true;
-        netHoldingTargetId.Value = target.NetworkObjectId;
-
-        // 상대방 상태 변경
-        target.netIsGrabbed.Value = true;
-        target.netGrabberId.Value = this.NetworkObjectId;
-        target.escapeJumpCount = 0;
-
-        // 상대방 물리 비활성화
-        if (target.rb != null)
-        {
-            target.rb.isKinematic = true;
-        }
-
-        target.SetTriggerClientRpc("Grabbed");
-        Debug.Log($"[잡기] 플레이어를 잡았습니다: {target.gameObject.name}");
-    }
-
-    [ServerRpc]
-    private void ThrowPlayerServerRpc()
-    {
-        // 잡기 중 아니면 입력 무시
-        if (!netIsHolding.Value || holdingObject == null)
-        {
-            return;
-        }
-
-        // 던지기 방향 계산 (앞쪽 + 약간 위)
-        Vector3 throwDirection = (transform.forward + Vector3.up * 0.5f).normalized;
-
-        // 플레이어를 던지는 경우
-        PlayerController targetPlayer = holdingObject.GetComponent<PlayerController>();
-        if (targetPlayer != null)
-        {
-            ThrowPlayer(targetPlayer, throwDirection);
-        }
-
-        // TODO: 오브젝트를 던지는 경우
-        //else
-        //{
-        //    ThrowObject(holdingObject, throwDirection);
-        //}
-
-        holdingObject = null;
-        netIsHolding.Value = false;
-        netHoldingTargetId.Value = 0;
-
-        SetTriggerClientRpc("Throw");
-        Debug.Log("[잡기] 오브젝트를 던졌습니다");
-    }
-    #endregion
-
-    void MovePlayer()
-    {
-        if (netMoveDirection.Value.magnitude >= 0.1f)
-        {
-            // 이동
-            Vector3 movement = netMoveDirection.Value * netCurrentSpeed.Value * Time.fixedDeltaTime;
-            rb.MovePosition(rb.position + movement);
-
-            // 회전
-            Quaternion targetRotation = Quaternion.LookRotation(netMoveDirection.Value);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
-        }
-    }
-
-    void JumpPlayer()
-    {
-        if (isjumpQueued)
         {
             // 땅에 있을 때: 점프
             if (netIsGrounded.Value)
             {
-                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                // 점프 버프 적용
+                float currentJumpForce = jumpForce * JumpMul;
+
+                // 봇일때 점프
+                if (this is BotController bot)
+                {
+                    rb.AddForce(Vector3.up * currentJumpForce, ForceMode.Impulse);
+                    rb.AddForce(Vector3.forward * 5f, ForceMode.Impulse);
+                }
+                else
+                {
+                    rb.AddForce(Vector3.up * currentJumpForce, ForceMode.Impulse);
+                }
+                // 점프 파티클 재생
+                PlayJumpParticle();
+                // 점프 사운드 재생
+                PlayJumpSound();
+
                 netIsGrounded.Value = false; // 점프 시 강제로 false 설정
                 canDive = true; // 점프 후 다이브 가능
             }
             // 공중에 있을 때: 다이브
-            else if (canDive && !netIsDiving.Value && !netIsHolding.Value)
+            else if (canDive && !isDiving && !isHolding && !netIsGrounded.Value)
             {
-                DivePlayer();
+                PlayerDive();
             }
-            isjumpQueued = false;
         }
+
+        isJumpQueued = false;
     }
 
-    void DivePlayer()
+    private void PlayerDive()
     {
-        netIsDiving.Value = true;
+        // 땅에 있으면 다이브 불가
+        if (netIsGrounded.Value)
+        {
+            Debug.Log("[다이브] 땅에 있어서 다이브 불가");
+            return;
+        }
+
+        isDiving = true;
         canDive = false;
 
         // 현재 바라보는 방향으로 앞으로 힘 가하기
@@ -356,60 +708,238 @@ public class PlayerController : NetworkBehaviour
         rb.linearVelocity = Vector3.zero; // 기존 속도 초기화
         rb.AddForce(diveDirection, ForceMode.Impulse);
 
+        // 다이브 시작 사운드 즉시 로컬 재생 (Owner만, 지연 방지)
+        if (IsOwner)
+        {
+            PlayDiveStartSoundLocal();
+        }
+
+        // 다이브 시작 사운드 재생 (다른 플레이어들을 위해)
+        PlayDiveStartSound();
+
         // 다이브 애니메이션 실행 (공중)
         SetTriggerClientRpc("Dive");
     }
 
     // 다이브 착지 처리
-    void OnDiveLand()
+    private void OnDiveLand()
     {
-        if (!netIsDiving.Value) return;
+        if (!isDiving) return;
 
-        netIsDiving.Value = false;
-        netIsDiveGrounded.Value = true;
+        isDiving = false;
+        isDiveGrounded = true;
+        diveGroundedTime = 0f; // 타이머 시작
+
+        // 이동 입력 초기화 (걷기 파티클 즉시 재생 방지)
+        moveDir = Vector2.zero;
+        netIsMove.Value = false;
+
+        // 다이브 착지 파티클 재생
+        PlayDiveLandParticle();
+        // 다이브 착지 사운드 재생
+        PlayDiveLandSound();
 
         Debug.Log("[다이브 착지] 착지 애니메이션 재생, 조작 불가");
-
-        // 착지 애니메이션 실행
-        SetTriggerClientRpc("DiveGrounded");
-
-        // 착지 애니메이션이 끝나면 복구
-        StartCoroutine(ResetDiveGroundedState());
+        SetTriggerClientRpc("DiveLand");
     }
 
-    // 다이브 착지 상태 복구
-    private System.Collections.IEnumerator ResetDiveGroundedState()
+    protected void PlayerGrab()
     {
-        yield return new WaitForSeconds(diveGroundedDuration);
-        netIsDiveGrounded.Value = false;
-    }
-
-    private void HeldPlayer()
-    {
-        if (!netIsHolding.Value || holdingObject == null)
+        // 잡기중이 아니면 잡기시도
+        if (!isHolding)
         {
+            TryGrab();
+        }
+
+        // 잡기 중이면 던지기 시도
+        else
+        {
+            TryThrow();
+        }
+
+        isGrabQueued = false;
+    }
+
+    private void TryGrab()
+    {
+        float scale = transform.localScale.x;
+        Vector3 grabOffset = transform.forward * 1f * scale
+                           + transform.up * 1f * scale;
+
+        // GC 최적화: NonAlloc 버전 사용
+        int count = Physics.OverlapBoxNonAlloc(
+            transform.position + grabOffset,
+            Vector3.one * grabRange * scale,
+            grabColliders,
+            transform.rotation
+        );
+
+        for (int i = 0; i < count; i++)
+        {
+            Collider col = grabColliders[i];
+
+            // 자기자신 제외
+            if (col.gameObject == this.gameObject) continue;
+
+            // 다른 플레이어 체크
+            PlayerController otherPlayer = col.GetComponent<PlayerController>();
+            if (otherPlayer != null && !otherPlayer.netIsGrabbed.Value && !otherPlayer.isHolding && !otherPlayer.netIsDeath.Value)
+            {
+                // 무적 버프가 있으면 잡을 수 없음
+                if (otherPlayer.buffManager != null && otherPlayer.buffManager.IsInvincible)
+                {
+                    continue;
+                }
+
+                GrabPlayer(otherPlayer);
+                return;
+            }
+
+            // 오브젝트 체크
+            IGrabbable grabbable = col.GetComponent<IGrabbable>();
+            if (grabbable != null && !grabbable.IsGrabbed)
+            {
+                GrabObject(grabbable);
+                return;
+            }
+        }
+    }
+
+    protected virtual void OnDrawGizmos()
+    {
+        // 에디터/프리팹 모드에서도 안전하게 동작하도록 보완
+        if (col == null)
+        {
+            col = GetComponent<CapsuleCollider>();
+            if (col == null)
+            {
+                // 콜라이더가 없으면 기즈모를 그리지 않음
+                return;
+            }
+        }
+
+        float scale = transform.localScale.x;
+        Vector3 grabOffset = transform.forward * 1f * scale
+                           + transform.up * 1f * scale;
+
+        Gizmos.color = Color.red;
+        Vector3 center = transform.position + grabOffset;
+        Vector3 size = (Vector3.one * grabRange * scale) * 2;
+
+        // 기즈모의 좌표계 행렬을 현재 오브젝트의 회전값으로 변경
+        Matrix4x4 rotationMatrix = Matrix4x4.TRS(center, transform.rotation, size);
+        Gizmos.matrix = rotationMatrix;
+
+        // 행렬에서 이미 위치와 크기를 적용했으므로, 여기서는 1x1x1 큐브를 그립니다.
+        Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+
+        // 행렬 초기화 (다른 기즈모에 영향 주지 않기 위해)
+        Gizmos.matrix = Matrix4x4.identity;
+    }
+
+    private void GrabPlayer(PlayerController otherPlayer)
+    {
+        holdingObject = otherPlayer.gameObject;
+        heldPlayerCache = otherPlayer;  // 캐싱 (GetComponent 방지)
+        isHolding = true;
+        holdingTargetId = otherPlayer.NetworkObjectId;
+        canvasManager.ToggleArrow(false); // 화살표 끄기
+
+        Collider targetCollider = otherPlayer.GetComponent<Collider>();
+        if (targetCollider != null)
+        {
+            grabbedColliderCenter = targetCollider.bounds.center;
+            grabbedColliderSize = targetCollider.bounds.size;
+        }
+
+        // 상대방 상태 변경
+        otherPlayer.netIsGrabbed.Value = true;
+        otherPlayer.grabberId = this.NetworkObjectId;
+        otherPlayer.escapeJumpCount = 0;
+
+        // 상대방 물리 비활성화
+        if (otherPlayer.rb != null)
+        {
+            otherPlayer.rb.isKinematic = true;
+        }
+
+        // 레이어 저장 및 비활성화 (충돌 무시용)
+        heldObjectOriginLayer = otherPlayer.gameObject.layer;
+        otherPlayer.gameObject.layer = LayerMask.NameToLayer("HeldObject");
+    }
+
+    private void GrabObject(IGrabbable grabbable)
+    {
+        holdingObject = grabbable.GameObj;
+        isHolding = true;
+        holdingTargetId = grabbable.NetId;
+        canvasManager.ToggleArrow(false); // 화살표 끄기
+
+        // 콜라이더 정보 저장
+        Collider targetCollider = grabbable.GameObj.GetComponent<Collider>();
+        if (targetCollider != null)
+        {
+            grabbedColliderCenter = targetCollider.bounds.center;
+            grabbedColliderSize = targetCollider.bounds.size;
+        }
+
+        // NEW: GrabbableObject에 잡혔음을 알림 (NetworkTransform 최적화)
+        grabbable.OnGrabbed(this);
+
+        // 레이어 저장 및 비활성화 (충돌 무시용)
+        heldObjectOriginLayer = grabbable.GameObj.layer;
+        grabbable.GameObj.layer = LayerMask.NameToLayer("HeldObject");
+    }
+
+    private void TryThrow()
+    {
+        // 잡은게 없으면 입력 무시
+        if (holdingObject == null)
+        {
+            Debug.Log($"[잡기] 잡은 오브젝트가 없는데 잡기 중!!");
             return;
         }
 
-        // 머리 위 위치 계산
-        Vector3 targetPosition = transform.position
-            + transform.forward * holdDistance
-            + Vector3.up * holdHeight;
+        // 던지기 효과음 재생
+        PlayThrowSound();
 
-        holdingObject.transform.position = targetPosition;
+        // 던지기 방향 계산 (앞쪽 + 약간 위)
+        Vector3 throwDirection = Vector3.zero;
 
-        // 플레이어를 들고 있는 경우 회전도 맞춤
-        PlayerController heldPlayer = holdingObject.GetComponent<PlayerController>();
-        if (heldPlayer != null)
+        // 플레이어를 던지는 경우
+        PlayerController targetPlayer = holdingObject.GetComponent<PlayerController>();
+        if (targetPlayer != null)
         {
-            holdingObject.transform.rotation = transform.rotation;
+            throwDirection = (transform.forward + Vector3.up * 0.5f).normalized;
+            ThrowPlayer(targetPlayer, throwDirection);
         }
+
+        // 오브젝트를 던지는 경우
+        GrabbableObject grabbable = holdingObject.GetComponent<GrabbableObject>();
+        if (grabbable != null)
+        {
+            throwDirection = (transform.forward + Vector3.up * 0.2f).normalized;
+            ThrowObject(grabbable, throwDirection);
+        }
+
+        holdingObject = null;
+        heldPlayerCache = null;  // 캐시 클리어
+        isHolding = false;
+        holdingTargetId = 0;
+        canvasManager.ToggleArrow(true); // 화살표 켜기
+
+        // 던진 후 다이브 방지 (점프 상태에서 던지면 다이브 안되게)
+        canDive = false;
+
+        // 콜라이더 정보 초기화
+        grabbedColliderCenter = Vector3.zero;
+        grabbedColliderSize = Vector3.zero;
     }
 
     private void ThrowPlayer(PlayerController target, Vector3 throwDirection)
     {
         target.netIsGrabbed.Value = false;
-        target.netGrabberId.Value = 0;
+        target.grabberId = 0;
         target.escapeJumpCount = 0;
 
         // 물리 재활성화 및 힘 가하기
@@ -418,33 +948,106 @@ public class PlayerController : NetworkBehaviour
             target.rb.isKinematic = false;
             target.rb.AddForce(throwDirection * throwForce, ForceMode.Impulse);
         }
+        // 충돌 재활성화
+        target.gameObject.layer = heldObjectOriginLayer;
+        SetTriggerClientRpc("Throw");
+
+        //Debug.Log($"[잡기] 오브젝트 레이어 변환: {target.gameObject.layer}");
+        //Debug.Log("[잡기] 오브젝트를 던졌습니다");
     }
 
-    private void ThrowObject(GameObject target, Vector3 throwDirection)
+    private void ThrowObject(IGrabbable target, Vector3 throwDirection)
     {
-        // TODO:
-        //Rigidbody targetRb = target.GetComponent<Rigidbody>();
-        //if (targetRb != null)
-        //{
-        //    targetRb.isKinematic = false;
-        //    targetRb.AddForce(throwDirection * throwForce, ForceMode.Impulse);
-        //}
+        // NEW: GrabbableObject에 던져졌음을 알림 (NetworkTransform 최적화)
+        target.OnThrown();
 
-        //GrabbableObject grabbable = target.GetComponent<GrabbableObject>();
-        //if (grabbable != null)
-        //{
-        //    grabbable.OnReleased();
-        //}
+        // Rigidbody 물리 활성화
+        target.Rb.WakeUp();
+
+        // 충돌 재활성화 (원래 레이어로 복구)
+        target.GameObj.layer = heldObjectOriginLayer;
+        SetTriggerClientRpc("Throw");
+
+        // 플레이어의 현재 이동 속도 계산
+        Vector3 playerVelocity = Vector3.zero;
+        if (moveDir.magnitude >= 0.1f)
+        {
+            float currentSpeed = walkSpeed * SpeedMul;
+            playerVelocity = new Vector3(moveDir.x, 0, moveDir.y) * currentSpeed;
+        }
+
+        // 던지는 방향 속도 + 플레이어 이동 속도 합산
+        Vector3 throwVelocity = throwDirection * throwForce + playerVelocity;
+
+        // ForceMode.VelocityChange - mass 무시, 즉시 velocity 변경
+        // 다음 물리 업데이트까지 기다림 WaitForFixedUpdate 후 적용 (안정적인 물리 적용)
+        StartCoroutine(ApplyThrowForce(target.Rb, throwVelocity));
+    }
+
+    private System.Collections.IEnumerator ApplyThrowForce(Rigidbody rb, Vector3 velocity)
+    {
+        // 다음 FixedUpdate까지 대기
+        yield return new WaitForFixedUpdate();
+
+        if (rb != null && !rb.isKinematic)
+        {
+            rb.AddForce(velocity, ForceMode.VelocityChange);
+        }
+    }
+
+    protected void PlayerHeld()
+    {
+        if (holdingObject == null) return;
+
+        // 현재 콜라이더 정보 가져오기
+        Collider currentCollider = holdingObject.GetComponent<Collider>();
+        if (currentCollider == null) return;
+
+        // 콜라이더의 하단을 기준으로 위치 계산
+        float objectBottomOffset = grabbedColliderSize.y * 0.5f;
+
+        // 목표 위치: 플레이어 머리 위 + 물체의 절반 높이만큼 위
+        // 이 위치는 콜라이더 하단이 놓일 위치
+        Vector3 targetColliderBottom = transform.position
+            + transform.forward * holdDistance
+            + Vector3.up * holdHeight;
+
+        // 콜라이더 하단에서 센터까지의 오프셋
+        Vector3 colliderCenterOffset = Vector3.up * objectBottomOffset;
+
+        // 콜라이더 센터의 목표 위치
+        Vector3 targetColliderCenter = targetColliderBottom + colliderCenterOffset;
+
+        // 현재 콜라이더 센터
+        Vector3 currentColliderCenter = currentCollider.bounds.center;
+
+        // Transform의 위치 = 콜라이더 센터 목표 위치 + (Transform 위치 - 콜라이더 센터)
+        Vector3 transformOffset = holdingObject.transform.position - currentColliderCenter;
+        Vector3 finalPosition = targetColliderCenter + transformOffset;
+
+        // 위치 업데이트 (최적화: 큰 변화가 있을 때만)
+        float positionDelta = Vector3.Distance(finalPosition, lastHeldObjectPosition);
+        if (positionDelta >= 0.01f)
+        {
+            holdingObject.transform.position = finalPosition;
+            lastHeldObjectPosition = finalPosition;
+
+            // 플레이어를 들고 있는 경우 회전도 맞춤
+            if (heldPlayerCache != null)
+            {
+                holdingObject.transform.rotation = transform.rotation;
+            }
+        }
     }
 
     private void EscapeFromGrap()
     {
-        if (netGrabberId.Value == 0) return;
+        if (grabberId == 0) return;
 
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(netGrabberId.Value, out NetworkObject grabberObject))
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(grabberId, out NetworkObject grabberObject))
         {
             netIsGrabbed.Value = false;
-            netGrabberId.Value = 0;
+            grabberId = 0;
             rb.isKinematic = false;
             return;
         }
@@ -453,12 +1056,17 @@ public class PlayerController : NetworkBehaviour
 
         // 잡고 있던 플레이어의 상태 해제
         grabbedBy.holdingObject = null;
-        grabbedBy.netIsHolding.Value = false;
-        grabbedBy.netHoldingTargetId.Value = 0;
+        grabbedBy.heldPlayerCache = null;  // 캐시 클리어
+        grabbedBy.isHolding = false;
+        grabbedBy.holdingTargetId = 0;
+
+        // 콜라이더 정보 초기화
+        grabbedBy.grabbedColliderCenter = Vector3.zero;
+        grabbedBy.grabbedColliderSize = Vector3.zero;
 
         // 내 상태 해제
         netIsGrabbed.Value = false;
-        netGrabberId.Value = 0;
+        grabberId = 0;
         escapeJumpCount = 0;
 
         // 물리 재활성화 및 점프
@@ -472,50 +1080,555 @@ public class PlayerController : NetworkBehaviour
         Debug.Log("[탈출] 성공적으로 탈출했습니다!");
     }
 
-    // Collider로 땅 감지
-    private void OnCollisionStay(Collision collision)
+    public void ReleaseGrab()
     {
+        // 서버에서만 실행
         if (!IsServer) return;
 
-        // 점프 직후에는 땅 체크 안 함
-        //if (canDive && !netIsDiving.Value)
-        //{
-        //    return;
-        //}
-
-        // 충돌한 오브젝트가 아래쪽에 있으면 땅으로 판단
-        foreach (ContactPoint contact in collision.contacts)
+        // 내가 무언가를 들고 있었다면
+        if (isHolding && holdingObject != null)
         {
-            if (contact.normal.y > 0.5f) // 법선 벡터가 위를 향하면 땅
+            PlayerController heldPlayer = holdingObject.GetComponent<PlayerController>();
+            if (heldPlayer != null)
             {
-                // 다이브 중이었다면 착지 처리
-                if (netIsDiving.Value)
+                heldPlayer.netIsGrabbed.Value = false;
+                heldPlayer.grabberId = 0;
+                if (heldPlayer.rb != null)
                 {
-                    OnDiveLand();
+                    heldPlayer.rb.isKinematic = false;
                 }
+                // 레이어 복구
+                heldPlayer.gameObject.layer = heldObjectOriginLayer;
+            }
 
-                // 수직 속도가 거의 0이거나 아래로 떨어지는 중일 때만 착지로 판단
-                if (rb.linearVelocity.y <= 0.1f)
+            else
+            {
+                GrabbableObject grabbable = holdingObject.GetComponent<GrabbableObject>();
+                if (grabbable != null)
                 {
-                    netIsGrounded.Value = true;
+                    grabbable.OnReleased();
 
-                    // 땅에 닿으면 다이브 불가능 상태로 초기화
-                    if (canDive)
+                    Rigidbody targetRb = grabbable.GetComponent<Rigidbody>();
+                    if (targetRb != null)
                     {
-                        canDive = false;
+                        targetRb.isKinematic = false;
                     }
+                    // 레이어 복구
+                    grabbable.gameObject.layer = heldObjectOriginLayer;
                 }
+            }
 
+            holdingObject = null;
+        }
+
+        // 내가 잡혀있었다면 - 나 자신의 물리 복구
+        if (netIsGrabbed.Value)
+        {
+            // 물리 재활성화
+            if (rb != null)
+            {
+                rb.isKinematic = false;
+            }
+
+            // 잡고 있던 사람의 상태 업데이트
+            if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(grabberId, out NetworkObject grabberObject))
+            {
+                PlayerController grabbedBy = grabberObject.GetComponent<PlayerController>();
+                if (grabbedBy != null)
+                {
+                    grabbedBy.holdingObject = null;
+                    grabbedBy.heldPlayerCache = null;
+                    grabbedBy.isHolding = false;
+                    grabbedBy.holdingTargetId = 0;
+
+                    // 콜라이더 정보 초기화
+                    grabbedBy.grabbedColliderCenter = Vector3.zero;
+                    grabbedBy.grabbedColliderSize = Vector3.zero;
+                }
+            }
+        }
+
+        isHolding = false;
+        holdingTargetId = 0;
+        netIsGrabbed.Value = false;
+        grabberId = 0;
+        heldPlayerCache = null;
+        escapeJumpCount = 0;
+        canvasManager.ToggleArrow(true); // 화살표 켜기
+
+        // 콜라이더 정보 초기화
+        grabbedColliderCenter = Vector3.zero;
+        grabbedColliderSize = Vector3.zero;
+    }
+
+    public void PlayerDeath(bool isOceanDeath = false)
+    {
+        if (netIsDeath.Value) return;
+
+        // 죽은 위치 저장 (시체 생성용)
+        // deathPosition = transform.position;
+
+        netIsDeath.Value = true;
+
+        // 인풋벡터 초기화
+        moveDir = Vector2.zero;
+        ReleaseGrab();
+
+        // 죽음 사운드 재생 (죽음 타입에 따라)
+        PlayDeathSound(isOceanDeath);
+
+        SetTriggerClientRpc("Death");
+
+        // 봇은 서버가 Owner이므로 직접 리스폰 타이머 시작
+        if (this is BotController || this is ConsoleBotController)
+        {
+            StartCoroutine(BotRespawnDelay());
+        }
+    }
+
+    // 무적 버프 아이템 끝나고 땅이 Death 태그인지 체크
+    public void CheckDeathZoneOnInvincibilityEnd()
+    {
+        if (!IsServer || netIsDeath.Value) return;
+
+        // 현재 위치에서 Death 태그 오브젝트와 겹치는지 체크
+        Collider[] hits = Physics.OverlapSphere(transform.position, 0.5f);
+        foreach (var hit in hits)
+        {
+            if (hit.CompareTag("Death"))
+            {
+                PlayerDeath(isOceanDeath: false);
                 return;
             }
         }
     }
 
-    private void OnCollisionExit(Collision collision)
+    // 봇 전용 리스폰 타이머 (애니메이션 길이 2.3초)
+    private System.Collections.IEnumerator BotRespawnDelay()
+    {
+        //yield return botRespawnWait;  // GC 최적화: 캐싱된 WaitForSeconds 사용
+
+        // 10초에서 30초 사이의 랜덤 시간 설정
+        //float randomRespawnTime = Random.Range(10f, 30f);
+        yield return new WaitForSeconds(10f);
+        DoRespawnTeleport();
+    }
+
+    // 시체 생성 + 텔레포트
+    private void DoRespawnTeleport()
     {
         if (!IsServer) return;
 
-        netIsGrounded.Value = false;
+        // 시체 생성 (리스폰 시점에 생성하여 자연스러움)
+        if (bodyPrefab != null)
+        {
+            NetworkObject body = NetworkManager.Singleton.SpawnManager.InstantiateAndSpawn(
+                bodyPrefab,
+                position: transform.position,
+                rotation: transform.rotation
+            );
+
+            // Layer 설정: DeadBody (Layer 10) - 거리 기반 컬링 적용
+            SetLayerRecursively(body.gameObject, 10);
+        }
+
+        // 리스폰 리스트 가져오기
+        int index = RespawnId.Value;
+
+        var dest = respawnManager.respawnPoints[index];
+        if (!dest) { Debug.LogWarning("Respawn Transform null"); return; }
+
+        // 이동/회전 속도 초기화
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+
+        transform.position = dest.position;
+        transform.rotation = dest.rotation;
+
+        // 리스폰 파티클 재생
+        PlayRespawnParticle();
+        // 리스폰 사운드 재생
+        PlayRespawnSound();
+
+        ResetPlayerState();
+    }
+
+    // 좌표를 이용한 텔레포트
+    // 순간이동에도 쓰이므로 public
+    public void DoRespawn(Vector3 pos, Quaternion rot)
+    {
+        if (!IsServer) return;
+
+        // 이동/회전 속도 초기화
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+
+        transform.position = pos;
+        transform.rotation = rot;
+
+        ResetPlayerState();
+    }
+
+    private void ResetPlayerState()
+    {
+        // 이동/점프 관련 상태 최소 초기화
+        moveDir = Vector2.zero;
+        isJumpQueued = false;
+        netIsGrounded.Value = true;
+        isDiving = false;
+        isDiveGrounded = false;
+        netIsDeath.Value = false;
+        canDive = false;
+        isHit = false;
+
+        // 애니메이터도 각 클라에서 리셋
+        ResetAnimClientRpc();
+    }
+
+    // 서버에서 입력 및 물리 상태를 강제로 초기화
+    public void ForceClearInputOnServer()
+    {
+        if (!IsServer) return;
+
+        moveDir = Vector2.zero;
+        lastSentInput = Vector2.zero;
+        isJumpQueued = false;
+        isGrabQueued = false;
+
+        // 물리 속도도 초기화하여 잔여 움직임 제거
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+
+        // 네트워크 플래그 초기화
+        netIsMove.Value = false;
+    }
+
+    // 오브젝트와 자식들의 레이어를 재귀적으로 설정
+    private void SetLayerRecursively(GameObject obj, int layer)
+    {
+        obj.layer = layer;
+        foreach (Transform child in obj.transform)
+        {
+            SetLayerRecursively(child.gameObject, layer);
+        }
+    }
+
+    // 점프 파티클 재생 (서버에서 호출, 모든 클라이언트에서 재생)
+    private void PlayJumpParticle()
+    {
+        if (jumpParticle != null)
+        {
+            PlayJumpParticleClientRpc();
+        }
+    }
+
+    // SFX 볼륨 적용 헬퍼 함수
+    private float GetSFXVolume()
+    {
+        return GameManager.Instance != null ? GameManager.Instance.GetSFXVolume() : 1f;
+    }
+
+    // 점프 사운드 로컬 재생 (Owner 전용, 즉시 재생)
+    private void PlayJumpSoundLocal()
+    {
+        if (jumpAudioSource != null)
+        {
+            float sfxVol = GetSFXVolume();
+
+            // 캐릭터 보이스 재생
+            if (jumpVoiceClip != null)
+            {
+                jumpAudioSource.PlayOneShot(jumpVoiceClip, jumpVoiceVolume * sfxVol);
+            }
+
+            // 효과음 재생
+            if (jumpEffectClip != null)
+            {
+                jumpAudioSource.PlayOneShot(jumpEffectClip, jumpEffectVolume * sfxVol);
+            }
+        }
+    }
+
+    // 점프 사운드 재생 (서버에서 호출, 다른 클라이언트에서 재생)
+    private void PlayJumpSound()
+    {
+        PlayJumpSoundClientRpc();
+    }
+
+    // 다이브 시작 사운드 로컬 재생 (Owner 전용, 즉시 재생)
+    private void PlayDiveStartSoundLocal()
+    {
+        if (diveAudioSource != null && diveStartClip != null)
+        {
+            diveAudioSource.PlayOneShot(diveStartClip, diveStartVolume * GetSFXVolume());
+        }
+    }
+
+    // 다이브 시작 사운드 재생 (서버에서 호출, 다른 클라이언트에서 재생)
+    private void PlayDiveStartSound()
+    {
+        PlayDiveStartSoundClientRpc();
+    }
+
+    // 다이브 착지 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
+    private void PlayDiveLandSound()
+    {
+        PlayDiveLandSoundClientRpc();
+    }
+
+    // 다이브 착지 파티클 재생 (서버에서 호출, 모든 클라이언트에서 재생)
+    private void PlayDiveLandParticle()
+    {
+        if (diveLandParticle != null)
+        {
+            PlayDiveLandParticleClientRpc();
+        }
+    }
+
+    // 리스폰 파티클 재생 (서버에서 호출, 모든 클라이언트에서 재생)
+    private void PlayRespawnParticle()
+    {
+        if (respawnParticle != null)
+        {
+            PlayRespawnParticleClientRpc();
+        }
+    }
+
+    // 리스폰 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
+    private void PlayRespawnSound()
+    {
+        PlayRespawnSoundClientRpc();
+    }
+
+    // 피격 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
+    private void PlayHitSound()
+    {
+        PlayHitSoundClientRpc();
+    }
+
+    private void PlayThrowSound()
+    {
+        PlayThrowSoundClientRpc();
+    }
+
+    //////////////////////////////////////////////////////////////
+    // 버프 아이템 이펙트 (1회용, 루프용)
+    // 서버 권한 기반으로 제어, 실제 재생은 ClientRpc로 각 클라이언트에서 처리
+    //////////////////////////////////////////////////////////////
+
+    // 아이템 먹는 순간 1번 이펙트 재생용
+    public void PlayBuffPickupEffect()
+    {
+        if (!IsServer) return;
+
+        // 이펙트가 실제로 세팅되어 있을 때만 RPC 호출
+        if (buffPickupEffect != null)
+        {
+            PlayBuffPickupEffectClientRpc();
+        }
+    }
+
+    // 버프 타입별 루프용 이펙트 on/off
+    public void SetBuffLoopEffect(BuffType type, bool enabled)
+    {
+        if (!IsServer) return;
+
+        switch (type)
+        {
+            case BuffType.Speed:
+                SetSpeedBuffEffectClientRpc(enabled);
+                break;
+
+            case BuffType.Jump:
+                SetJumpBuffEffectClientRpc(enabled);
+                break;
+
+            case BuffType.Invincibility:
+                SetInvincibleBuffEffectClientRpc(enabled);
+                break;
+        }
+    }
+
+    // 버프 시스템 공통 토글 함수
+    private void ToggleLoopEffect(ParticleSystem ps, bool enabled)
+    {
+        if (ps == null) return;
+
+        if (enabled)
+        {
+            if (!ps.isPlaying)
+                ps.Play();
+        }
+        else
+        {
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+    }
+
+    // 버프 루프 사운드 토글 함수
+    private void ToggleLoopSound(AudioClip clip, bool enabled)
+    {
+        if (clip == null) return;
+
+        // 무적 버프인 경우 별도 오디오 소스 사용
+        bool isInvincibleClip = (clip == invincibleBuffLoopClip);
+        AudioSource targetAudioSource = isInvincibleClip ? invincibleBuffLoopAudioSource : buffLoopAudioSource;
+        float targetVolume = isInvincibleClip ? invincibleBuffLoopVolume : buffLoopVolume;
+
+        if (targetAudioSource == null) return;
+
+        if (enabled)
+        {
+            // 루프 사운드 재생
+            if (!targetAudioSource.isPlaying || targetAudioSource.clip != clip)
+            {
+                targetAudioSource.clip = clip;
+                targetAudioSource.volume = targetVolume * GetSFXVolume();
+                targetAudioSource.loop = true;
+                targetAudioSource.Play();
+            }
+        }
+        else
+        {
+            // 루프 사운드 중지
+            if (targetAudioSource.isPlaying && targetAudioSource.clip == clip)
+            {
+                targetAudioSource.Stop();
+                targetAudioSource.clip = null;
+            }
+        }
+    }
+
+    // 발걸음 사운드 업데이트 (로컬 클라이언트에서만 호출)
+    private void UpdateFootstepSoundLocal()
+    {
+        if (footstepAudioSource == null || footstepClip == null) return;
+
+        // 파티클이 재생 중일 때만 발걸음 소리 재생
+        if (isWalkParticlePlaying)
+        {
+            footstepTimer += Time.deltaTime;
+
+            // 타이머가 간격을 넘으면 발걸음 소리 재생
+            if (footstepTimer >= footstepInterval)
+            {
+                footstepAudioSource.PlayOneShot(footstepClip, footstepVolume * GetSFXVolume());
+                footstepTimer = 0f; // 타이머 리셋
+            }
+        }
+        else
+        {
+            // 걷지 않으면 타이머 리셋
+            footstepTimer = 0.3f;
+        }
+    }
+
+    public void OnGoaled(int rank)
+    {
+        inputEnabled.Value = false;
+        ReleaseGrab();
+        ForceClearInputOnServer();
+        SetTriggerClientRpc("Win");
+
+        // 본인 클라이언트에게만 도착 UI 애니메이션 표시 및 탈출 버튼 비활성화
+        ShowArrivalUIClientRpc(rank);
+    }
+
+    // 시상대로 이동 시 호출 (Win 애니메이션만 재생, UI는 표시하지 않음)
+    public void OnPodium()
+    {
+        inputEnabled.Value = false;
+        ReleaseGrab();
+        ForceClearInputOnServer();
+        SetTriggerClientRpc("Win");
+    }
+
+    // 도착 UI 애니메이션 표시 (본인만 표시)
+    [ClientRpc]
+    private void ShowArrivalUIClientRpc(int rank)
+    {
+        // 본인만 애니메이션 실행
+        if (!IsOwner) return;
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.ShowArrivalAnimation(rank);
+            UIManager.Instance.ToggleEscapeButton(false); // 도착 시 탈출 버튼 비활성화
+            Debug.Log($"[PlayerController] 도착 UI 표시 - {rank}등");
+        }
+        else
+        {
+            Debug.LogWarning("[PlayerController] UIManager.Instance가 null입니다.");
+        }
+    }
+    #endregion
+
+    // 충돌관리 로직
+    #region Physics
+    protected void GroundCheck()
+    {
+        if (!IsServer) return;
+
+        // 타임 슬라이싱: NetworkObjectId에 따라 실행 프레임을 분산시켜 부하를 1/N로 줄임
+        if (Time.frameCount % groundCheckInterval != (int)NetworkObjectId % groundCheckInterval) return;
+
+        // 캐싱된 계산 (매번 계산하지 않도록)
+        float offsetDist = col.height / 2f - col.radius;
+        Vector3 bottomSphereCenter = col.center + (Vector3.down * offsetDist);
+        Vector3 castOrigin = transform.TransformPoint(bottomSphereCenter);
+        float scale = transform.localScale.y;
+        float scaledRadius = col.radius * scale * 0.95f;
+        float scaledDistance = groundCheckDist * scale;
+
+        int hitCount = Physics.SphereCastNonAlloc(
+            castOrigin,
+            scaledRadius,
+            Vector3.down,
+            groundHits,
+            scaledDistance,
+            groundLayerMask  // LayerMask로 필터링 (Physics 쿼리 최적화)
+        );
+
+        bool isGrounded = false;
+        for (int i = 0; i < hitCount; i++)
+        {
+            RaycastHit hit = groundHits[i];
+
+            // 자기자신 제외
+            if (hit.collider == null || hit.collider == col) continue;
+            // 경사로/벽면 제외 (0.7 = 약 45도 경사)
+            if (hit.normal.y < 0.7f) continue;
+
+            // Debug.Log($"{hit.collider.name}을 땅으로 감지!!");
+            isGrounded = true;
+            break;
+        }
+
+        // NetworkVariable은 값이 실제로 변경될 때만 업데이트 (Netcode 자동 처리)
+        netIsGrounded.Value = isGrounded;
+
+        // 착지 시 처리 (최적화: 조건을 미리 체크)
+        if (isGrounded && rb.linearVelocity.y <= 0.1f)
+        {
+            if (isDiving)
+            {
+                OnDiveLand();
+            }
+
+            if (canDive)
+            {
+                canDive = false;
+            }
+        }
     }
 
     // 특정 물체와 충돌할 때
@@ -526,38 +1639,301 @@ public class PlayerController : NetworkBehaviour
         // Tag로 구분하여 다른 애니메이션 재생
         switch (collision.gameObject.tag)
         {
+            case "Ocean":
+                // 물에 빠져서 죽음
+                PlayerDeath(isOceanDeath: true);
+                break;
+
             case "Death":
-                // 캐릭터가 가지고 있는 리스폰 인덱스로 이동
-                DoRespawn(RespawnId.Value);
+                // 무적 버프 중이면 죽지 않음
+                if (buffManager != null && buffManager.IsInvincible) break;
+                // 일반 죽음
+                PlayerDeath(isOceanDeath: false);
                 break;
 
             case "weakObstacles":
-                // 장애물에 부딪힘
-                PlayHitAnimation("weakHit", weakHitDuration);
-                break;
+                // 죽었으면 영향받지 않음
+                if (netIsDeath.Value) break;
+                // 무적 버프 중이면 피격되지 않음
+                if (buffManager != null && buffManager.IsInvincible) break;
+                // 피격 사운드 재생
+                PlayHitSound();
+                // 충돌 지점의 평균 법선 벡터 계산
+                Vector3 avgNormal = Vector3.zero;
+                foreach (ContactPoint contact in collision.contacts)
+                {
+                    avgNormal += contact.normal;
+                }
+                avgNormal /= collision.contacts.Length;
 
-            case "OtherPlayer":
-                // 다른플레이어
-                PlayHitAnimation("weakHit", weakHitDuration);
+                // 장애물에 부딪힘
+                PlayHitAnimation("weakHit");
+                BouncePlayer(avgNormal, bounceForce);
                 break;
 
             case "StrongObstacles":
+                // 죽었으면 영향받지 않음
+                if (netIsDeath.Value) break;
                 // 가시에 부딪힘
-                PlayHitAnimation("StrongHit", strongHitDuration);
+                PlayHitAnimation("StrongHit");
                 break;
 
             default:
                 // 매칭되지 않은 Tag
-                Debug.Log($"[경고] 매칭되지 않은 Tag: {collision.gameObject.tag}");
+                // Debug.Log($"[경고] 매칭되지 않은 Tag: {collision.gameObject.tag}");
                 break;
         }
     }
 
+    // 플레이어 튕겨나가기 함수
+    private void BouncePlayer(Vector3 normal, float force)
+    {
+        // 현재 속도 초기화
+        rb.linearVelocity = Vector3.zero;
+
+        // 법선 방향으로 힘 가하기 (위쪽 방향 추가)
+        Vector3 bounceDirection = (normal + Vector3.up * 0.3f).normalized;
+        rb.AddForce(bounceDirection * force, ForceMode.Impulse);
+
+        // Debug.Log($"[튕겨나가기] 방향: {bounceDirection}, 힘: {force}");
+    }
+    #endregion
+
+    // 서버에서 클라한테 시킬 Rpc 모음
+    #region clientRpcs
+    [ClientRpc]
+    protected void SetTriggerClientRpc(string triggerName)
+    {
+        if (animator != null)
+        {
+            animator.SetTrigger(triggerName);
+        }
+    }
+
+    [ClientRpc]
+    protected void ResetAnimClientRpc()
+    {
+        if (animator == null) return;
+
+        animator.Rebind();                                  // 바인딩 초기화
+    }
+
+    [ClientRpc]
+    private void SetSpeedBuffEffectClientRpc(bool enabled)
+    {
+        // 로컬 플레이어가 아니고 이펙트 설정이 꺼져있으면 이펙트 비활성화
+        bool shouldShowEffect = IsOwner || PlayerPrefs.GetInt("ShowEffects", 1) == 1;
+
+        ToggleLoopEffect(speedBuffLoopEffect, enabled && shouldShowEffect);
+        ToggleLoopSound(buffLoopClip, enabled);
+    }
+
+    [ClientRpc]
+    private void SetJumpBuffEffectClientRpc(bool enabled)
+    {
+        // 로컬 플레이어가 아니고 이펙트 설정이 꺼져있으면 이펙트 비활성화
+        bool shouldShowEffect = IsOwner || PlayerPrefs.GetInt("ShowEffects", 1) == 1;
+
+        ToggleLoopEffect(jumpBuffLoopEffect, enabled && shouldShowEffect);
+        ToggleLoopSound(buffLoopClip, enabled);
+    }
+
+    [ClientRpc]
+    private void SetInvincibleBuffEffectClientRpc(bool enabled)
+    {
+        // 로컬 플레이어가 아니고 이펙트 설정이 꺼져있으면 이펙트 비활성화
+        bool shouldShowEffect = IsOwner || PlayerPrefs.GetInt("ShowEffects", 1) == 1;
+
+        ToggleLoopEffect(invincibleBuffLoopEffect, enabled && shouldShowEffect);
+        ToggleLoopSound(invincibleBuffLoopClip, enabled);
+    }
+
+    [ClientRpc]
+    private void PlayBuffPickupEffectClientRpc()
+    {
+        // 로컬 플레이어가 아니고 이펙트 설정이 꺼져있으면 재생하지 않음
+        bool showEffects = IsOwner || PlayerPrefs.GetInt("ShowEffects", 1) == 1;
+
+        // 파티클 재생
+        if (showEffects && buffPickupEffect != null)
+        {
+            buffPickupEffect.Play();
+        }
+
+        // 사운드 재생
+        if (buffAudioSource != null && buffPickupClip != null)
+        {
+            buffAudioSource.PlayOneShot(buffPickupClip, buffPickupVolume * GetSFXVolume());
+        }
+    }
+
+    [ClientRpc]
+    private void PlayJumpParticleClientRpc()
+    {
+        // 로컬 플레이어가 아니고 이펙트 설정이 꺼져있으면 재생하지 않음
+        if (!IsOwner && PlayerPrefs.GetInt("ShowEffects", 1) == 0) return;
+
+        if (jumpParticle != null)
+        {
+            jumpParticle.Play();
+        }
+    }
+
+    [ClientRpc]
+    private void PlayJumpSoundClientRpc()
+    {
+        // Owner는 이미 로컬에서 재생했으므로 스킵
+        if (IsOwner) return;
+
+        if (jumpAudioSource != null)
+        {
+            float sfxVol = GetSFXVolume();
+
+            // 캐릭터 보이스 재생
+            if (jumpVoiceClip != null)
+            {
+                jumpAudioSource.PlayOneShot(jumpVoiceClip, jumpVoiceVolume * sfxVol);
+            }
+
+            // 효과음 재생
+            if (jumpEffectClip != null)
+            {
+                jumpAudioSource.PlayOneShot(jumpEffectClip, jumpEffectVolume * sfxVol);
+            }
+        }
+    }
+
+    [ClientRpc]
+    private void PlayDiveStartSoundClientRpc()
+    {
+        // Owner는 이미 로컬에서 재생했으므로 스킵
+        if (IsOwner) return;
+
+        if (diveAudioSource != null && diveStartClip != null)
+        {
+            diveAudioSource.PlayOneShot(diveStartClip, diveStartVolume * GetSFXVolume());
+        }
+    }
+
+    [ClientRpc]
+    private void PlayDiveLandSoundClientRpc()
+    {
+        if (diveAudioSource != null)
+        {
+            float sfxVol = GetSFXVolume();
+
+            // 캐릭터 보이스 재생
+            if (diveLandVoiceClip != null)
+            {
+                diveAudioSource.PlayOneShot(diveLandVoiceClip, diveLandVoiceVolume * sfxVol);
+            }
+
+            // 바닥 충돌음 재생
+            if (diveLandImpactClip != null)
+            {
+                diveAudioSource.PlayOneShot(diveLandImpactClip, diveLandImpactVolume * sfxVol);
+            }
+        }
+    }
+
+    [ClientRpc]
+    private void PlayDiveLandParticleClientRpc()
+    {
+        // 로컬 플레이어가 아니고 이펙트 설정이 꺼져있으면 재생하지 않음
+        if (!IsOwner && PlayerPrefs.GetInt("ShowEffects", 1) == 0) return;
+
+        if (diveLandParticle != null)
+        {
+            diveLandParticle.Play();
+        }
+    }
+
+    [ClientRpc]
+    private void PlayRespawnParticleClientRpc()
+    {
+        // 로컬 플레이어가 아니고 이펙트 설정이 꺼져있으면 재생하지 않음
+        if (!IsOwner && PlayerPrefs.GetInt("ShowEffects", 1) == 0) return;
+
+        if (respawnParticle != null)
+        {
+            respawnParticle.Play();
+        }
+    }
+
+    [ClientRpc]
+    private void PlayRespawnSoundClientRpc()
+    {
+        if (respawnAudioSource != null && respawnClip != null)
+        {
+            respawnAudioSource.PlayOneShot(respawnClip, respawnVolume * GetSFXVolume());
+        }
+    }
+
+    // 죽음 사운드 재생 (서버에서 호출, 모든 클라이언트에서 재생)
+    private void PlayDeathSound(bool isOceanDeath)
+    {
+        PlayDeathSoundClientRpc(isOceanDeath);
+    }
+
+    [ClientRpc]
+    private void PlayDeathSoundClientRpc(bool isOceanDeath)
+    {
+        if (deathAudioSource != null)
+        {
+            float sfxVol = GetSFXVolume();
+
+            // 1. 음성 효과음 재생 (항상)
+            if (deathVoiceClip != null)
+            {
+                deathAudioSource.PlayOneShot(deathVoiceClip, deathVolume * sfxVol);
+            }
+
+            // 2. 환경 효과음 재생 (태그에 따라)
+            AudioClip environmentClip = isOceanDeath ? deathOceanClip : deathSpikeClip;
+            if (environmentClip != null)
+            {
+                deathAudioSource.PlayOneShot(environmentClip, deathVolume * sfxVol);
+            }
+        }
+    }
+
+    [ClientRpc]
+    private void PlayHitSoundClientRpc()
+    {
+        if (hitAudioSource != null)
+        {
+            float sfxVol = GetSFXVolume();
+
+            // 1. 음성 효과음 재생 (항상)
+            if (hitVoiceClip != null)
+            {
+                hitAudioSource.PlayOneShot(hitVoiceClip, hitVolume * sfxVol);
+            }
+
+            // 2. 환경 효과음 재생 (충돌음)
+            if (hitImpactClip != null)
+            {
+                hitAudioSource.PlayOneShot(hitImpactClip, hitVolume * sfxVol);
+            }
+        }
+    }
+
+    [ClientRpc]
+    private void PlayThrowSoundClientRpc()
+    {
+        if (throwAudioSource != null && throwClip != null)
+        {
+            throwAudioSource.PlayOneShot(throwClip, throwVolume * GetSFXVolume());
+        }
+    }
+    #endregion
+
+    // 애니메이션 로직들
     #region Animation
     // 애니메이션 재생 함수
-    private void PlayHitAnimation(string triggerName, float duration)
+    private void PlayHitAnimation(string triggerName)
     {
-        if (animator == null)
+        if (isHit || animator == null)
         {
             return;
         }
@@ -585,237 +1961,47 @@ public class PlayerController : NetworkBehaviour
         }
 
         // 이동 차단 및 Trigger 실행
+        isDiving = false;
+        isDiveGrounded = false;
         isHit = true;
+
+        // 타이머 시작
+        hitTime = 0f;
+
         SetTriggerClientRpc(triggerName);
-
-        // 지정된 시간만큼 대기 후 이동 재개
-        StartCoroutine(ResetHitState(duration));
     }
 
-    // 애니메이션이 끝나면 이동 가능하도록 복구
-    private System.Collections.IEnumerator ResetHitState(float duration)
-    {
-        //이동 차단 duration초 동안 이동 불가
-        yield return new WaitForSeconds(duration);
-
-        isHit = false;
-        //이제 이동 가능
-    }
-
-    // NetworkVariable 업데이트
-    void SyncAnimationState()
-    {
-        netVerticalVelocity.Value = rb.linearVelocity.y;
-    }
-
-    void UpdateAnimation()
+    protected void UpdateAnimation()
     {
         if (animator != null)
         {
-            // 이동 속도를 애니메이터에 전달
-            float speed = netMoveDirection.Value.magnitude * netCurrentSpeed.Value;
-            animator.SetFloat("Speed", speed);
+            // 이동 상태를 애니메이터에 전달
+            animator.SetBool("IsMoving", netIsMove.Value);
             // 점프 상태를 애니메이터에 전달
             animator.SetBool("IsGrounded", netIsGrounded.Value);
-            // 다이브 상태를 애니메이터에 전달
-            animator.SetBool("IsDiving", netIsDiving.Value);
-            // 다이브 착지 상태를 애니메이터에 전달
-            animator.SetBool("IsDiveGrounded", netIsDiveGrounded.Value);
-            // 수직 속도를 애니메이터에 전달 (점프/낙하 애니메이션용)
-            animator.SetFloat("VerticalVelocity", netVerticalVelocity.Value);
-
             // 잡힌 상태를 애니메이터에 전달
             animator.SetBool("IsGrabbed", netIsGrabbed.Value);
         }
-    }
-    #endregion
 
-    // 기본 자리 리스폰
-    public void DoRespawn()
-    {
-        if (!IsServer) return;
-
-        ReleaseGrab();
-
-        // 이동/회전 속도 초기화
-        if (rb != null)
+        // 파티클 제어: 땅에서 걷고 있을 때만 재생
+        if (walkParticle != null)
         {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
+            // 로컬 플레이어가 아니고 이펙트 설정이 꺼져있으면 파티클 재생하지 않음
+            bool showEffects = IsOwner || PlayerPrefs.GetInt("ShowEffects", 1) == 1;
+            bool shouldPlayParticle = showEffects && netIsMove.Value && netIsGrounded.Value && !netIsDeath.Value && !isDiveGrounded;
 
-        // 캐릭터 텔레포트
-        if (nt != null)
-        {
-            nt.Teleport(_initialSpawnPosition, Quaternion.identity, transform.localScale);
-        }
-
-        // 이동/점프 관련 상태 최소 초기화
-        netMoveDirection.Value = Vector3.zero;
-        netCurrentSpeed.Value = 0f;
-        netIsGrounded.Value = true;
-        netIsDiving.Value = false;
-        netIsDiveGrounded.Value = false;
-        canDive = false;
-        isjumpQueued = false;
-        isHit = false;
-
-        // 애니메이터도 각 클라에서 리셋
-        ResetDiveAnimClientRpc();
-    }
-
-    // 리스트를 이용한 텔레포트
-    public void DoRespawn(int index)
-    {
-
-        if (!IsServer) return;
-
-        // 리스폰 리스트 가져오기
-        var dest = respawnManager.respawnPoints[index];
-        if (!dest) { Debug.LogWarning("Respawn Transform null"); return; }
-
-        ReleaseGrab();
-
-        // 이동/회전 속도 초기화
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
-
-        // 캐릭터 텔레포트
-        if (nt != null)
-        {
-            nt.Teleport(dest.position, dest.rotation, transform.localScale);
-        }
-
-        // 이동/점프 관련 상태 최소 초기화
-        netMoveDirection.Value = Vector3.zero;
-        netCurrentSpeed.Value = 0f;
-        netIsGrounded.Value = true;
-        netIsDiving.Value = false;
-        netIsDiveGrounded.Value = false;
-        canDive = false;
-        isjumpQueued = false;
-        isHit = false;
-
-        // 애니메이터도 각 클라에서 리셋
-        ResetDiveAnimClientRpc();
-    }
-
-    // 좌표를 이용한 리스폰
-    public void DoRespawn(Vector3 pos, Quaternion rot)
-    {
-        if (!IsServer) return;
-
-        ReleaseGrab();
-
-        // 이동/회전 속도 초기화
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
-
-        // 캐릭터 텔레포트
-        if (nt != null)
-        {
-            nt.Teleport(pos, rot, transform.localScale);
-        }
-
-        // 이동/점프 관련 상태 최소 초기화
-        netMoveDirection.Value = Vector3.zero;
-        netCurrentSpeed.Value = 0f;
-        netIsGrounded.Value = true;
-        netIsDiving.Value = false;
-        netIsDiveGrounded.Value = false;
-        canDive = false;
-        isjumpQueued = false;
-        isHit = false;
-
-        // 애니메이터도 각 클라에서 리셋
-        ResetDiveAnimClientRpc();
-    }
-
-    private void ReleaseGrab()
-    {
-        // 내가 무언가를 들고 있었다면
-        if (netIsHolding.Value && holdingObject != null)
-        {
-            PlayerController heldPlayer = holdingObject.GetComponent<PlayerController>();
-            if (heldPlayer != null)
+            if (shouldPlayParticle && !isWalkParticlePlaying)
             {
-                heldPlayer.netIsGrabbed.Value = false;
-                heldPlayer.netGrabberId.Value = 0;
-                if (heldPlayer.rb != null)
-                {
-                    heldPlayer.rb.isKinematic = false;
-                }
+                walkParticle.Clear(); // 기존 파티클 제거
+                walkParticle.Play(true); // 재생 (자식 포함)
+                isWalkParticlePlaying = true;
             }
-            //TODO:
-            //else
-            //{
-            //    GrabbableObject grabbable = holdingObject.GetComponent<GrabbableObject>();
-            //    if (grabbable != null)
-            //    {
-            //        grabbable.OnReleased();
-            //    }
-            //}
-
-            holdingObject = null;
-        }
-
-        // 내가 잡혀있었다면
-        if (netIsGrabbed.Value)
-        {
-            if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(netGrabberId.Value, out NetworkObject grabberObject))
+            else if (!shouldPlayParticle && isWalkParticlePlaying)
             {
-                PlayerController grabbedBy = grabberObject.GetComponent<PlayerController>();
-                if (grabbedBy != null)
-                {
-                    grabbedBy.holdingObject = null;
-                    grabbedBy.netIsHolding.Value = false;
-                    grabbedBy.netHoldingTargetId.Value = 0;
-                }
+                walkParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                isWalkParticlePlaying = false;
             }
         }
-
-        netIsHolding.Value = false;
-        netHoldingTargetId.Value = 0;
-        netIsGrabbed.Value = false;
-        netGrabberId.Value = 0;
-        escapeJumpCount = 0;
-    }
-
-    // 오른쪽 버튼 클릭시 커서 토글
-    public void ToggleCursorWithRMB()
-    {
-        if (!IsClient) return;
-
-        if (Input.GetMouseButtonDown(1)) // RMB 클릭 시
-        {
-            bool willUnlock = (Cursor.lockState == CursorLockMode.Locked);
-            Cursor.lockState = willUnlock ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = willUnlock;
-        }
-    }
-
-    #region ClientRPCs
-    [ClientRpc]
-    void SetTriggerClientRpc(string triggerName)
-    {
-        if (animator != null)
-        {
-            animator.SetTrigger(triggerName);
-        }
-    }
-
-    [ClientRpc]
-    private void ResetDiveAnimClientRpc()
-    {
-        if (animator == null) return;
-
-        animator.Rebind();                                  // 바인딩 초기화
     }
     #endregion
 }

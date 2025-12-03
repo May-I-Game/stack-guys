@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(nul)",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(ls -la \"d:\\Unity Projects\\stack-guys\\Assets\\Resources\\Audios\"\" 2>/dev/null || echo \"Directory not found \")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
